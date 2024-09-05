@@ -1,7 +1,0 @@
-Disk Space Alert
-https://community.grafana.com/t/set-alerts-for-when-cpu-load-hard-disk-reaches-85-in-grafana-datasource-using-prometheus/70800
-
-
-Slack Webhook
-https://api.slack.com/messaging/webhooks
-
