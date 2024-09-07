@@ -13,6 +13,5 @@
     - name: Change Python Env
       ansible.builtin.include_tasks: ../../tasks/change-python-env.yml
 
-  tasks:
-    - name: Update
-      ansible.builtin.include_tasks: ../../tasks/update.yml
+  roles:
+    - update-servers

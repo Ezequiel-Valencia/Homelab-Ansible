@@ -1,0 +1,23 @@
+---
+- name: Attempt Update
+  block:
+    - name: "Starting Update"
+      ansible.builtin.include_tasks: update.yml
+      register: task_info
+
+    - name: Finished Update
+      vars:
+        slack_color: "#2eb886"
+        slack_title: "{{ inventory_hostname }} Finished Updating"
+        slack_text: ""
+        slack_priority: "Low"
+      ansible.builtin.include_tasks: send-slack-message.yml
+
+  rescue:
+    - name: Update Has Failed
+      vars:
+        slack_color: "#ff051e"
+        slack_title: "{{ inventory_hostname }} Failed To Update"
+        slack_text: "{{ task_info }}"
+        slack_priority: "High"
+      ansible.builtin.include_tasks: send-slack-message.yml

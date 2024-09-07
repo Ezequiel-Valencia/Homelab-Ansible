@@ -1,0 +1,13 @@
+---
+- name: Sending Slack Message
+  vars:
+    contents: "{{ lookup('ansible.builtin.template', '../templates/slackmessage.j2') }}"
+  ansible.builtin.uri:
+    url: '{{ slack_token }}'
+    method: POST
+    body_format: json
+    body: '{{ contents }}'
+    headers:
+      Content-Type: application/json
+    status_code:
+      - 200

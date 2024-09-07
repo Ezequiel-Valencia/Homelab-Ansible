@@ -25,23 +25,28 @@
 
 ################ If Automatic Reboot is Allowed #####################
 
-- name: Send Reboot Starting Message to Slack
-  community.general.slack:
-    token: '{{ slack_token }}'
-    color: warning
-    msg: 'The server {{ inventory_hostname }} will be rebooting.'
+- name: Starting Reboot
+  vars:
+    slack_color: "#fff305"
+    slack_title: "{{ inventory_hostname }} Will Begin Rebooting"
+    slack_text: ""
+    slack_priority: "Low"
+  ansible.builtin.include_tasks: send-slack-message.yml
   when: reboot_required.stat.exists and allow_automatic_reboot
 
 - name: Reboot machine
+  become: true
   ansible.builtin.reboot:
     reboot_timeout: 3600
   when: reboot_required.stat.exists and allow_automatic_reboot
 
-- name: Send Reboot Finished Message to Slack
-  community.general.slack:
-    token: '{{ slack_token }}'
-    color: good
-    msg: 'The server {{ inventory_hostname }} has finished rebooting.'
+- name: Finished Reboot
+  vars:
+    slack_color: "#0505ff"
+    slack_title: "{{ inventory_hostname }} Finished Rebooting"
+    slack_text: ""
+    slack_priority: "Low"
+  ansible.builtin.include_tasks: send-slack-message.yml
   when: reboot_required.stat.exists and allow_automatic_reboot
 
 ########################################################################
@@ -49,9 +54,11 @@
 
 ################ If Automatic Reboot is Not Allowed ####################
 
-- name: Notify that Reboot Needs to Occur
-  community.general.slack:
-    token: '{{ slack_token }}'
-    color: warning
-    msg: 'The server {{ inventory_hostname }} needs to be rebooted.'
+- name: Need To Reboot
+  vars:
+    slack_color: "#fff305"
+    slack_title: "{{ inventory_hostname }} Needs To Reboot"
+    slack_text: ""
+    slack_priority: "Medium"
+  ansible.builtin.include_tasks: send-slack-message.yml
   when: reboot_required.stat.exists and not allow_automatic_reboot
