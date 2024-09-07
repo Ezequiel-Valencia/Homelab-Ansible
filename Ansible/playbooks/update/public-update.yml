@@ -30,5 +30,3 @@
             token: '{{ slack_token }}'
             color: danger
             msg: 'Failed to update  {{ inventory_hostname }}. '
-            attachments:
-              - title: 'Failed to Update Local Server'

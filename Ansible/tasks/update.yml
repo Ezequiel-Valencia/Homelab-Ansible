@@ -30,8 +30,6 @@
     token: '{{ slack_token }}'
     color: warning
     msg: 'The server {{ inventory_hostname }} will be rebooting.'
-    attachments:
-      - title: 'Rebooting {{ inventory_hostname }}'
   when: reboot_required.stat.exists and allow_automatic_reboot
 
 - name: Reboot machine
@@ -44,8 +42,6 @@
     token: '{{ slack_token }}'
     color: good
     msg: 'The server {{ inventory_hostname }} has finished rebooting.'
-    attachments:
-      - title: 'Finished Rebooting {{ inventory_hostname }}'
   when: reboot_required.stat.exists and allow_automatic_reboot
 
 ########################################################################
