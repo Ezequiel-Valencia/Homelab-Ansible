@@ -4,6 +4,7 @@
   gather_facts: false
   vars:
     other_port: false
+    allow_automatic_reboot: false
 
   pre_tasks:
     - name: Get facts after SSH set

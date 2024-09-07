@@ -6,4 +6,6 @@ defualt_relative_docker_data_path: '/docker_data'
 
 owner_user: zeke
 
+allow_automatic_reboot: true
+
 alt_ssh_port: 5320

@@ -14,5 +14,21 @@
       ansible.builtin.include_tasks: ../../tasks/change-python-env.yml
 
   tasks:
-    - name: Update
-      ansible.builtin.include_tasks: ../../tasks/update.yml
+    - name: Try To Update
+      block:
+        - name: Update
+          ansible.builtin.include_tasks: ../../tasks/update.yml
+
+        - name: Finished Update
+          community.general.slack:
+            token: '{{ slack_token }}'
+            color: danger
+            msg: 'Finished Update for {{ inventory_hostname }}. '
+      rescue:
+        - name: Failed to Update
+          community.general.slack:
+            token: '{{ slack_token }}'
+            color: danger
+            msg: 'Failed to update  {{ inventory_hostname }}. '
+            attachments:
+              - title: 'Failed to Update Local Server'
