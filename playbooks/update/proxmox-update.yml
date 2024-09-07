@@ -1,10 +1,10 @@
 ---
-- name: Update Local Servers
-  hosts: public_services
+- name: Update Proxmox Servers
+  hosts: proxmox_servers
   gather_facts: false
   vars:
-    other_port: true
-    alt_ssh_port: 8024
+    other_port: false
+    allow_automatic_reboot: false
 
   pre_tasks:
     - name: Get facts after SSH set
@@ -14,4 +14,4 @@
       ansible.builtin.include_tasks: ../../tasks/change-python-env.yml
 
   roles:
-    - ../roles/update-servers
+    - update-servers
