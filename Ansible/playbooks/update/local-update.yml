@@ -14,5 +14,5 @@
       ansible.builtin.include_tasks: ../../tasks/change-python-env.yml
 
   roles:
-    - update-servers
+    - ../roles/update-servers
 
