@@ -17,9 +17,9 @@ services:
             - DOT_PROVIDERS=quad9
             - UPDATER_PERIOD=48h
         ports:
-            - "9117:9117" # Jackett
+            - "127.0.0.1:9117:9117" # Jackett
             # Qbittorent
-            - "9078:9078"
+            - "127.0.0.1:9078:9078"
             # - "7439:6881/tcp"
             # - "7439:6881/udp"
         healthcheck:
@@ -83,6 +83,7 @@ services:
             - no-new-privileges:true
         networks:
             - proxy
+            - gluetun_vpn
         ports:
             - 80:80
             - 443:443
