@@ -1,8 +1,11 @@
 - name: Template Docker Compose and Env Files
+  become: true
   ansible.builtin.template:
     mode: u=rw,g=r,o=
+    group: admin
+    owner: ansible
     src: "{{ docks.src }}"
-    dest: "~/{{ docks.dest_name }}"
+    dest: "{{ defualt_relative_docker_data_path }}/{{ docks.dest_name }}"
   loop: '{{ docker_template_files }}'
   loop_control:
     loop_var: docks
@@ -10,14 +13,18 @@
 - name: Create Resources
   community.docker.docker_compose_v2:
     project_name: '{{ compose_project_name }}'
-    project_src: "~/"
+    project_src: "{{ defualt_relative_docker_data_path }}/"
     files:
       - '{{ compose_file }}'
 
 - name: Remove All Templated Files
+  become: true
+  vars:
+    keep: "{{ docks.keep | default(false) }}"
   ansible.builtin.file:
-    path: "~/{{ docks.dest_name }}"
+    path: "{{ defualt_relative_docker_data_path }}/{{ docks.dest_name }}"
     state: absent
   loop: '{{ docker_template_files }}'
   loop_control:
     loop_var: docks
+  when: not keep

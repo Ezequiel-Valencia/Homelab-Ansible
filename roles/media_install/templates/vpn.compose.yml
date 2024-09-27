@@ -1,0 +1,82 @@
+services:
+    gluetun:
+        image: qmcgaw/gluetun:latest
+        restart: unless-stopped
+        container_name: "{{ container_name }}"
+        hostname: gluetun
+        networks:
+            gluetun_vpn:
+        cap_add:
+            - NET_ADMIN
+        environment:
+            - VPN_SERVICE_PROVIDER={{ vpn_service_provider }}
+            - VPN_TYPE=wireguard
+            - WIREGUARD_PRIVATE_KEY={{ wireguard_private_key }}
+            - WIREGUARD_ADDRESSES={{ wireguard_address }}
+            - SERVER_CITIES=New York NY
+            - DOT_PROVIDERS=quad9
+            - UPDATER_PERIOD=48h
+        ports:
+            - "9845:9117" # Jackett
+            # Qbittorent
+            - "9078:9078"
+            - "7439:6881/tcp"
+            - "7439:6881/udp"
+        volumes:
+            - "{{ gluetun_config_path }}:/gluetun"
+        healthcheck:
+            test: {{ health_check_vpn.test }}
+            interval: {{ health_check_vpn.interval }}
+            retries: {{ health_check_vpn.retries }}
+            start_period: {{ health_check_vpn.start_period }}
+            timeout: {{ health_check_vpn.timeout }}
+
+    # Create Jackett, helps parse stuff of interest
+    jackett:
+        image: lscr.io/linuxserver/jackett:latest
+        restart: unless-stopped
+        container_name: jackett
+        depends_on:
+            - gluetun
+        environment:
+            - TZ={{ time_zone }}
+            - PUID="{{ users[0].PUID }}"
+            - PGID={{ group_return_values.gid }}
+            - AUTO_UPDATE=true
+        network_mode: "{{ unified_network }}"
+        volumes:
+            - "{{ jackett_config_path }}:/config"
+        healthcheck:
+            test: {{ health_check_vpn.test }}
+            interval: {{ health_check_vpn.interval }}
+            retries: {{ health_check_vpn.retries }}
+            start_period: {{ health_check_vpn.start_period }}
+            timeout: {{ health_check_vpn.timeout }}
+    
+    # Actually does the downloading, https://hub.docker.com/r/linuxserver/qbittorrent
+    qbittorrent:
+        image: lscr.io/linuxserver/qbittorrent:latest
+        restart: unless-stopped
+        container_name: qbittorrent
+        depends_on:
+            - gluetun
+        environment:
+            - TZ={{ time_zone }}
+            - WEBUI_PORT=9078
+            - PUID="{{ users[0].PUID }}"
+            - PGID={{ group_return_values.gid }}
+        network_mode: "{{ unified_network }}"
+        volumes:
+            - "{{ qbit_config_path }}:/config"
+            - "{{ media_path_downloads }}:{{ internal_downloads }}"
+        healthcheck:
+            test: {{ health_check_vpn.test }}
+            interval: {{ health_check_vpn.interval }}
+            retries: {{ health_check_vpn.retries }}
+            start_period: {{ health_check_vpn.start_period }}
+            timeout: {{ health_check_vpn.timeout }}
+
+
+
+networks:
+    gluetun_vpn:

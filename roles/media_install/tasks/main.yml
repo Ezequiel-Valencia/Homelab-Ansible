@@ -5,7 +5,7 @@
 - name: Create media group
   become: true
   ansible.builtin.group:
-    name: '911'
+    name: 'media'
     state: present
   register: group_return_values
 
@@ -48,3 +48,12 @@
     #   owner: "{{ users[2].PUID }}"
   loop_control:
     loop_var: folders
+
+- name: Create VPN Resource
+  vars:
+    docker_template_files:
+      - src: vpn.compose.yml
+        dest_name: vpn.compose.yml
+    compose_file: vpn.compose.yml
+    compose_project_name: vpn
+  ansible.builtin.include_tasks: ../../tasks/docker-compose-up.yml
