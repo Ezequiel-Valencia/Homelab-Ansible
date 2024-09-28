@@ -25,12 +25,13 @@
 
   pre_tasks:
     - name: Get facts after SSH set
-      ansible.builtin.include_tasks: ../tasks/gather-facts-ssh.yml
+      ansible.builtin.include_tasks: ../../tasks/gather-facts-ssh.yml
 
     - name: Change Python Env
-      ansible.builtin.include_tasks: ../tasks/change-python-env.yml
+      ansible.builtin.include_tasks: ../../tasks/change-python-env.yml
+
+    - name: Include Media Secrets
+      ansible.builtin.include_vars: ../../inventory/secrets/media.secrets.yml
 
   roles:
     - media_install
-
-

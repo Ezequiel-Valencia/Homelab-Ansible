@@ -1,0 +1,114 @@
+services:
+    gluetun:
+        image: qmcgaw/gluetun:latest
+        restart: unless-stopped
+        container_name: "{{ container_name }}"
+        hostname: gluetun
+        networks:
+            gluetun_vpn:
+        cap_add:
+            - NET_ADMIN
+        environment:
+            - VPN_SERVICE_PROVIDER={{ vpn_service_provider }}
+            - VPN_TYPE=wireguard
+            - WIREGUARD_PRIVATE_KEY={{ wireguard_private_key }}
+            - WIREGUARD_ADDRESSES={{ wireguard_address }}
+            - SERVER_CITIES=New York NY
+            - DOT_PROVIDERS=quad9
+            - UPDATER_PERIOD=48h
+        ports:
+            - "127.0.0.1:9117:9117" # Jackett
+            # Qbittorent
+            - "127.0.0.1:9078:9078"
+            # - "7439:6881/tcp"
+            # - "7439:6881/udp"
+        healthcheck:
+            test: {{ health_check_vpn.test }}
+            interval: {{ health_check_vpn.interval }}
+            retries: {{ health_check_vpn.retries }}
+            start_period: {{ health_check_vpn.start_period }}
+            timeout: {{ health_check_vpn.timeout }}
+
+    # Create Jackett, helps parse stuff of interest
+    jackett:
+        image: lscr.io/linuxserver/jackett:latest
+        restart: unless-stopped
+        container_name: jackett
+        depends_on:
+            - gluetun
+        environment:
+            - TZ={{ time_zone }}
+            - PUID="{{ users[0].PUID }}"
+            - PGID={{ group_return_values.gid }}
+            - AUTO_UPDATE=true
+        network_mode: "{{ unified_network }}"
+        volumes:
+            - "{{ jackett_config_path }}:/config"
+        healthcheck:
+            test: {{ health_check_vpn.test }}
+            interval: {{ health_check_vpn.interval }}
+            retries: {{ health_check_vpn.retries }}
+            start_period: {{ health_check_vpn.start_period }}
+            timeout: {{ health_check_vpn.timeout }}
+    
+    # Actually does the downloading, https://hub.docker.com/r/linuxserver/qbittorrent
+    qbittorrent:
+        image: lscr.io/linuxserver/qbittorrent:latest
+        restart: unless-stopped
+        container_name: qbittorrent
+        depends_on:
+            - gluetun
+        environment:
+            - TZ={{ time_zone }}
+            - WEBUI_PORT=9078
+            - PUID="{{ users[0].PUID }}"
+            - PGID={{ group_return_values.gid }}
+        network_mode: "{{ unified_network }}"
+        volumes:
+            - "{{ qbit_config_path }}:/config"
+            - "{{ media_path_downloads }}:{{ internal_downloads }}"
+        healthcheck:
+            test: {{ health_check_vpn.test }}
+            interval: {{ health_check_vpn.interval }}
+            retries: {{ health_check_vpn.retries }}
+            start_period: {{ health_check_vpn.start_period }}
+            timeout: {{ health_check_vpn.timeout }}
+
+    traefik:
+        image: traefik:3.0
+        container_name: traefik
+        restart: unless-stopped
+        user: {{ traefik_local_user }}
+        security_opt:
+            - no-new-privileges:true
+        networks:
+            - proxy
+            - gluetun_vpn
+        ports:
+            - 80:80
+            - 443:443
+        environment:
+            - CF_DNS_API_TOKEN={{ cert_token }}
+        volumes:
+            - /etc/localtime:/etc/localtime:ro
+            - /var/run/docker.sock:/var/run/docker.sock:ro
+            - {{ defualt_relative_docker_data_path }}/traefik/traefik.yml:/traefik.yml:ro
+            - {{ defualt_relative_docker_data_path }}/traefik/acme.json:/acme.json
+            - {{ defualt_relative_docker_data_path }}/traefik/config.yml:/config.yml:ro
+        labels:
+            - "traefik.enable=true"
+            - "traefik.http.routers.traefik.entrypoints=http"
+            - "traefik.http.middlewares.traefik-https-redirect.redirectscheme.scheme=https"
+            - "traefik.http.middlewares.sslheader.headers.customrequestheaders.X-Forwarded-Proto=https"
+            - "traefik.http.routers.traefik.middlewares=traefik-https-redirect"
+            - "traefik.http.routers.traefik-secure.entrypoints=https"
+            - "traefik.http.routers.traefik-secure.tls=true"
+            - "traefik.http.routers.traefik-secure.tls.certresolver=cloudflareResolver"
+            - "traefik.http.routers.traefik-secure.tls.domains[0].main=homelab.ezequielvalencia.com"
+            - "traefik.http.routers.traefik-secure.tls.domains[0].sans=*.homelab.ezequielvalencia.com"
+            - "traefik.http.routers.traefik-secure.service=api@internal"
+
+
+networks:
+    proxy:
+    gluetun_vpn:

@@ -1,5 +1,16 @@
 ---
 
+qbit_config_path: "{{ defualt_relative_docker_data_path }}/Config/qbittorent"
+jackett_config_path: "{{ defualt_relative_docker_data_path }}/Config/jackett"
+
+# Needed since applications communicate giving paths within their own systems since
+# they believe they are communicating in the same machine
+internal_downloads: "/media/downloads"
+
+
+container_name: gluetun
+
+unified_network: "service:{{ container_name }}"
 where_to_mount_storage_device: /mnt/overlay2
 mounted_path: "{{ where_to_mount_storage_device }}{{ defualt_relative_docker_data_path }}"
 
@@ -24,3 +35,19 @@ users:
   - name: jellyfin
     PUID: 1016
 
+
+# Either it matches exactly the VPN region or exits with status 1
+health_check_vpn:
+  test: 'curl -s --fail https://ipinfo.io/region | grep -qxo "New York" || exit 1'
+  interval: 240s
+  retries: 2
+  start_period: 60s
+  timeout: 10s
+
+
+traefik_files:
+  - traefik.yml
+  - config.yml
+
+
+traefik_local_user: root
