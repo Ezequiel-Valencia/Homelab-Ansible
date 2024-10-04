@@ -2,6 +2,8 @@
 - name: Attempt Update
   block:
     - name: "Starting Update"
+      vars:
+        allow_automatic_reboot: "{{ allow_automatic_reboot_value | default(true) }}"
       ansible.builtin.include_tasks: update.yml
       register: task_info
 
