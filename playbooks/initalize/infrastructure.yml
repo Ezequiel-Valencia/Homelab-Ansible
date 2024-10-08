@@ -12,16 +12,12 @@
 
     - name: Change Python Env
       ansible.builtin.include_tasks: ../tasks/change-python-env.yml
-  
+
   roles:
     - debian-system-startup
 
-- hosts: Pihole
-  roles:
-    - DNS_install
-
-- hosts: Traefik
+- name: Install Infrastructure Services
+  hosts: Pihole
   roles:
     - traefik
-    - SSO
     - dashy_install

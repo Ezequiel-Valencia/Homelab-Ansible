@@ -1,4 +1,0 @@
-
-authelia_volume_folder: '{{ defualt_relative_docker_data_path }}/authelia'
-
-authelia_internal_alias: authelia

@@ -4,3 +4,16 @@ traefik_files:
 
 
 traefik_local_user: root
+
+
+
+authelia_volume_folder: '{{ defualt_relative_docker_data_path }}/authelia'
+
+authelia_internal_alias: authelia
+
+
+etc_resolv_path: "/etc/resolv.conf"
+etc_resolv_src: "/run/systemd/resolve/resolv.conf"
+
+netplan_dir: "/etc/netplan"
+
