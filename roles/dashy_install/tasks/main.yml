@@ -1,8 +1,0 @@
-- name: Create Dashy Resource
-  vars:
-    docker_template_files:
-      - src: dashy.compose.j2
-        dest_name: dashy.compose
-    compose_file: dashy.compose
-    compose_project_name: dashy
-  ansible.builtin.include_tasks: ../tasks/docker-compose-up.yml

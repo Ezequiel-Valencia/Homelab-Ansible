@@ -9,6 +9,7 @@ services:
       - no-new-privileges:true
     networks:
       - proxy
+      - dashy
     ports:
       - 80:80
       - 443:443
@@ -48,7 +49,6 @@ services:
       ports:
           - "53:53/tcp"
           - "53:53/udp"
-          - "5790:80/tcp"
       environment:
           - TZ={{ time_zone }}
           - WEBTHEME=default-dark
@@ -80,6 +80,18 @@ services:
     restart: unless-stopped
     environment:
       - TZ={{ time_zone }}
+  
+  dashy:
+    image: lissy93/dashy:3.1.0
+    restart: always
+    container_name: dashy
+    dns:
+      - 10.0.0.6
+    volumes:
+    - "{{ defualt_relative_docker_data_path }}/dashy:/app/user-data"
+    networks:
+      - dashy
 
 networks:
   proxy:
+  dashy:
