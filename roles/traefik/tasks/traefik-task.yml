@@ -40,7 +40,7 @@
 - name: Create Traefik Resource
   vars:
     docker_template_files:
-      - src: traefik-compose.yml.j2
+      - src: traefik.compose.yml
         dest_name: traefik.compose
     compose_file: traefik.compose
     compose_project_name: traefik

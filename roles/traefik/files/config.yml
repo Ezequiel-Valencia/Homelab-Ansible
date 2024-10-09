@@ -18,7 +18,6 @@ http:
         - "https"
       rule: "Host(`pcprox.homelab.ezequielvalencia.com`)"
       middlewares:
-        - authelia
         - default-headers
         - https-redirectscheme
       tls: {}
@@ -28,7 +27,6 @@ http:
         - "https"
       rule: "Host(`zpcprox.homelab.ezequielvalencia.com`)"
       middlewares:
-        - authelia
         - default-headers
         - https-redirectscheme
       tls: {}
@@ -40,7 +38,6 @@ http:
         - "https"
       rule: "Host(`pihole.homelab.ezequielvalencia.com`)"
       middlewares:
-        - authelia
         - redirectregex-pihole
         - default-headers
         - addprefix-pihole
@@ -94,7 +91,7 @@ http:
     pihole:
       loadBalancer:
         servers:
-          - url: "http://10.0.0.6:5790"
+          - url: "http://pihole:80"
         passHostHeader: true
     truenas:
       loadBalancer:
@@ -106,7 +103,7 @@ http:
     dashy:
       loadBalancer:
         servers:
-          - url: "http://10.0.0.8:8080"
+          - url: "http://dashy:8080"
         passHostHeader: true
 
 #endregion
