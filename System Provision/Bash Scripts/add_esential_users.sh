@@ -8,6 +8,7 @@
     # a). Generate keys for the server "ssh-keygen -f ~/.ssh/tatu-key-ecdsa -t ed25519"
     # b). Copy over ssh keys "ssh-copy-id -i ~/.ssh/tatu-key-ecdsa user@host"
         # i). If can not copy ssh, look into /etc/ssh/sshd_config file and turn on password authentication
+        # ii). ssh-copy-id -o PubkeyAuthentication=no -p 5320 -i ~/.ssh/homelab zeke@10.0.0.8
 # 3). Execute ansible script
     # a). Install sudo if the machine doesn't already have it
 # 4). If the system already had previous users then remove them with "userdel -r username"
