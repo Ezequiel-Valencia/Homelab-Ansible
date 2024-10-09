@@ -9,7 +9,6 @@ services:
       - no-new-privileges:true
     networks:
       - proxy
-      - dashy
     ports:
       - 80:80
       - 443:443
@@ -80,18 +79,11 @@ services:
     restart: unless-stopped
     environment:
       - TZ={{ time_zone }}
-  
-  dashy:
-    image: lissy93/dashy:3.1.0
-    restart: always
-    container_name: dashy
-    dns:
-      - 10.0.0.6
-    volumes:
-    - "{{ defualt_relative_docker_data_path }}/dashy:/app/user-data"
-    networks:
-      - dashy
 
 networks:
   proxy:
-  dashy:
+
+
+# https://www.baeldung.com/ops/docker-assign-static-ip-container
+# https://stackoverflow.com/questions/47187879/docker-compose-use-other-container-as-dns
+# https://forums.docker.com/t/using-container-as-dns-server-for-another-compose-app/144166
