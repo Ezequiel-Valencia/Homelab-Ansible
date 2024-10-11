@@ -38,6 +38,52 @@ services:
       - "traefik.http.routers.traefik-secure.tls.domains[0].main=homelab.ezequielvalencia.com"
       - "traefik.http.routers.traefik-secure.tls.domains[0].sans=*.homelab.ezequielvalencia.com"
       - "traefik.http.routers.traefik-secure.service=api@internal"
+    
+  pihole:
+      image: pihole/pihole:latest
+      restart: always
+      container_name: pihole
+      networks:
+        - proxy
+      ports:
+          - "53:53/tcp"
+          - "53:53/udp"
+      environment:
+          - TZ={{ time_zone }}
+          - WEBTHEME=default-dark
+          - PIHOLE_DNS_=9.9.9.9;1.1.1.1
+          - DNSSEC="true"
+      volumes:
+          - "{{ defualt_relative_docker_data_path }}/pihole:/etc/pihole"
+          - "{{ defualt_relative_docker_data_path }}/pihole-dnsmasq.d:/etc/dnsmasq.d"
+  
+  authelia:
+    image: authelia/authelia
+    container_name: authelia
+    volumes:
+      - {{ authelia_volume_folder }}:/config
+    networks:
+      proxy:
+        aliases:
+          - authelia
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.authelia.rule=Host(`auth.homelab.ezequielvalencia.com`)'
+      - 'traefik.http.routers.authelia.entrypoints=https'
+      - 'traefik.http.routers.authelia.tls=true'
+      - 'traefik.http.middlewares.authelia.forwardauth.address=http://authelia:9091/api/verify?rd=https://auth.homelab.ezequielvalencia.com' # Docker automatic resolve of authelia name to internal IP
+      - 'traefik.http.middlewares.authelia.forwardauth.trustForwardHeader=true'
+      - 'traefik.http.middlewares.authelia.forwardauth.authResponseHeaders=Remote-User,Remote-Groups,Remote-Name,Remote-Email'
+    # ports:
+    #   - 127.0.0.1:9091:9091
+    restart: unless-stopped
+    environment:
+      - TZ={{ time_zone }}
 
 networks:
   proxy:
+
+
+# https://www.baeldung.com/ops/docker-assign-static-ip-container
+# https://stackoverflow.com/questions/47187879/docker-compose-use-other-container-as-dns
+# https://forums.docker.com/t/using-container-as-dns-server-for-another-compose-app/144166

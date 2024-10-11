@@ -1,7 +1,8 @@
-- name: Create Dashy Resource
+---
+- name: Create Traefik Resource
   vars:
     docker_template_files:
-      - src: dashy.compose.j2
+      - src: dashy.compose.yml
         dest_name: dashy.compose
     compose_file: dashy.compose
     compose_project_name: dashy

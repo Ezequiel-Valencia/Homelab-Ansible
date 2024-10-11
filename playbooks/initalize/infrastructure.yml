@@ -8,20 +8,25 @@
 
   pre_tasks:
     - name: Get facts after SSH set
-      ansible.builtin.include_tasks: ../tasks/gather-facts-ssh.yml
+      ansible.builtin.include_tasks: ../../tasks/gather-facts-ssh.yml
 
     - name: Change Python Env
-      ansible.builtin.include_tasks: ../tasks/change-python-env.yml
-  
+      ansible.builtin.include_tasks: ../../tasks/change-python-env.yml
+
   roles:
     - debian-system-startup
 
-- hosts: Pihole
+- name: Install Dashy
+  hosts: Dashy
   roles:
-    - DNS_install
+    - dashy
 
-- hosts: Traefik
+- name: Install Infrastructure Services
+  hosts: Pihole
+
+  pre_tasks:
+    - name: Include Infrastructure Secrets
+      ansible.builtin.include_vars: ../../inventory/secrets/traefik.secrets.yml
+
   roles:
     - traefik
-    - SSO
-    - dashy_install

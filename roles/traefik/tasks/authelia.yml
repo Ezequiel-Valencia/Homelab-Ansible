@@ -11,22 +11,12 @@
   become: true
   ansible.builtin.template:
     mode: u=rw,g=r
-    src: config.yml.j2
+    src: authelia-config.j2
     dest: '{{ authelia_volume_folder }}/configuration.yml'
 
-- name: Copy traefik config files
+- name: Copy Authelia User DB
   become: true
   ansible.builtin.copy:
     mode: u=rw,g=r,o=
     src: "users_database.yml"
     dest: "{{ authelia_volume_folder }}/users_database.yml"
-
-- name: Create PiHole Resource
-  become: true
-  vars:
-    docker_template_files:
-      - src: authelia.compose.j2
-        dest_name: ~/authelia.compose
-    compose_file: authelia.compose
-    compose_project_name: authelia
-  ansible.builtin.include_tasks: ../tasks/docker-compose-up.yml
