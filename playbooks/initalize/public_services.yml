@@ -13,10 +13,10 @@
     - name: Change Python Env
       ansible.builtin.include_tasks: ../../tasks/change-python-env.yml
 
-  # roles:
-  #   - debian-system-startup
+  roles:
+    - setup/debian-system-startup
 
 - name: Init Public Services
   hosts: public
   roles:
-    - public-services
+    - installations/public-services

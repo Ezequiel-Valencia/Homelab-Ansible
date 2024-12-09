@@ -15,12 +15,12 @@
       ansible.builtin.include_tasks: ../../tasks/change-python-env.yml
 
   roles:
-    - debian-system-startup
+    - setup/debian-system-startup
 
 - name: Install Dashy
   hosts: Dashy
   roles:
-    - dashy
+    - installations/dashy
 
 - name: Install Infrastructure Services
   hosts: Pihole
@@ -30,4 +30,4 @@
       ansible.builtin.include_vars: ../../inventory/secrets/traefik.secrets.yml
 
   roles:
-    - traefik
+    - installations/traefik

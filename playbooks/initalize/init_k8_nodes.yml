@@ -15,7 +15,7 @@
       ansible.builtin.include_tasks: ../../tasks/change-python-env.yml
 
   roles:
-    - debian-system-startup
+    - setup/debian-system-startup
 
 - name: Init Media Node for K8
   hosts: media
@@ -35,4 +35,4 @@
       ansible.builtin.include_vars: ../../inventory/secrets/media.secrets.yml
 
   roles:
-    - media_install
+    - installations/media_install

@@ -15,10 +15,10 @@
       ansible.builtin.include_tasks: ../../tasks/change-python-env.yml
 
   roles:
-    - debian-system-startup
+    - setup/debian-system-startup
 
 # For now manually input adc.json and cache.db
 - name: Init Bots
   hosts: bots
   roles:
-    - bots
+    - setup/bots
