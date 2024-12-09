@@ -5,6 +5,7 @@
   vars:
     other_port: true
     alt_ssh_port: 5320
+    is_qemu_guest: true
 
   pre_tasks:
     - name: Get facts after SSH set

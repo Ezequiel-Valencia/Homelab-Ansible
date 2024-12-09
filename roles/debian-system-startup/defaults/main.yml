@@ -3,4 +3,4 @@
 packages:
   - vim
 
-isQEMUGuest: false
+is_qemu_guest: false

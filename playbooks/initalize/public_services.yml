@@ -8,14 +8,15 @@
 
   pre_tasks:
     - name: Get facts after SSH set
-      ansible.builtin.include_tasks: ../tasks/gather-facts-ssh.yml
+      ansible.builtin.include_tasks: ../../tasks/gather-facts-ssh.yml
 
     - name: Change Python Env
-      ansible.builtin.include_tasks: ../tasks/change-python-env.yml
+      ansible.builtin.include_tasks: ../../tasks/change-python-env.yml
 
   # roles:
   #   - debian-system-startup
 
-- hosts: public
+- name: Init Public Services
+  hosts: public
   roles:
     - public-services

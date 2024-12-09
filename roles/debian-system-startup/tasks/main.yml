@@ -34,7 +34,7 @@
   ansible.builtin.apt:
     pkg: qemu-guest-agent
     state: present
-  when: isQEMUGuest
+  when: is_qemu_guest
 
 - name: Install PythonVenv
   become: true
@@ -74,12 +74,20 @@
       become: true
 
 
-## If Ubuntu its ssh not sshd
-- name: Restart sshd
+- name: Restart sshd for Debian
   become: true
   ansible.builtin.service:
     name: sshd
     state: restarted
+  when: ansible_facts['distribution'] == "Debian"
+
+## If Ubuntu its ssh not sshd
+- name: Restart ssh for Ubuntu
+  become: true
+  ansible.builtin.service:
+    name: ssh
+    state: restarted
+  when: ansible_facts['distribution'] == "Ubuntu"
 
 - name: Ensure the configured SSH port is used for remainder of role
   ansible.builtin.set_fact:
