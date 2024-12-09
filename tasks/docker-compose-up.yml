@@ -11,6 +11,7 @@
     loop_var: docks
 
 - name: Create Resources
+  become: true
   community.docker.docker_compose_v2:
     project_name: '{{ compose_project_name }}'
     project_src: "{{ defualt_relative_docker_data_path }}/"
