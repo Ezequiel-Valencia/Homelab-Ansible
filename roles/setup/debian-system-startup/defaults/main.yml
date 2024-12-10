@@ -1,6 +1,8 @@
 ---
 
-packages:
+setup_packages:
   - vim
 
 is_qemu_guest: false
+
+longhorn_node: false
