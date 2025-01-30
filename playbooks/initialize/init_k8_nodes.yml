@@ -1,0 +1,63 @@
+---
+- name: Init Control VM for K8
+  hosts: master
+  gather_facts: false
+  vars:
+    other_port: true
+    alt_ssh_port: 5320
+    is_qemu_guest: true
+
+  pre_tasks:
+    - name: Get facts after SSH set
+      ansible.builtin.include_tasks: ../../tasks/gather-facts-ssh.yml
+
+    - name: Change Python Env
+      ansible.builtin.include_tasks: ../../tasks/change-python-env.yml
+
+  roles:
+    - setup/debian-system-startup
+
+- name: Init VM Nodes for K8
+  hosts: node
+  gather_facts: false
+  vars:
+    other_port: true
+    alt_ssh_port: 5320
+    is_qemu_guest: true
+    longhorn_node: true
+    setup_packages:
+      - vim
+      - nfs-common
+      - open-iscsi
+      - cryptsetup
+      - htop
+
+  pre_tasks:
+    - name: Get facts after SSH set
+      ansible.builtin.include_tasks: ../../tasks/gather-facts-ssh.yml
+
+    - name: Change Python Env
+      ansible.builtin.include_tasks: ../../tasks/change-python-env.yml
+
+  roles:
+    - setup/debian-system-startup
+
+- name: Init Media Node for K8
+  hosts: media
+  gather_facts: false
+  vars:
+    other_port: true
+    alt_ssh_port: 5320
+
+  pre_tasks:
+    - name: Get facts after SSH set
+      ansible.builtin.include_tasks: ../../tasks/gather-facts-ssh.yml
+
+    - name: Change Python Env
+      ansible.builtin.include_tasks: ../../tasks/change-python-env.yml
+
+    - name: Include Media Secrets
+      ansible.builtin.include_vars: ../../inventory/secrets/media.secrets.yml
+
+  roles:
+    - installations/media_install

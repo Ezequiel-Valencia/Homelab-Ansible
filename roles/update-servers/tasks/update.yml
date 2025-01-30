@@ -25,29 +25,29 @@
 
 ################ If Automatic Reboot is Allowed #####################
 
-- name: Starting Reboot
-  vars:
-    slack_color: "#fff305"
-    slack_title: "{{ inventory_hostname }} Will Begin Rebooting"
-    slack_text: ""
-    slack_priority: "Low"
-  ansible.builtin.include_tasks: send-slack-message.yml
-  when: reboot_required.stat.exists and allow_automatic_reboot
+# - name: Starting Reboot
+#   vars:
+#     slack_color: "#fff305"
+#     slack_title: "{{ inventory_hostname }} Will Begin Rebooting"
+#     slack_text: ""
+#     slack_priority: "Low"
+#   ansible.builtin.include_tasks: send-slack-message.yml
+#   when: reboot_required.stat.exists and allow_automatic_reboot
 
-- name: Reboot machine
-  become: true
-  ansible.builtin.reboot:
-    reboot_timeout: 3600
-  when: reboot_required.stat.exists and allow_automatic_reboot
+# - name: Reboot machine
+#   become: true
+#   ansible.builtin.reboot:
+#     reboot_timeout: 3600
+#   when: reboot_required.stat.exists and allow_automatic_reboot
 
-- name: Finished Reboot
-  vars:
-    slack_color: "#0505ff"
-    slack_title: "{{ inventory_hostname }} Finished Rebooting"
-    slack_text: ""
-    slack_priority: "Low"
-  ansible.builtin.include_tasks: send-slack-message.yml
-  when: reboot_required.stat.exists and allow_automatic_reboot
+# - name: Finished Reboot
+#   vars:
+#     slack_color: "#0505ff"
+#     slack_title: "{{ inventory_hostname }} Finished Rebooting"
+#     slack_text: ""
+#     slack_priority: "Low"
+#   ansible.builtin.include_tasks: send-slack-message.yml
+#   when: reboot_required.stat.exists and allow_automatic_reboot
 
 ########################################################################
 
@@ -61,4 +61,5 @@
     slack_text: ""
     slack_priority: "Medium"
   ansible.builtin.include_tasks: send-slack-message.yml
-  when: reboot_required.stat.exists and not allow_automatic_reboot
+  when: reboot_required.stat.exists
+  # when: reboot_required.stat.exists and not allow_automatic_reboot

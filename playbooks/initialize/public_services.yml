@@ -1,0 +1,22 @@
+---
+- name: Init Media Servers
+  hosts: public_services
+  gather_facts: false
+  vars:
+    other_port: true
+    alt_ssh_port: 8024
+
+  pre_tasks:
+    - name: Get facts after SSH set
+      ansible.builtin.include_tasks: ../../tasks/gather-facts-ssh.yml
+
+    - name: Change Python Env
+      ansible.builtin.include_tasks: ../../tasks/change-python-env.yml
+
+  roles:
+    - setup/debian-system-startup
+
+- name: Init Public Services
+  hosts: public
+  roles:
+    - installations/public-services

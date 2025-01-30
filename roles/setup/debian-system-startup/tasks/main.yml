@@ -23,18 +23,21 @@
     autoclean: true
     autoremove: true
 
-- name: Install Vim
+- name: Install Setup Packages
   become: true
   ansible.builtin.apt:
-    pkg: vim
+    pkg: '{{ pkg }}'
     state: present
+  loop: '{{ setup_packages }}'
+  loop_control:
+    loop_var: pkg
 
 - name: Install QEMU Guest Agent
   become: true
   ansible.builtin.apt:
     pkg: qemu-guest-agent
     state: present
-  when: isQEMUGuest
+  when: is_qemu_guest
 
 - name: Install PythonVenv
   become: true
@@ -74,12 +77,20 @@
       become: true
 
 
-## If Ubuntu its ssh not sshd
-- name: Restart sshd
+- name: Restart sshd for Debian
   become: true
   ansible.builtin.service:
     name: sshd
     state: restarted
+  when: ansible_facts['distribution'] == "Debian"
+
+## If Ubuntu its ssh not sshd
+- name: Restart ssh for Ubuntu
+  become: true
+  ansible.builtin.service:
+    name: ssh
+    state: restarted
+  when: ansible_facts['distribution'] == "Ubuntu"
 
 - name: Ensure the configured SSH port is used for remainder of role
   ansible.builtin.set_fact:
@@ -96,3 +107,46 @@
   ansible.builtin.hostname:
     name: "{{ inventory_hostname }}"
     use: debian
+
+
+###################
+# K8 Specific     #
+###################
+
+- name: Enable ISCSI Kernel Module
+  become: true
+  community.general.modprobe:
+    name: iscsi_tcp
+    state: present
+  when: longhorn_node
+
+# https://longhorn.io/kb/troubleshooting-volume-with-multipath/
+- name: Check if Multipath Conf File Exists
+  become: true
+  ansible.builtin.stat:
+    path: "/etc/multipath.conf"
+  register: setup_multipath_conf_stat
+
+- name: Copy Blacklist Conf Longhorn from Multipath
+  become: true
+  ansible.builtin.copy:
+    mode: u=rw,g=r,o=r
+    src: multipath.conf
+    dest: /etc/multipath.conf
+    force: false
+  when: ansible_facts['distribution'] == "Ubuntu" and longhorn_node and not setup_multipath_conf_stat.stat.exists
+  notify:
+    - Restart Multipath Service
+
+- name: Append to Multipath Conf Longhorn Blacklist
+  become: true
+  ansible.builtin.blockinfile:
+    state: present
+    dest: /etc/multipath.conf
+    mode: u=rw,g=r,o=r
+    prepend_newline: true
+    backup: true
+    block: "{{ lookup('file', '../files/multipath.conf') }}"
+  when: ansible_facts['distribution'] == "Ubuntu" and longhorn_node and setup_multipath_conf_stat.stat.exists
+  notify:
+    - Restart Multipath Service
