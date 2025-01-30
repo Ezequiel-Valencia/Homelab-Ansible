@@ -30,6 +30,7 @@
       - nfs-common
       - open-iscsi
       - cryptsetup
+      - htop
 
   pre_tasks:
     - name: Get facts after SSH set
