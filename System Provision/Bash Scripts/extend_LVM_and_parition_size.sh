@@ -38,7 +38,7 @@ if [ $(id -u) -eq 0 ]; then
 
     CHOSEN_DISK=0
     printf "${MAGENTA}============\nInput Disk Where Resizing Parition Is (Usually /dev/sda): ${NORMAL}" && read CHOSEN_DISK
-    printf "${RED}If the parition being resized is not at the end of the disk be quit script and read the Proxmox wiki\n${Normal}"
+    printf "${RED}If the parition being resized is not at the end of the disk, quit this script and check other scripts for help\n${Normal}"
     printf "${CYAN}(Hint: Choose the type logical end partitian usually. Use 'print' to discover, 'resizepart # 100 (percent sign)' for full resize first with usually 2 then 5, and 'quit' to exit.)\n============\n${NORMAL}"
     parted $CHOSEN_DISK
 
