@@ -1,10 +1,3 @@
-- name: Ensure disk usage is under 85 percent
-  ansible.builtin.debug:
-    msg: "Disk usage for {{ item.mount }} is {{ (item.size_available / item.size_total) * 100 }}%"
-  when: item.mount == "/" and (item.size_available / item.size_total) > 0.85
-  failed_when: item.mount == "/" and (item.size_available / item.size_total) > 0.85
-  loop: "{{ ansible_facts['mounts'] }}"
-
 - name: Update packages
   become: true
   ansible.builtin.apt:
