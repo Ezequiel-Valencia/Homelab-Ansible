@@ -35,13 +35,28 @@ variable "max_storage_gb" {
 variable "iam_user_name" {
   description = "IAM user who will get access to the S3 bucket"
   type        = string
-  default = "ezequiel"
+  default = "longhorn"
 }
+
+#######################
+## Resource Creation ##
+#######################
 
 
 resource "aws_s3_bucket" "create-cold-storage-bucket" {
   bucket = var.bucket_name
 }
+
+# Set Ownership Controls (Allow ACLs) 
+resource "aws_s3_bucket_ownership_controls" "ownership" {
+  bucket = aws_s3_bucket.create-cold-storage-bucket.id
+
+  rule {
+    object_ownership = "ObjectWriter" # Allows ACLs to be used, https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_ownership_controls
+  }
+}
+
+# Enable ACL, https://docs.aws.amazon.com/AmazonS3/latest/userguide/acl-overview.html#canned-acl
 
 # Create an IAM policy for S3 bucket access
 resource "aws_iam_policy" "s3-hl-cold-storage-policy" {
