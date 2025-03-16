@@ -4,3 +4,4 @@ stack.env
 .venv
 
 helm-resource.yml
+.terraform
