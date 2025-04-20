@@ -41,3 +41,11 @@ import {
   id = "alienware/600"
   to = proxmox_virtual_environment_vm.media
 }
+
+
+#! PC !#
+import {
+  id = "PC/201"
+  to = proxmox_virtual_environment_vm.true_nas
+}
+
