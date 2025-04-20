@@ -24,3 +24,20 @@ import {
   id = "zpc/500"
   to = proxmox_virtual_environment_vm.longhorn
 }
+
+
+#! Alienware !#
+import {
+  id = "alienware/203"
+  to = proxmox_virtual_environment_vm.bots
+}
+
+import {
+  id = "alienware/304"
+  to = proxmox_virtual_environment_vm.k3s_control
+}
+
+import {
+  id = "alienware/600"
+  to = proxmox_virtual_environment_vm.media
+}
