@@ -244,7 +244,7 @@ resource "proxmox_virtual_environment_vm" "monitor" {
     
 
     cpu {
-        cores      = 2
+        cores      = 3
         flags      = [] 
         hotplugged = 0
         limit      = 0
@@ -270,7 +270,7 @@ resource "proxmox_virtual_environment_vm" "monitor" {
     }
 
     memory {
-        dedicated      = 8192
+        dedicated      = 10240
         floating       = 0
         keep_hugepages = false
         shared         = 0
