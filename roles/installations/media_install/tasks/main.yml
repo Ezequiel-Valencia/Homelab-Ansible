@@ -2,7 +2,7 @@
 - name: Setup laptop partition
   ansible.builtin.include_tasks: setup_partition.yml
 
-- name: Setup laptop partition
+- name: Traefik Setup
   ansible.builtin.include_tasks: traefik-setup.yml
 
 - name: Create media group
