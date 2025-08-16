@@ -1,6 +1,6 @@
-api:
-  dashboard: false
-  debug: false
+# api:
+#   dashboard: false
+#   debug: false
 log:
   level: INFO
 entryPoints:
