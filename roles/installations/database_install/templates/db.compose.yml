@@ -14,6 +14,11 @@ services:
         #     - "127.0.0.1:9999:80"
         volumes:
             - "{{ defualt_relative_docker_data_path }}/pgadmin:/var/lib/pgadmin"
+            -   type: volume
+                source: backup
+                target: /var/lib/pgadmin/storage/ezq.valencia_gmail.com/backup
+                volume:
+                    nocopy: true
     postgres:
         image: postgres:17
         restart: unless-stopped
@@ -80,3 +85,10 @@ services:
 
 networks:
     database_network:
+
+volumes:
+    backup:
+        driver_opts:
+            type: "nfs"
+            o: "addr=10.0.0.146,rw,hard,intr"
+            device: ":/volume1/ClusterDB"

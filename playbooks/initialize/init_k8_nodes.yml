@@ -58,6 +58,8 @@
 
     - name: Include Media Secrets
       ansible.builtin.include_vars: ../../inventory/secrets/media.secrets.yml
+    - name: Include Traefik Secrets
+      ansible.builtin.include_vars: ../../inventory/secrets/traefik.secrets.yml
 
   roles:
     - installations/media_install
