@@ -1,23 +1,3 @@
-terraform {
-  required_providers {
-    aws = {
-      source  = "hashicorp/aws"
-      version = "~> 5.46.0"
-    }
-  }
-  backend "remote" {
-    hostname = "app.terraform.io"
-    organization = "ezequiel-hl"
-    workspaces {
-      name = "s3-cold-storage"
-    }
-  }
-}
-
-provider "aws" {
-  region = "us-east-1"
-}
-
 variable "bucket_name" {
   description = "Name of the S3 bucket"
   type        = string
@@ -32,7 +12,7 @@ variable "max_storage_gb" {
 }
 
 
-variable "iam_user_name" {
+variable "longhorn_user" {
   description = "IAM user who will get access to the S3 bucket"
   type        = string
   default = "longhorn"
@@ -81,7 +61,7 @@ resource "aws_iam_policy" "s3-hl-cold-storage-policy" {
 # Attach the policy to the IAM user
 resource "aws_iam_user_policy_attachment" "attach_policy" {
   depends_on = [ aws_iam_policy.s3-hl-cold-storage-policy ]
-  user       = var.iam_user_name
+  user       = var.longhorn_user
   policy_arn = aws_iam_policy.s3-hl-cold-storage-policy.arn
 }
 
