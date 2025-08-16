@@ -77,3 +77,41 @@ resource "cloudflare_zero_trust_access_application" "library-jellyfin" {
   tags = ["homelab", "media"] # Need to create tags manually beforehand 
 }
 
+
+
+resource "cloudflare_zero_trust_access_application" "open-web" {
+  depends_on = [ cloudflare_zero_trust_access_policy.only_us_ips ]
+  domain = "open-web.tunnel.homelab.ezequielvalencia.com"
+  type = "self_hosted"
+  account_id = var.account_id
+
+  enable_binding_cookie = true # Mitigation against CSRF, https://developers.cloudflare.com/cloudflare-one/identity/authorization-cookie/
+  http_only_cookie_attribute = true
+  name = "OpenWeb UI"
+  policies = [ {
+    id = cloudflare_zero_trust_access_policy.bypass_cloudflare_login.id
+  } ]
+
+  session_duration = "24h"
+  skip_interstitial = true
+  tags = ["homelab", "public apps"] # Need to create tags manually beforehand 
+}
+
+resource "cloudflare_zero_trust_access_application" "n8n" {
+  depends_on = [ cloudflare_zero_trust_access_policy.only_us_ips ]
+  domain = "n8n.tunnel.homelab.ezequielvalencia.com"
+  type = "self_hosted"
+  account_id = var.account_id
+
+  enable_binding_cookie = true # Mitigation against CSRF, https://developers.cloudflare.com/cloudflare-one/identity/authorization-cookie/
+  http_only_cookie_attribute = true
+  name = "N8N"
+  policies = [ {
+    id = cloudflare_zero_trust_access_policy.bypass_cloudflare_login.id
+  } ]
+
+  session_duration = "24h"
+  skip_interstitial = true
+  tags = ["homelab", "public apps"] # Need to create tags manually beforehand 
+}
+
