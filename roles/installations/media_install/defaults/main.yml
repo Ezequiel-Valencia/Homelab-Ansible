@@ -11,19 +11,18 @@ internal_downloads: "/media/downloads"
 container_name: gluetun
 
 unified_network: "service:{{ container_name }}"
-where_to_mount_storage_device: /mnt/overlay2
-mounted_path: "{{ where_to_mount_storage_device }}{{ defualt_relative_docker_data_path }}"
+where_to_mount_storage_device: /mnt/k8data/media
 
 
 parition_number: 1
 new_partition: /dev/sdb{{ parition_number }} # !!! DANGEROUS CONSTANT !!! # dont want name conflictions
 file_system_type: ext4
 
-media_path_tv: "{{ mounted_path }}/media/tv"
-media_path_movies: "{{ mounted_path }}/media/movies"
-media_path_books: "{{ mounted_path }}/media/books"
-media_path_music: "{{ mounted_path }}/media/music"
-media_path_downloads: "{{ mounted_path }}/media/downloads"
+media_path_tv: "{{ where_to_mount_storage_device }}/tv"
+media_path_movies: "{{ where_to_mount_storage_device }}/movies"
+media_path_books: "{{ where_to_mount_storage_device }}/books"
+media_path_music: "{{ where_to_mount_storage_device }}/music"
+media_path_downloads: "{{ where_to_mount_storage_device }}/downloads"
 
 users:
   - name: servarr
