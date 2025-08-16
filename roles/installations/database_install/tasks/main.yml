@@ -1,0 +1,16 @@
+---
+
+- name: Traefik Setup
+  ansible.builtin.include_tasks: traefik-setup.yml
+
+- name: Traefik Setup
+  ansible.builtin.include_tasks: pg-admin.yml
+
+- name: Create DB Resource
+  vars:
+    docker_template_files:
+      - src: db.compose.yml
+        dest_name: db.compose.yml
+    compose_file: db.compose.yml
+    compose_project_name: db
+  ansible.builtin.include_tasks: ../../tasks/docker-compose-up.yml

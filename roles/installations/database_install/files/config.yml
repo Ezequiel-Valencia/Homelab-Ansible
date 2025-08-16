@@ -1,0 +1,106 @@
+http:
+ #region routers 
+  routers:        
+    qdrant:
+      entryPoints:
+        - "https"
+      rule: "Host(`qdrant-ui.database.homelab.ezequielvalencia.com`)"
+      middlewares:
+        - secured
+      tls: {}
+      service: qdrant
+
+    pgadmin:
+      entryPoints:
+        - "https"
+      rule: "Host(`pgadmin.database.homelab.ezequielvalencia.com`)"
+      middlewares:
+        - secured
+      tls: {}
+      service: pgadmin
+
+  services:
+    qdrant:
+      loadBalancer:
+        servers:
+          - url: "http://qdrant:6333"
+    pgadmin:
+      loadBalancer:
+        servers:
+          - url: "http://pgadmin:80"
+
+#endregion
+  middlewares:
+    https-redirectscheme:
+      redirectScheme:
+        scheme: https
+        permanent: true
+
+    default-headers:
+      headers:
+        frameDeny: true
+        browserXssFilter: true
+        contentTypeNosniff: true
+        forceSTSHeader: true
+        stsIncludeSubdomains: true
+        stsPreload: true
+        stsSeconds: 15552000
+        customFrameOptionsValue: SAMEORIGIN
+        customRequestHeaders:
+          X-Forwarded-Proto: https
+
+    default-whitelist:
+      ipAllowList:
+        sourceRange:
+        - "10.0.0.0/8"
+        # - "192.168.0.0/16"
+        # - "172.16.0.0/12"
+
+    secured:
+      chain:
+        middlewares:
+        - default-whitelist
+        - default-headers
+        - https-redirectscheme
+
+tcp:
+  routers:
+    postgres:
+      entryPoints:
+        - pg
+      rule: "HostSNI(`postgres.database.homelab.ezequielvalencia.com`)"
+      middlewares:
+        - default-whitelist
+      service: postgres
+      tls: {}
+
+    qdrant:
+      entryPoints:
+        - qdrant
+      rule: "HostSNI(`qdrant.database.homelab.ezequielvalencia.com`)"
+      middlewares:
+        - default-whitelist
+      service: qdrant
+      tls: {}
+
+  services:
+    # Tools
+    postgres:
+      loadBalancer:
+        servers:
+          - address: "postgres:5432"
+
+    qdrant:
+      loadBalancer:
+        servers:
+          - address: "qdrant:6334"
+  
+  middlewares:
+    default-whitelist:
+      ipAllowList:
+        sourceRange:
+        - "10.0.0.0/8"
+        # - "192.168.0.0/16"
+        # - "172.16.0.0/12"
+
+

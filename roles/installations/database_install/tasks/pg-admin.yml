@@ -1,0 +1,22 @@
+- name: Create pgadmin group
+  become: true
+  ansible.builtin.group:
+    name: 'pgadmin'
+    state: present
+    gid: 5050
+
+- name: Create users for media group
+  become: true
+  ansible.builtin.user:
+    name: pgadmin
+    uid: 5050
+    group: pgadmin
+
+- name: Set ownership of folder to pgadmin
+  become: true
+  ansible.builtin.file:
+    mode: u=rwx,g=rwx,o=
+    path: "{{ defualt_relative_docker_data_path }}/pgadmin"
+    owner: pgadmin
+    group: pgadmin
+    state: directory

@@ -88,7 +88,8 @@ services:
             - 80:80
             - 443:443
         environment:
-            - CF_DNS_API_TOKEN={{ cert_token }}
+            - CF_DNS_API_TOKEN={{ cloudflare_token }}
+            - CF_ZONE_API_TOKEN={{ cloudflare_token }}
         volumes:
             - /etc/localtime:/etc/localtime:ro
             - /var/run/docker.sock:/var/run/docker.sock:ro
