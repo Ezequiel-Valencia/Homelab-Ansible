@@ -1,6 +1,6 @@
 ---
 - name: Setting Up Homelab Infrastructure
-  hosts: infra_server
+  hosts: database
   gather_facts: false
   vars:
     other_port: true
@@ -19,15 +19,55 @@
 
 - name: Install Dashy
   hosts: Dashy
+  gather_facts: false
+  vars:
+    other_port: true
+    alt_ssh_port: 5320
+  pre_tasks:
+    - name: Get facts after SSH set
+      ansible.builtin.include_tasks: ../../tasks/gather-facts-ssh.yml
+
+    - name: Change Python Env
+      ansible.builtin.include_tasks: ../../tasks/change-python-env.yml
   roles:
     - installations/dashy
 
 - name: Install Infrastructure Services
   hosts: Pihole
+  gather_facts: false
+  vars:
+    other_port: true
+    alt_ssh_port: 5320
 
   pre_tasks:
+    - name: Get facts after SSH set
+      ansible.builtin.include_tasks: ../../tasks/gather-facts-ssh.yml
+
+    - name: Change Python Env
+      ansible.builtin.include_tasks: ../../tasks/change-python-env.yml
     - name: Include Infrastructure Secrets
       ansible.builtin.include_vars: ../../inventory/secrets/traefik.secrets.yml
 
   roles:
     - installations/traefik
+
+- name: Install Database
+  hosts: database
+  gather_facts: false
+  vars:
+    other_port: true
+    alt_ssh_port: 5320
+
+  pre_tasks:
+    - name: Get facts after SSH set
+      ansible.builtin.include_tasks: ../../tasks/gather-facts-ssh.yml
+
+    - name: Change Python Env
+      ansible.builtin.include_tasks: ../../tasks/change-python-env.yml
+    - name: Include Infrastructure Secrets
+      ansible.builtin.include_vars: ../../inventory/secrets/traefik.secrets.yml
+    - name: Include DB Secrets
+      ansible.builtin.include_vars: ../../inventory/secrets/db.secrets.yml
+
+  roles:
+    - installations/database_install
