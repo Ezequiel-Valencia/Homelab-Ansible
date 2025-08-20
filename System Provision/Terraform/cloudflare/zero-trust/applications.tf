@@ -26,6 +26,20 @@ resource "cloudflare_zero_trust_access_policy" "bypass_cloudflare_login" {
   isolation_required = false # Does not need special browser
 }
 
+########
+# Tags #
+########
+
+resource "cloudflare_zero_trust_access_tag" "ai_tag" {
+  account_id = var.account_id
+  name = "ai"
+}
+
+resource "cloudflare_zero_trust_access_tag" "tool_tag" {
+  account_id = var.account_id
+  name = "tool"
+}
+
 ##################################################################################
 # In order to skip Cloudflares login pop-up need to apply Bypass Policy Manually #
 ##################################################################################
@@ -94,7 +108,7 @@ resource "cloudflare_zero_trust_access_application" "open-web" {
 
   session_duration = "24h"
   skip_interstitial = true
-  tags = ["homelab", "public apps"] # Need to create tags manually beforehand 
+  tags = ["homelab", "ai"] # Need to create tags manually beforehand 
 }
 
 resource "cloudflare_zero_trust_access_application" "n8n" {
@@ -112,6 +126,42 @@ resource "cloudflare_zero_trust_access_application" "n8n" {
 
   session_duration = "24h"
   skip_interstitial = true
-  tags = ["homelab", "public apps"] # Need to create tags manually beforehand 
+  tags = ["homelab", "ai"] # Need to create tags manually beforehand 
+}
+
+resource "cloudflare_zero_trust_access_application" "karakeep" {
+  depends_on = [ cloudflare_zero_trust_access_policy.only_us_ips ]
+  domain = "karakeep.tunnel.homelab.ezequielvalencia.com"
+  type = "self_hosted"
+  account_id = var.account_id
+
+  enable_binding_cookie = true # Mitigation against CSRF, https://developers.cloudflare.com/cloudflare-one/identity/authorization-cookie/
+  http_only_cookie_attribute = true
+  name = "Karakeep"
+  policies = [ {
+    id = cloudflare_zero_trust_access_policy.bypass_cloudflare_login.id
+  } ]
+
+  session_duration = "24h"
+  skip_interstitial = true
+  tags = ["homelab", "tool"] # Need to create tags manually beforehand 
+}
+
+resource "cloudflare_zero_trust_access_application" "ittools" {
+  depends_on = [ cloudflare_zero_trust_access_policy.only_us_ips ]
+  domain = "ittools.tunnel.homelab.ezequielvalencia.com"
+  type = "self_hosted"
+  account_id = var.account_id
+
+  enable_binding_cookie = true # Mitigation against CSRF, https://developers.cloudflare.com/cloudflare-one/identity/authorization-cookie/
+  http_only_cookie_attribute = true
+  name = "Ittools"
+  policies = [ {
+    id = cloudflare_zero_trust_access_policy.bypass_cloudflare_login.id
+  } ]
+
+  session_duration = "24h"
+  skip_interstitial = true
+  tags = ["homelab", "tool"] # Need to create tags manually beforehand 
 }
 
