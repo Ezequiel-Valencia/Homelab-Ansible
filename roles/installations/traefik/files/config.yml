@@ -38,9 +38,7 @@ http:
         - "https"
       rule: "Host(`pihole.homelab.ezequielvalencia.com`)"
       middlewares:
-        - redirectregex-pihole
         - default-headers
-        - addprefix-pihole
         - https-redirectscheme
       tls: {}
       service: pihole

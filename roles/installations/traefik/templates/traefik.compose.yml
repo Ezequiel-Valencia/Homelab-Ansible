@@ -41,9 +41,10 @@ services:
       - "traefik.http.routers.traefik-secure.service=api@internal"
     
   pihole:
-      image: pihole/pihole:latest
+      image: pihole/pihole
       restart: always
       container_name: pihole
+      pull_policy: always 
       networks:
         - proxy
       ports:
