@@ -1,30 +1,4 @@
 
-############
-# Policies #
-############
-
-resource "cloudflare_zero_trust_access_policy" "only_us_ips" {
-  account_id = var.account_id
-  decision = "allow"
-  include = [{
-    geo = {
-      country_code = "US"
-    }
-  }]
-  name = "Allow only US IPs"
-  isolation_required = false # Does not need special browser
-}
-
-
-resource "cloudflare_zero_trust_access_policy" "bypass_cloudflare_login" {
-  account_id = var.account_id
-  decision = "bypass"
-  include = [{
-    everyone = {}
-  }]
-  name = "Bypass Cloudflare Login"
-  isolation_required = false # Does not need special browser
-}
 
 ########
 # Tags #
@@ -54,7 +28,6 @@ resource "cloudflare_zero_trust_access_application" "threemix-backend" {
   http_only_cookie_attribute = true
   name = "Threemix Backend"
 
-  session_duration = "24h"
   skip_interstitial = true
   tags = ["public apps", "homelab"]
 }
@@ -71,7 +44,6 @@ resource "cloudflare_zero_trust_access_application" "homelab-jellyfin" {
   http_only_cookie_attribute = true
   name = "Jellyfin"
 
-  session_duration = "24h"
   skip_interstitial = true
   tags = ["homelab", "media"] # Need to create tags manually beforehand 
 }
@@ -86,7 +58,6 @@ resource "cloudflare_zero_trust_access_application" "library-jellyfin" {
   http_only_cookie_attribute = true
   name = "Library"
 
-  session_duration = "24h"
   skip_interstitial = true
   tags = ["homelab", "media"] # Need to create tags manually beforehand 
 }
@@ -106,7 +77,6 @@ resource "cloudflare_zero_trust_access_application" "open-web" {
     id = cloudflare_zero_trust_access_policy.bypass_cloudflare_login.id
   } ]
 
-  session_duration = "24h"
   skip_interstitial = true
   tags = ["homelab", "ai"] # Need to create tags manually beforehand 
 }
@@ -121,10 +91,9 @@ resource "cloudflare_zero_trust_access_application" "n8n" {
   http_only_cookie_attribute = true
   name = "N8N"
   policies = [ {
-    id = cloudflare_zero_trust_access_policy.bypass_cloudflare_login.id
+    id = cloudflare_zero_trust_access_policy.only_trusted_emails.id
   } ]
 
-  session_duration = "24h"
   skip_interstitial = true
   tags = ["homelab", "ai"] # Need to create tags manually beforehand 
 }
@@ -142,7 +111,6 @@ resource "cloudflare_zero_trust_access_application" "karakeep" {
     id = cloudflare_zero_trust_access_policy.bypass_cloudflare_login.id
   } ]
 
-  session_duration = "24h"
   skip_interstitial = true
   tags = ["homelab", "tool"] # Need to create tags manually beforehand 
 }
@@ -157,10 +125,9 @@ resource "cloudflare_zero_trust_access_application" "ittools" {
   http_only_cookie_attribute = true
   name = "Ittools"
   policies = [ {
-    id = cloudflare_zero_trust_access_policy.bypass_cloudflare_login.id
+    id = cloudflare_zero_trust_access_policy.only_trusted_emails.id
   } ]
 
-  session_duration = "24h"
   skip_interstitial = true
   tags = ["homelab", "tool"] # Need to create tags manually beforehand 
 }
@@ -178,7 +145,6 @@ resource "cloudflare_zero_trust_access_application" "dashy" {
     id = cloudflare_zero_trust_access_policy.bypass_cloudflare_login.id
   } ]
 
-  session_duration = "24h"
   skip_interstitial = true
   tags = ["homelab", "tool"] # Need to create tags manually beforehand 
 }
