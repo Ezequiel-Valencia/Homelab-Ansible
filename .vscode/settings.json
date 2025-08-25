@@ -1,6 +1,7 @@
 {
     "ansible.python.interpreterPath": ".venv/bin/activate",
     "cSpell.words": [
+        "alertmanager",
         "alienwareprox",
         "authelia",
         "autoclean",
@@ -12,6 +13,7 @@
         "homelab",
         "Jackett",
         "jellyfin",
+        "karakeep",
         "kavita",
         "Kustomization",
         "laptopprox",
