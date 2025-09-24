@@ -75,7 +75,7 @@ services:
             timeout: {{ health_check_vpn.timeout }}
 
     traefik:
-        image: traefik:3.4.1
+        image: traefik:3.5.2
         container_name: traefik
         restart: unless-stopped
         user: {{ traefik_local_user }}
@@ -88,8 +88,10 @@ services:
             - 80:80
             - 443:443
         environment:
+            # - CF_API_EMAIL={{ cloudflare_email }}
+            # - CF_API_KEY={{ cloudflare_token }}
             - CF_DNS_API_TOKEN={{ cloudflare_token }}
-            - CF_ZONE_API_TOKEN={{ cloudflare_token }}
+            # - CF_ZONE_API_TOKEN={{ cloudflare_token }}
         volumes:
             - /etc/localtime:/etc/localtime:ro
             - /var/run/docker.sock:/var/run/docker.sock:ro
