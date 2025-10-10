@@ -51,7 +51,7 @@
   roles:
     - installations/traefik
 
-- name: Install Database
+- name: Install Database # noqa: role-name[path]
   hosts: database
   gather_facts: false
   vars:

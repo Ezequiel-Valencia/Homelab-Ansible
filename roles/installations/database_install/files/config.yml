@@ -68,11 +68,19 @@ tcp:
     postgres:
       entryPoints:
         - pg
-      rule: "HostSNI(`postgres.database.homelab.ezequielvalencia.com`)"
+      rule: "HostSNI(`*`)"
       middlewares:
         - default-whitelist
       service: postgres
       tls: {}
+
+    postgres-tcp:
+      entryPoints:
+        - pgu
+      rule: "HostSNI(`*`)"
+      middlewares:
+        - default-whitelist
+      service: postgres
 
     qdrant:
       entryPoints:

@@ -16,6 +16,8 @@ entryPoints:
   
   pg:
     address: ":5432"
+  pgu:
+    address: ":54333"
   qdrant:
     address: ":6334"
 serversTransport:
