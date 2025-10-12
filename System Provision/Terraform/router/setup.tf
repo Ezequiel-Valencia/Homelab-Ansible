@@ -20,4 +20,5 @@ provider "unifi" {
   api_url = "https://10.0.0.1"
   allow_insecure = true
   username = "terraform"
+  password = var.router_login
 }
