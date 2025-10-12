@@ -1,5 +1,5 @@
 ---
-- name: Init Control VM for K8
+- name: Init Control VM for K8 # noqa: role-name[path]
   hosts: master
   gather_facts: false
   vars:
@@ -17,7 +17,7 @@
   roles:
     - setup/debian-system-startup
 
-- name: Init VM Nodes for K8
+- name: Init VM Nodes for K8 # noqa: role-name[path]
   hosts: node
   gather_facts: false
   vars:
@@ -42,7 +42,7 @@
   roles:
     - setup/debian-system-startup
 
-- name: Init Media Node for K8
+- name: Init Media Node for K8 # noqa: role-name[path]
   hosts: media
   gather_facts: false
   vars:

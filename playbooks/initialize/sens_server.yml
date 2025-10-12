@@ -1,5 +1,5 @@
 ---
-- name: Init Sens Servers
+- name: Init Sens Servers # noqa: role-name[path]
   hosts: sensitive_server
   gather_facts: false
   vars:
@@ -18,7 +18,7 @@
     - setup/debian-system-startup
 
 # For now manually input adc.json and cache.db
-- name: Init Bots
+- name: Init Bots # noqa: role-name[path]
   hosts: bots
   roles:
     - setup/bots

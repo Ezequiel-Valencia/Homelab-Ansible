@@ -1,5 +1,5 @@
 ---
-- name: Setting Up Homelab Infrastructure
+- name: Setting Up Homelab Infrastructure # noqa: role-name[path]
   hosts: database
   gather_facts: false
   vars:
@@ -17,7 +17,7 @@
   roles:
     - setup/debian-system-startup
 
-- name: Install Dashy
+- name: Install Dashy # noqa: role-name[path]
   hosts: Dashy
   gather_facts: false
   vars:
@@ -32,7 +32,7 @@
   roles:
     - installations/dashy
 
-- name: Install Infrastructure Services
+- name: Install Infrastructure Services # noqa: role-name[path]
   hosts: Pihole
   gather_facts: false
   vars:

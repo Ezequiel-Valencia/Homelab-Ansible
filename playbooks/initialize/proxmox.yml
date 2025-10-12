@@ -1,5 +1,5 @@
 ---
-- name: Init Proxmox Machines
+- name: Init Proxmox Machines # noqa: role-name[path]
   hosts: proxmox_servers
   vars:
     other_port: false

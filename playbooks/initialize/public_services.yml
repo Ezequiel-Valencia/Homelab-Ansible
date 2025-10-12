@@ -1,5 +1,5 @@
 ---
-- name: Init Media Servers
+- name: Init Media Servers # noqa: role-name[path]
   hosts: public_services
   gather_facts: false
   vars:
@@ -16,7 +16,7 @@
   roles:
     - setup/debian-system-startup
 
-- name: Init Public Services
+- name: Init Public Services # noqa: role-name[path]
   hosts: public
   roles:
     - installations/public-services
