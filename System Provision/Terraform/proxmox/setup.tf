@@ -17,6 +17,7 @@ terraform {
 
 
 provider "proxmox" {
-  endpoint = "https://zpcprox.homelab.ezequielvalencia.com"
+  endpoint = var.proxmox_api
   insecure = false # By default Proxmox Virtual Environment uses self-signed certificates.
+  api_token = var.proxmox_api_token
 }
