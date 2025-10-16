@@ -8,12 +8,15 @@ import shutil
 SOURCE_DIRS = [
     "/volume1/k8data/storage/ai",
     "/volume1/k8data/storage/media-config",
+    "/volume1/k8data/storage/mobilizon",
     "/volume1/k8data/default-storage/bots-karakeep-storage-claim-pvc-559d7cd8-182b-4190-a616-78cd8bfb1501",
     "/volume1/k8data/default-storage/monitoring-alertmanager-homelab-alertmanager-db-alertmanager-homelab-alertmanager-0-pvc-88c4fe46-635b-405a-b94c-8a07d3d0614e"
 ]
 
 # Destination directory for rsync and zips
 DEST_DIR = "/volume1/@home/ezequiel/backups"
+rsync_folder_cache = f"{DEST_DIR}/rsync"
+all_zips_folder = f"{DEST_DIR}/zips"
 
 # Age limit for old files (14 days = 2 weeks)
 MAX_AGE_DAYS = 14
@@ -35,7 +38,7 @@ def zip_directory(src_dir, output_dir):
             zip_name = f"karakeep_{timestamp}"
         case x if "alertmanager" in x:
             zip_name = f"alertmanager_{timestamp}"
-    zip_path = os.path.join(output_dir, zip_name)
+    zip_path = f"{output_dir}/{zip_name}"
     shutil.make_archive(zip_path, 'zip', src_dir)
     return zip_path + ".zip"
 
@@ -45,7 +48,7 @@ def cleanup_old_backups(backup_path, max_age_days=14):
     cutoff_time = time.time() - (max_age_days * 86400)  # seconds in days
     files = os.listdir(backup_path)
     for file in files:
-        file_path = os.path.join(backup_path, file)
+        file_path = f"{backup_path}/{file}"
         if os.path.isfile(file_path) and ".zip" in file_path:
             mtime = os.path.getmtime(file_path)
             if mtime < cutoff_time:
@@ -56,17 +59,18 @@ def cleanup_old_backups(backup_path, max_age_days=14):
 def main():
     for src in SOURCE_DIRS:
         folder_name = os.path.basename(os.path.normpath(src))
-        dest_path = os.path.join(DEST_DIR, folder_name)
+        rsync_cache_path = f"{rsync_folder_cache}/{folder_name}"
 
-        print(f"Syncing {src} -> {dest_path}")
-        run_rsync(src, dest_path)
+        print(f"Syncing {src} -> {rsync_cache_path}")
+        run_rsync(src, rsync_cache_path)
 
-        print(f"Zipping {dest_path}")
-        zip_file = zip_directory(dest_path, DEST_DIR)
+        zip_path = f"{all_zips_folder}/{folder_name}"
+        print(f"Zipping {rsync_cache_path}")
+        zip_file = zip_directory(rsync_cache_path, zip_path)
         print(f"Created: {zip_file}\n")
 
-    print("Checking for old backups...")
-    cleanup_old_backups(DEST_DIR, MAX_AGE_DAYS)
+        print("Checking for old backups...")
+        cleanup_old_backups(f"{all_zips_folder}/{folder_name}", MAX_AGE_DAYS)
 
 
 if __name__ == "__main__":
