@@ -1,4 +1,3 @@
-version: '3.3'
 services:
     traefik:
         image: traefik:3.0
@@ -35,6 +34,19 @@ services:
             nextcloud:
                 aliases:
                     - 'nextcloud.docker'
+        depends_on:
+            - traefik
+    
+    uptime-kuma:
+        image: louislam/uptime-kuma:2.0.1
+        restart: always
+        container_name: uptime
+        volumes:
+            - "{{ defualt_relative_docker_data_path }}/uptime:/app/data"
+        networks:
+            nextcloud:
+                aliases:
+                    - 'uptime.docker'
         depends_on:
             - traefik
 

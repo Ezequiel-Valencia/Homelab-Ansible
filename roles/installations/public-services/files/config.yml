@@ -12,6 +12,16 @@ http:
       tls: 
         certResolver: cloudflareResolver
       service: nextcloud
+
+    uptime:
+      entryPoints:
+        - "https"
+      rule: "Host(`uptime-kuma.homelab.ezequielvalencia.com`)"
+      middlewares:
+        - default-headers
+      tls: 
+        certResolver: cloudflareResolver
+      service: uptime
     
 
 #endregion
@@ -21,6 +31,11 @@ http:
       loadBalancer:
         servers:
           - url: "http://nextcloud.docker"
+        passHostHeader: true
+    uptime:
+      loadBalancer:
+        servers:
+          - url: "http://uptime.docker:3001"
         passHostHeader: true
     
 

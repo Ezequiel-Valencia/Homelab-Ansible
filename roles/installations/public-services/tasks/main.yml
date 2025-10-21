@@ -29,6 +29,13 @@
     state: directory
     owner: "nextcloud"
 
+- name: Make Uptime directory
+  become: true
+  ansible.builtin.file:
+    mode: u=rwx,g=rwx,o=
+    path: "{{ defualt_relative_docker_data_path }}/uptime"
+    state: directory
+
 - name: Copy traefik config files
   become: true
   ansible.builtin.copy:
