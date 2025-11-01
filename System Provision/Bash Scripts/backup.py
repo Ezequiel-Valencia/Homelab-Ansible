@@ -9,6 +9,7 @@ SOURCE_DIRS = [
     "/volume1/k8data/storage/ai",
     "/volume1/k8data/storage/media-config",
     "/volume1/k8data/storage/mobilizon",
+    "/volume1/k8data/default-storage/bots-gitea-storage-claim-pvc-a77faf9a-a455-42c1-b86f-b5dd40d2df35",
     "/volume1/k8data/default-storage/bots-karakeep-storage-claim-pvc-559d7cd8-182b-4190-a616-78cd8bfb1501",
     "/volume1/k8data/default-storage/monitoring-alertmanager-homelab-alertmanager-db-alertmanager-homelab-alertmanager-0-pvc-88c4fe46-635b-405a-b94c-8a07d3d0614e"
 ]
@@ -38,6 +39,8 @@ def zip_directory(src_dir, output_dir):
             zip_name = f"karakeep_{timestamp}"
         case x if "alertmanager" in x:
             zip_name = f"alertmanager_{timestamp}"
+        case x if "gitea" in x:
+            zip_name = f"gitea_{timestamp}"
     zip_path = f"{output_dir}/{zip_name}"
     shutil.make_archive(zip_path, 'zip', src_dir)
     return zip_path + ".zip"
