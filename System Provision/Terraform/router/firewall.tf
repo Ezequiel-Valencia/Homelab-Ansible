@@ -15,17 +15,29 @@ resource "unifi_firewall_group" "all_vms_ips" {
            "10.0.0.9",]
 }
 
-# resource "unifi_firewall_group" "vpn_laptop_ip" {
-#   name = "Laptop VPN"
-#   type = "address-group"
-#   members = [ "192.168.2.2"]
-# }
+resource "unifi_firewall_group" "vpn_laptop_ip" {
+  name = "Laptop VPN"
+  type = "address-group"
+  members = [ "192.168.2.2"]
+}
+
+resource "unifi_firewall_group" "vpn_subnet" {
+  name = "VPN Subnet"
+  type = "address-group"
+  members = [ "192.168.2.0/24"]
+}
 
 
 resource "unifi_firewall_group" "common_ports" {
   name = "DNS, HTTP, HTTPS Ports"
   type = "port-group"
   members = ["443", "80", "53"]
+}
+
+resource "unifi_firewall_group" "common_ports_n_gitea" {
+  name = "DNS, HTTP, HTTPS, Gitea Ports"
+  type = "port-group"
+  members = ["443", "80", "53", "2222"]
 }
 
 
@@ -59,7 +71,7 @@ resource "unifi_firewall_rule" "allow_hl_apps_to_general" {
   ruleset = "LAN_IN"
 
     # hl_apps and common_ports
-  dst_firewall_group_ids = ["6727f20dc09f535d51c4a4d6", "672fd921f2657274a3bf4404",]
+  dst_firewall_group_ids = [unifi_firewall_group.hl_apps.id, unifi_firewall_group.common_ports.id]
 
   rule_index = "20000"
   protocol = "all"
@@ -68,14 +80,14 @@ resource "unifi_firewall_rule" "allow_hl_apps_to_general" {
 }
 
 resource "unifi_firewall_rule" "block_all_trafic_to_hl_network" {
-  name = "Block All General Traffic to Homelab Network"
+  name = "Block All Traffic to Homelab Network"
   ruleset = "LAN_IN"
   action = "drop"
   rule_index = "20001"
 
+  # Not setting src means all is dropped
   protocol = "all"
   dst_network_id = data.unifi_network.homelab_network_data.id
-  src_network_id = data.unifi_network.general_network_data.id
 }
 
 resource "unifi_firewall_rule" "block_all_trafic_from_vms_to_proxmox" {
@@ -85,19 +97,28 @@ resource "unifi_firewall_rule" "block_all_trafic_from_vms_to_proxmox" {
   rule_index = "20002"
 
   protocol = "all"
-  dst_firewall_group_ids = ["672fc97bf2657274a3bf40b4"] # Proxmox Machines
-  src_firewall_group_ids = ["672fc948f2657274a3bf40af"] # All VM's
+  dst_firewall_group_ids = [unifi_firewall_group.proxmox_ips.id] # Proxmox Machines
+  src_firewall_group_ids = [unifi_firewall_group.all_vms_ips.id] # All VM's
 }
 
-# resource "unifi_firewall_rule" "allow_vpn_laptop_access_to_hl" {
-#   name = "Allow VPN Laptop Access To HL"
-#   ruleset = "LAN_IN"
-#   action = "accept"
-#   rule_index = "20003"
+resource "unifi_firewall_rule" "allow_vpn_laptop_access_to_hl" {
+  name = "Allow VPN Laptop Access To HL"
+  ruleset = "LAN_OUT"
+  action = "accept"
+  rule_index = "20003"
 
-#   protocol = "all"
-#   dst_firewall_group_ids = [unifi_firewall_group.proxmox_ips.id] # Proxmox Machines
-#   src_firewall_group_ids = [unifi_firewall_group.vpn_laptop_ip.id] # All VM's
-# }
+  protocol = "all"
+  dst_firewall_group_ids = [unifi_firewall_group.hl_apps.id, unifi_firewall_group.common_ports_n_gitea.id]
+  src_firewall_group_ids = [unifi_firewall_group.vpn_laptop_ip.id]
+}
 
+resource "unifi_firewall_rule" "block_vpn_trafic_to_hl_network" {
+  name = "Block VPN Traffic to Homelab Network"
+  ruleset = "LAN_OUT"
+  action = "drop"
+  rule_index = "20004"
 
+  protocol = "all"
+  dst_network_id = data.unifi_network.homelab_network_data.id
+  src_firewall_group_ids = [ unifi_firewall_group.vpn_subnet.id ]
+}
