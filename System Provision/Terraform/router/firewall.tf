@@ -15,11 +15,11 @@ resource "unifi_firewall_group" "all_vms_ips" {
            "10.0.0.9",]
 }
 
-# resource "unifi_firewall_group" "vpn_laptop_ip" {
-#   name = "Laptop VPN"
-#   type = "address-group"
-#   members = [ "192.168.2.2"]
-# }
+resource "unifi_firewall_group" "vpn_laptop_ip" {
+  name = "Laptop VPN"
+  type = "address-group"
+  members = [ "192.168.2.2"]
+}
 
 
 resource "unifi_firewall_group" "common_ports" {
@@ -89,15 +89,15 @@ resource "unifi_firewall_rule" "block_all_trafic_from_vms_to_proxmox" {
   src_firewall_group_ids = [unifi_firewall_group.all_vms_ips.id] # All VM's
 }
 
-# resource "unifi_firewall_rule" "allow_vpn_laptop_access_to_hl" {
-#   name = "Allow VPN Laptop Access To HL"
-#   ruleset = "LAN_IN"
-#   action = "accept"
-#   rule_index = "20003"
+resource "unifi_firewall_rule" "allow_vpn_laptop_access_to_hl" {
+  name = "Allow VPN Laptop Access To HL"
+  ruleset = "LAN_IN"
+  action = "accept"
+  rule_index = "20003"
 
-#   protocol = "all"
-#   dst_firewall_group_ids = [unifi_firewall_group.proxmox_ips.id] # Proxmox Machines
-#   src_firewall_group_ids = [unifi_firewall_group.vpn_laptop_ip.id] # All VM's
-# }
+  protocol = "all"
+  dst_firewall_group_ids = [unifi_firewall_group.hl_apps.id, unifi_firewall_group.common_ports.id]
+  src_firewall_group_ids = [unifi_firewall_group.vpn_laptop_ip.id]
+}
 
 
