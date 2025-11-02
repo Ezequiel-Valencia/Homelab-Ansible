@@ -68,14 +68,14 @@ resource "unifi_firewall_rule" "allow_hl_apps_to_general" {
 }
 
 resource "unifi_firewall_rule" "block_all_trafic_to_hl_network" {
-  name = "Block All General Traffic to Homelab Network"
+  name = "Block All Traffic to Homelab Network"
   ruleset = "LAN_IN"
   action = "drop"
   rule_index = "20001"
 
+  # Not setting src means all is dropped
   protocol = "all"
   dst_network_id = data.unifi_network.homelab_network_data.id
-  src_network_id = data.unifi_network.general_network_data.id
 }
 
 resource "unifi_firewall_rule" "block_all_trafic_from_vms_to_proxmox" {
