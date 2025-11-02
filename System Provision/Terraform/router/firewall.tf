@@ -59,7 +59,7 @@ resource "unifi_firewall_rule" "allow_hl_apps_to_general" {
   ruleset = "LAN_IN"
 
     # hl_apps and common_ports
-  dst_firewall_group_ids = ["6727f20dc09f535d51c4a4d6", "672fd921f2657274a3bf4404",]
+  dst_firewall_group_ids = [unifi_firewall_group.hl_apps.id, unifi_firewall_group.common_ports.id]
 
   rule_index = "20000"
   protocol = "all"
@@ -85,8 +85,8 @@ resource "unifi_firewall_rule" "block_all_trafic_from_vms_to_proxmox" {
   rule_index = "20002"
 
   protocol = "all"
-  dst_firewall_group_ids = ["672fc97bf2657274a3bf40b4"] # Proxmox Machines
-  src_firewall_group_ids = ["672fc948f2657274a3bf40af"] # All VM's
+  dst_firewall_group_ids = [unifi_firewall_group.proxmox_ips.id] # Proxmox Machines
+  src_firewall_group_ids = [unifi_firewall_group.all_vms_ips.id] # All VM's
 }
 
 # resource "unifi_firewall_rule" "allow_vpn_laptop_access_to_hl" {
