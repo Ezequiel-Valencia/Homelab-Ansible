@@ -53,7 +53,7 @@ services:
             - "{{ defualt_relative_docker_data_path }}/qdrant:/qdrant/storage"
 
     traefik:
-        image: traefik:3.4.1
+        image: traefik:3.6.1
         container_name: traefik
         restart: unless-stopped
         user: {{ traefik_local_user }}
