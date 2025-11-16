@@ -75,7 +75,7 @@ services:
             timeout: {{ health_check_vpn.timeout }}
 
     traefik:
-        image: traefik:3.5.2
+        image: traefik:3.6.1
         container_name: traefik
         restart: unless-stopped
         user: {{ traefik_local_user }}

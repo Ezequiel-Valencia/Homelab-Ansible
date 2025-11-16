@@ -1,7 +1,7 @@
 
 services:
   traefik:
-    image: traefik:3.0
+    image: traefik:3.6.1
     container_name: traefik
     restart: unless-stopped
     user: {{ traefik_local_user }}
