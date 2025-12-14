@@ -20,7 +20,7 @@ resource "proxmox_virtual_environment_vm" "bots" {
 
     protection              = true
     keyboard_layout         = "en-us"
-    tags                    = ["sen"]
+    tags                    = ["kubernetes"]
 
     timeout_clone           = 1800
     timeout_create          = 1800
@@ -104,7 +104,7 @@ resource "proxmox_virtual_environment_vm" "k3s_control" {
 
     protection              = true
     keyboard_layout         = "en-us"
-    tags                    = ["infra"]
+    tags                    = ["kubernetes"]
 
     timeout_clone           = 1800
     timeout_create          = 1800
@@ -116,7 +116,7 @@ resource "proxmox_virtual_environment_vm" "k3s_control" {
     
 
     cpu {
-        cores      = 2
+        cores      = 4
         flags      = [] 
         hotplugged = 0
         limit      = 0
@@ -187,7 +187,7 @@ resource "proxmox_virtual_environment_vm" "media" {
 
     protection              = true
     keyboard_layout         = "en-us"
-    tags                    = ["entertain"]
+    tags                    = ["entertain", "kubernetes"]
 
     timeout_clone           = 1800
     timeout_create          = 1800
@@ -233,7 +233,7 @@ resource "proxmox_virtual_environment_vm" "media" {
 
     disk {
         aio               = "io_uring"
-        backup            = true
+        backup            = false
         cache             = "none"
         datastore_id      = "hdd"
         discard           = "ignore"
@@ -268,6 +268,14 @@ resource "proxmox_virtual_environment_vm" "media" {
 
     operating_system {
         type = "l26"
+    }
+
+    hostpci {
+        device = "hostpci0"
+        id     = "0000:01:00"
+        pcie   = false
+        rombar = true
+        xvga   = false
     }
 }
 

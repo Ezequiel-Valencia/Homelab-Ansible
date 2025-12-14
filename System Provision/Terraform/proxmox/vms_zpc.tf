@@ -232,7 +232,7 @@ resource "proxmox_virtual_environment_vm" "monitor" {
 
     protection              = true
     keyboard_layout         = "en-us"
-    tags                    = ["infra"]
+    tags                    = ["kubernetes"]
 
     timeout_clone           = 1800
     timeout_create          = 1800
@@ -315,7 +315,7 @@ resource "proxmox_virtual_environment_vm" "longhorn" {
 
     protection              = true
     keyboard_layout         = "en-us"
-    tags                    = ["infra"]
+    tags                    = ["kubernetes"]
 
     timeout_clone           = 1800
     timeout_create          = 1800
