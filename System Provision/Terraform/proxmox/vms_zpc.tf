@@ -352,21 +352,6 @@ resource "proxmox_virtual_environment_vm" "longhorn" {
         ssd               = false
     }
 
-    disk {
-        aio               = "io_uring"
-        backup            = true
-        cache             = "none"
-        datastore_id      = "hdd"
-        discard           = "ignore"
-        file_format       = "raw"
-        interface         = "scsi1"
-        iothread          = true
-        path_in_datastore = "vm-500-disk-1"
-        replicate         = true
-        size              = 32
-        ssd               = false
-    }
-
     memory {
         dedicated      = 4096
         floating       = 0

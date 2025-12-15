@@ -2,6 +2,7 @@
     "ansible.python.interpreterPath": ".venv/bin/activate",
     "cSpell.words": [
         "alertmanager",
+        "alienware",
         "alienwareprox",
         "authelia",
         "autoclean",
