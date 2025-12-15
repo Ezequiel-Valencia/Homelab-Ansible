@@ -231,21 +231,6 @@ resource "proxmox_virtual_environment_vm" "media" {
       type = "virtio"
     }
 
-    disk {
-        aio               = "io_uring"
-        backup            = false
-        cache             = "none"
-        datastore_id      = "hdd"
-        discard           = "ignore"
-        file_format       = "raw"
-        interface         = "scsi1"
-        iothread          = true
-        path_in_datastore = "vm-600-disk-0"
-        replicate         = true
-        size              = 500
-        ssd               = false
-    }
-
     memory {
         dedicated      = 10240
         floating       = 0
