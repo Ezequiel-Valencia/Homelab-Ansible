@@ -15,29 +15,29 @@
 #     state: mounted
 #     boot: true
 
-- name: Copy env files to container
-  become_user: "{{ ansible_user }}"
-  ansible.builtin.template:
-    mode: u=rw,g=r
-    src: "{{ item.src }}"
-    dest: "~/{{ item.name }}"
-  loop: '{{ template_files }}'
+# - name: Copy env files to container
+#   become_user: "{{ ansible_user }}"
+#   ansible.builtin.template:
+#     mode: u=rw,g=r
+#     src: "{{ item.src }}"
+#     dest: "~/{{ item.name }}"
+#   loop: '{{ template_files }}'
 
-- name: Create Firefly
-  become_user: "{{ ansible_user }}"
-  community.docker.docker_compose:
-    project_name: Firefly
-    project_src: "~/"
-    env_file: firefly.env
-    files:
-      - "firefly.compose"
+# - name: Create Firefly
+#   become_user: "{{ ansible_user }}"
+#   community.docker.docker_compose:
+#     project_name: Firefly
+#     project_src: "~/"
+#     env_file: firefly.env
+#     files:
+#       - "firefly.compose"
 
-- name: Delete env files
-  become_user: "{{ ansible_user }}"
-  ansible.builtin.file:
-    path: "~/{{ item.name }}"
-    state: absent
-  loop: '{{ template_files }}'
+# - name: Delete env files
+#   become_user: "{{ ansible_user }}"
+#   ansible.builtin.file:
+#     path: "~/{{ item.name }}"
+#     state: absent
+#   loop: '{{ template_files }}'
 
 
 # - name: Install CStorage

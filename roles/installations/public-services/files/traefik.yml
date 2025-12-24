@@ -23,4 +23,3 @@ certificatesResolvers:
       storage: acme.json
       email: wzeke123@gmail.com
       tlsChallenge: true
-

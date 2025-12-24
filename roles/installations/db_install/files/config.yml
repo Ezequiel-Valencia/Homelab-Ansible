@@ -1,6 +1,6 @@
 http:
- #region routers 
-  routers:        
+ # region routers
+  routers:
     qdrant:
       entryPoints:
         - "https"
@@ -29,7 +29,7 @@ http:
         servers:
           - url: "http://pgadmin:80"
 
-#endregion
+# endregion
   middlewares:
     https-redirectscheme:
       redirectScheme:
@@ -52,16 +52,16 @@ http:
     default-whitelist:
       ipAllowList:
         sourceRange:
-        - "10.0.0.0/8"
+          - "10.0.0.0/8"
         # - "192.168.0.0/16"
         # - "172.16.0.0/12"
 
     secured:
       chain:
         middlewares:
-        - default-whitelist
-        - default-headers
-        - https-redirectscheme
+          - default-whitelist
+          - default-headers
+          - https-redirectscheme
 
 tcp:
   routers:
@@ -102,13 +102,11 @@ tcp:
       loadBalancer:
         servers:
           - address: "qdrant:6334"
-  
+
   middlewares:
     default-whitelist:
       ipAllowList:
         sourceRange:
-        - "10.0.0.0/8"
+          - "10.0.0.0/8"
         # - "192.168.0.0/16"
         # - "172.16.0.0/12"
-
-
