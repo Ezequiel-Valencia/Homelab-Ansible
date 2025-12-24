@@ -1,5 +1,5 @@
 ---
-- name: Init Sens Servers # noqa: role-name[path]
+- name: Init Sens Servers
   hosts: sensitive_server
   gather_facts: false
   vars:

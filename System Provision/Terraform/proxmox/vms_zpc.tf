@@ -85,7 +85,7 @@ resource "proxmox_virtual_environment_vm" "pihole" {
     description             = "Set the router DNS to this IP address and it should work on all devices. For some reason with the current router it doesn't but that's how it goes I guess."
     
     cpu {
-        cores      = 1
+        cores      = 2
         type       = "x86-64-v2-AES"
     }
 
@@ -108,7 +108,7 @@ resource "proxmox_virtual_environment_vm" "pihole" {
     }
 
     memory {
-        dedicated      = 2048
+        dedicated      = 4096
     }
 
     network_device {

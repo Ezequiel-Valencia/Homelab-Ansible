@@ -1,5 +1,5 @@
 ---
-- name: Setting Up Homelab Infrastructure # noqa: role-name[path]
+- name: Setting Up Homelab Infrastructure
   hosts: database
   gather_facts: false
   vars:
@@ -17,7 +17,7 @@
   roles:
     - setup/debian-system-startup
 
-- name: Install Dashy # noqa: role-name[path]
+- name: Install Dashy
   hosts: Dashy
   gather_facts: false
   vars:
@@ -32,7 +32,7 @@
   roles:
     - installations/dashy
 
-- name: Install Infrastructure Services # noqa: role-name[path]
+- name: Install Infrastructure Services
   hosts: Pihole
   gather_facts: false
   vars:
@@ -49,9 +49,9 @@
       ansible.builtin.include_vars: ../../inventory/secrets/traefik.secrets.yml
 
   roles:
-    - installations/traefik
+    - installations/infra_install
 
-- name: Install Database # noqa: role-name[path]
+- name: Install Database
   hosts: database
   gather_facts: false
   vars:

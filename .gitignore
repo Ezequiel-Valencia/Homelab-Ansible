@@ -6,3 +6,5 @@ stack.env
 helm-resource.yml
 .terraform
 secrets.tf
+.ansible
+.envrc

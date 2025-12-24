@@ -145,13 +145,6 @@ resource "proxmox_virtual_environment_vm" "media" {
         size              = 36
     }
 
-    agent {
-      enabled = false
-      timeout = "15m"
-      trim = false
-      type = "virtio"
-    }
-
     memory {
         dedicated      = 10240
     }
