@@ -8,11 +8,8 @@
     is_qemu_guest: true
 
   pre_tasks:
-    - name: Get facts after SSH set
-      ansible.builtin.include_tasks: ../../tasks/gather-facts-ssh.yml
-
-    - name: Change Python Env
-      ansible.builtin.include_tasks: ../../tasks/change-python-env.yml
+    - name: Get Facts and Switch Python Env
+      ansible.builtin.include_tasks: ../../tasks/change-and-gather.yml
 
   roles:
     - setup/debian-system-startup
