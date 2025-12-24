@@ -1,4 +1,9 @@
 ---
-- ansible.builtin.import_playbook: ./initialize/infrastructure.yml
-- ansible.builtin.import_playbook: ./initialize/sens_server.yml
-- ansible.builtin.import_playbook: ./initialize/media.yml
+- name: Infrastructure
+  ansible.builtin.import_playbook: initialize/infrastructure.yml
+
+- name: K8 Nodes
+  ansible.builtin.import_playbook: initialize/init_k8_nodes.yml
+
+- name: Public Services
+  ansible.builtin.import_playbook: initialize/public_services.yml
