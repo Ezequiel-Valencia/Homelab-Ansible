@@ -58,4 +58,4 @@
       ansible.builtin.include_vars: ../../inventory/secrets/db.secrets.yml
 
   roles:
-    - database_install
+    - db_install
