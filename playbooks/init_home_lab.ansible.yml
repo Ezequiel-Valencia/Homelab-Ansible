@@ -1,0 +1,4 @@
+---
+- ansible.builtin.import_playbook: ./initialize/infrastructure.yml
+- ansible.builtin.import_playbook: ./initialize/sens_server.yml
+- ansible.builtin.import_playbook: ./initialize/media.yml
