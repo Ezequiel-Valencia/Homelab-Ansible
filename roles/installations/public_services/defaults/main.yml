@@ -1,10 +1,6 @@
-template_files:
-  - src: online.compose.j2
-    name: online.compose
-
-traefik_files:
+public_services_traefik_files:
   - traefik.yml
   - config.yml
 
 
-traefik_local_user: root
+public_services_traefik_local_user: root

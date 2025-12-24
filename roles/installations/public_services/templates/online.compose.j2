@@ -3,7 +3,7 @@ services:
         image: traefik:3.5
         container_name: traefik
         restart: unless-stopped
-        user: {{ traefik_local_user }}
+        user: {{ public_services_traefik_local_user }}
         security_opt:
             - no-new-privileges:true
         networks:
