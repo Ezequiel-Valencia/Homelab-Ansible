@@ -16,4 +16,4 @@
 - name: Init Public Services
   hosts: public
   roles:
-    - public-services
+    - public_services
