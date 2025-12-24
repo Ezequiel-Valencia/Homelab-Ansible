@@ -4,7 +4,7 @@
   become: true
   ansible.builtin.file:
     mode: u=rwx,g=rwx,o=
-    path: "{{ authelia_volume_folder }}"
+    path: "{{ infra_install_authelia_volume_folder }}"
     state: directory
 
 - name: Template Authelia Docker file
@@ -12,11 +12,11 @@
   ansible.builtin.template:
     mode: u=rw,g=r
     src: authelia-config.j2
-    dest: '{{ authelia_volume_folder }}/configuration.yml'
+    dest: '{{ infra_install_authelia_volume_folder }}/configuration.yml'
 
 - name: Copy Authelia User DB
   become: true
   ansible.builtin.copy:
     mode: u=rw,g=r,o=
     src: "users_database.yml"
-    dest: "{{ authelia_volume_folder }}/users_database.yml"
+    dest: "{{ infra_install_authelia_volume_folder }}/users_database.yml"
