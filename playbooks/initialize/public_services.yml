@@ -11,9 +11,9 @@
       ansible.builtin.include_tasks: ../../tasks/change-and-gather.yml
 
   roles:
-    - setup/debian-system-startup
+    - debian-system-startup
 
 - name: Init Public Services
   hosts: public
   roles:
-    - installations/public-services
+    - public-services

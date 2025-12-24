@@ -5,4 +5,4 @@
     other_port: false
 
   roles:
-    - setup/proxmox-init
+    - proxmox-init

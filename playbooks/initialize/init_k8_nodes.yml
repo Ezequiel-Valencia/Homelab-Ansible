@@ -12,7 +12,7 @@
       ansible.builtin.include_tasks: ../../tasks/change-and-gather.yml
 
   roles:
-    - setup/debian-system-startup
+    - debian-system-startup
 
 - name: Init VM Nodes for K8
   hosts: node
@@ -34,7 +34,7 @@
       ansible.builtin.include_tasks: ../../tasks/change-and-gather.yml
 
   roles:
-    - setup/debian-system-startup
+    - debian-system-startup
 
 - name: Init Media Node for K8
   hosts: media
@@ -53,4 +53,4 @@
       ansible.builtin.include_vars: ../../inventory/secrets/traefik.secrets.yml
 
   roles:
-    - installations/media_install
+    - media_install

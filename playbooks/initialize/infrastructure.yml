@@ -12,7 +12,7 @@
       ansible.builtin.include_tasks: ../../tasks/change-and-gather.yml
 
   roles:
-    - setup/debian-system-startup
+    - debian-system-startup
 
 - name: Install Dashy
   hosts: Dashy
@@ -24,7 +24,7 @@
     - name: Get Facts and Switch Python Env
       ansible.builtin.include_tasks: ../../tasks/change-and-gather.yml
   roles:
-    - installations/dashy
+    - dashy_install
 
 - name: Install Infrastructure Services
   hosts: Pihole
@@ -40,7 +40,7 @@
       ansible.builtin.include_vars: ../../inventory/secrets/traefik.secrets.yml
 
   roles:
-    - installations/infra_install
+    - infra_install
 
 - name: Install Database
   hosts: database
@@ -58,4 +58,4 @@
       ansible.builtin.include_vars: ../../inventory/secrets/db.secrets.yml
 
   roles:
-    - installations/database_install
+    - database_install
