@@ -10,15 +10,15 @@
   ansible.builtin.group:
     name: 'media'
     state: present
-  register: group_return_values
+  register: media_install_group
 
 - name: Create users for media group
   become: true
   ansible.builtin.user:
     name: "{{ current_user.name }}"
     uid: "{{ current_user.PUID }}"
-    groups: "{{ group_return_values.name }}"
-  loop: "{{ users }}"
+    groups: "{{ media_install_group.name }}"
+  loop: "{{ media_install_users }}"
   loop_control:
     loop_var: current_user
 

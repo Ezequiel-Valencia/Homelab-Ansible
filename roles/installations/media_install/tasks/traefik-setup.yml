@@ -1,7 +1,7 @@
 - name: Make Traefik user
   become: true
   ansible.builtin.user:
-    name: '{{ traefik_local_user }}'
+    name: '{{ media_install_traefik_local_user }}'
 
 - name: Make Traefik directory
   become: true
@@ -9,7 +9,7 @@
     mode: u=rwx,g=rwx,o=
     path: "{{ defualt_relative_docker_data_path }}/traefik"
     state: directory
-    owner: "{{ traefik_local_user }}"
+    owner: "{{ media_install_traefik_local_user }}"
 
 - name: Copy traefik config files
   become: true
@@ -17,8 +17,8 @@
     mode: u=rw,g=r,o=
     src: "{{ item }}"
     dest: "{{ defualt_relative_docker_data_path }}/traefik/{{ item }}"
-    owner: "{{ traefik_local_user }}"
-  loop: '{{ traefik_files }}'
+    owner: "{{ media_install_traefik_local_user }}"
+  loop: '{{ media_install_traefik_files }}'
 
 - name: Make ACME json file
   become: true
@@ -26,4 +26,4 @@
     mode: u=rw,g=,o=
     path: "{{ defualt_relative_docker_data_path }}/traefik/acme.json"
     state: file
-    owner: "{{ traefik_local_user }}"
+    owner: "{{ media_install_traefik_local_user }}"
