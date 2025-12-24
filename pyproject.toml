@@ -1,18 +1,15 @@
-[tool.poetry]
+[project]
 name = "homelab"
 version = "1.1.0"
 description = ""
-authors = ["Ezequiel Valencia"]
+authors = [{ name = "Ezequiel Valencia" }]
+requires-python = ">=3.11,<4"
 readme = "README.md"
+dependencies = [
+    "ansible>=11.0.0,<12",
+    "pyyaml>=6.0.1,<7",
+    "ansible-core>=2.18.0,<3",
+    "ansible-lint>=25",
+]
 
-[tool.poetry.dependencies]
-python = "^3.11"
-ansible = "^11.0.0"
-pyyaml = "^6.0.1"
-ansible-core = "^2.18.0"
-ansible-lint = {version = "^24.2.3", markers = "platform_system != 'Windows'"}
 
-
-[build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
