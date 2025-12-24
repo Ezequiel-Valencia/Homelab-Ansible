@@ -1,12 +1,12 @@
 ---
 
-database_user: database
-database_uid: 1016
+# database_user: database
+# database_uid: 1016
 
 
-traefik_files:
+db_install_traefik_files:
   - traefik.yml
   - config.yml
 
 
-traefik_local_user: root
+db_install_traefik_local_user: root

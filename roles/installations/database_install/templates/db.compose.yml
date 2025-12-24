@@ -56,7 +56,7 @@ services:
         image: traefik:3.6.1
         container_name: traefik
         restart: unless-stopped
-        user: {{ traefik_local_user }}
+        user: {{ db_install_traefik_local_user }}
         security_opt:
             - no-new-privileges:true
         networks:
