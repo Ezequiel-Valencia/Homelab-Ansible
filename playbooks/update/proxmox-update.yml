@@ -11,4 +11,4 @@
       ansible.builtin.include_tasks: ../../tasks/change-and-gather.yml
 
   roles:
-    - update-servers
+    - update_servers

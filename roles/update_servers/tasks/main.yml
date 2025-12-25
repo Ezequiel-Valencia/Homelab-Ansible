@@ -7,7 +7,7 @@
       loop: "{{ ansible_facts['mounts'] }}"
       when: item.block_used is defined and item.block_total and not (inventory_hostname in groups['infra_server'])
       failed_when: item.mount == "/" and (item.block_used / item.block_total) > 0.85
-      register: task_info
+      register: update_servers_task_info
 
     # The infrastructure machines have their mounts at /boot, and / raises false positives so seperate check for them
     - name: Ensure disk usage is under 85 percent for /boot Mount Points
@@ -16,11 +16,11 @@
       loop: "{{ ansible_facts['mounts'] }}"
       when: item.block_used is defined and item.block_total and inventory_hostname in groups['infra_server']
       failed_when: item.mount == "/boot" and (item.block_used / item.block_total) > 0.85
-      register: task_info
+      register: update_servers_task_info
 
     - name: Set Continue With Update Status
       ansible.builtin.set_fact:
-        continue_with_update: true
+        update_servers_continue_with_update: true
 
   rescue:
     - name: Disk Usage is High Slack Notification
@@ -33,7 +33,7 @@
 
     - name: Set Stop Update Status
       ansible.builtin.set_fact:
-        continue_with_update: false
+        update_servers_continue_with_update: false
 
     ##################
     # Storage Relief #
@@ -45,8 +45,8 @@
 
     - name: Reducing System Logs
       ansible.builtin.command: journalctl --vacuum-size=500M
-      register: jounralctl_res
-      changed_when: jounralctl_res.rc == 0
+      register: update_servers_jounralctl_res
+      changed_when: update_servers_jounralctl_res.rc == 0
 
     - name: Removing Temporary Files
       ansible.builtin.file:
@@ -56,24 +56,24 @@
 
     - name: Check if It's K3s Node
       ansible.builtin.command: which k3s
-      register: which_res
+      register: update_servers_which_res
       changed_when: false
       failed_when: false
 
     - name: Clean Dead Images
       ansible.builtin.command: k3s crictl rmi --prune
-      register: k3s_prune_images_res
-      changed_when: k3s_prune_images_res.rc == 0
-      when: which_res.rc == 0
+      register: update_servers_k3s_prune_images_res
+      changed_when: update_servers_k3s_prune_images_res.rc == 0
+      when: update_servers_which_res.rc == 0
 
 - name: Attempt Update
-  when: continue_with_update
+  when: update_servers_continue_with_update
   block:
     - name: "Starting Update"
       vars:
-        allow_automatic_reboot: "{{ allow_automatic_reboot_value | default(true) }}"
+        update_servers_allow_automatic_reboot: "{{ update_servers_allow_automatic_reboot_value | default(true) }}"
       ansible.builtin.include_tasks: update.yml
-      register: task_info
+      register: update_servers_task_info
 
     - name: Finished Update
       vars:
@@ -88,6 +88,6 @@
       vars:
         slack_color: "#ff051e"
         slack_title: "{{ inventory_hostname }} Failed To Update"
-        slack_text: "{{ task_info }}"
+        slack_text: "{{ update_servers_task_info }}"
         slack_priority: "High"
       ansible.builtin.include_tasks: send-slack-message.yml
