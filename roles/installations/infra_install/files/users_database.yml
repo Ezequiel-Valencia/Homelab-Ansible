@@ -9,7 +9,7 @@
 users:
   ezequiel:
     displayname: "Ezequiel Valencia"
-    password: "$argon2id$v=19$m=65536,t=3,p=4$16bxH22hoyY1UF9lMDfYog$AASoS54Ndy4ev9qML09QpszpHdFMD/+GvWsqMtS2jG0" 
+    password: "$argon2id$v=19$m=65536,t=3,p=4$16bxH22hoyY1UF9lMDfYog$AASoS54Ndy4ev9qML09QpszpHdFMD/+GvWsqMtS2jG0"
     email: you@example.com
     groups:
       - admins

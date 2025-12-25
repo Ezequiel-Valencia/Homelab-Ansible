@@ -1,4 +1,0 @@
----
-- ansible.builtin.import_playbook: ./playbooks/infrastructure.yml
-- ansible.builtin.import_playbook: ./playbooks/sens_server.yml
-- ansible.builtin.import_playbook: ./playbooks/media.yml

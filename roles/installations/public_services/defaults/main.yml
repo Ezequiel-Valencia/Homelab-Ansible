@@ -1,0 +1,6 @@
+public_services_traefik_files:
+  - traefik.yml
+  - config.yml
+
+
+public_services_traefik_local_user: root

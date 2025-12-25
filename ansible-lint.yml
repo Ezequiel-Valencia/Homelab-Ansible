@@ -2,6 +2,9 @@
 
 profile: safety
 
+exclude_paths:
+  - "System Provision"
+
 enable_list:
   - args
   - avoid-implicit

@@ -1,6 +1,6 @@
 ---
 
-template_files:
+firefly_install_template_files:
   - name: firefly.db.env
     src: ./firefly.db.env.j2
 

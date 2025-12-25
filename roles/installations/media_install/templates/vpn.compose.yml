@@ -2,7 +2,7 @@ services:
     gluetun:
         image: qmcgaw/gluetun:latest
         restart: unless-stopped
-        container_name: "{{ container_name }}"
+        container_name: "{{ media_install_container_name }}"
         hostname: gluetun
         networks:
             gluetun_vpn:
@@ -23,11 +23,11 @@ services:
             # - "7439:6881/tcp"
             # - "7439:6881/udp"
         healthcheck:
-            test: {{ health_check_vpn.test }}
-            interval: {{ health_check_vpn.interval }}
-            retries: {{ health_check_vpn.retries }}
-            start_period: {{ health_check_vpn.start_period }}
-            timeout: {{ health_check_vpn.timeout }}
+            test: {{ media_install_health_check_vpn.test }}
+            interval: {{ media_install_health_check_vpn.interval }}
+            retries: {{ media_install_health_check_vpn.retries }}
+            start_period: {{ media_install_health_check_vpn.start_period }}
+            timeout: {{ media_install_health_check_vpn.timeout }}
 
     # Create Jackett, helps parse stuff of interest
     jackett:
@@ -38,18 +38,18 @@ services:
             - gluetun
         environment:
             - TZ={{ time_zone }}
-            - PUID="{{ users[0].PUID }}"
-            - PGID={{ group_return_values.gid }}
+            - PUID="{{ media_install_users[0].PUID }}"
+            - PGID={{ media_install_group.gid }}
             - AUTO_UPDATE=true
-        network_mode: "{{ unified_network }}"
+        network_mode: "{{ media_install_unified_network }}"
         volumes:
-            - "{{ jackett_config_path }}:/config"
+            - "{{ media_install_jackett_config_path }}:/config"
         healthcheck:
-            test: {{ health_check_vpn.test }}
-            interval: {{ health_check_vpn.interval }}
-            retries: {{ health_check_vpn.retries }}
-            start_period: {{ health_check_vpn.start_period }}
-            timeout: {{ health_check_vpn.timeout }}
+            test: {{ media_install_health_check_vpn.test }}
+            interval: {{ media_install_health_check_vpn.interval }}
+            retries: {{ media_install_health_check_vpn.retries }}
+            start_period: {{ media_install_health_check_vpn.start_period }}
+            timeout: {{ media_install_health_check_vpn.timeout }}
     
     # Actually does the downloading, https://hub.docker.com/r/linuxserver/qbittorrent
     qbittorrent:
@@ -61,24 +61,24 @@ services:
         environment:
             - TZ={{ time_zone }}
             - WEBUI_PORT=9078
-            - PUID="{{ users[0].PUID }}"
-            - PGID={{ group_return_values.gid }}
-        network_mode: "{{ unified_network }}"
+            - PUID="{{ media_install_users[0].PUID }}"
+            - PGID={{ media_install_group.gid }}
+        network_mode: "{{ media_install_unified_network }}"
         volumes:
-            - "{{ qbit_config_path }}:/config"
-            - "{{ media_path_downloads }}:{{ internal_downloads }}"
+            - "{{ media_install_qbit_config_path }}:/config"
+            - "{{ media_install_path_downloads }}:/media/downloads"
         healthcheck:
-            test: {{ health_check_vpn.test }}
-            interval: {{ health_check_vpn.interval }}
-            retries: {{ health_check_vpn.retries }}
-            start_period: {{ health_check_vpn.start_period }}
-            timeout: {{ health_check_vpn.timeout }}
+            test: {{ media_install_health_check_vpn.test }}
+            interval: {{ media_install_health_check_vpn.interval }}
+            retries: {{ media_install_health_check_vpn.retries }}
+            start_period: {{ media_install_health_check_vpn.start_period }}
+            timeout: {{ media_install_health_check_vpn.timeout }}
 
     traefik:
         image: traefik:3.6.1
         container_name: traefik
         restart: unless-stopped
-        user: {{ traefik_local_user }}
+        user: {{ media_install_traefik_local_user }}
         security_opt:
             - no-new-privileges:true
         networks:

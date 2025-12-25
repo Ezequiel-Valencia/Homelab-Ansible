@@ -1,0 +1,58 @@
+- name: Update packages
+  become: true
+  ansible.builtin.apt:
+    update_cache: true
+    upgrade: true
+
+- name: Clean repo
+  become: true
+  ansible.builtin.apt:
+    autoclean: true
+    autoremove: true
+
+- name: Check if system reboot is required
+  become: true
+  ansible.builtin.stat:
+    path: /run/reboot-required
+  register: update_servers_reboot_required
+
+################ If Automatic Reboot is Allowed #####################
+
+# - name: Starting Reboot
+#   vars:
+#     slack_color: "#fff305"
+#     slack_title: "{{ inventory_hostname }} Will Begin Rebooting"
+#     slack_text: ""
+#     slack_priority: "Low"
+#   ansible.builtin.include_tasks: send-slack-message.yml
+#   when: update_servers_reboot_required.stat.exists and update_servers_allow_automatic_reboot
+
+# - name: Reboot machine
+#   become: true
+#   ansible.builtin.reboot:
+#     reboot_timeout: 3600
+#   when: update_servers_reboot_required.stat.exists and update_servers_allow_automatic_reboot
+
+# - name: Finished Reboot
+#   vars:
+#     slack_color: "#0505ff"
+#     slack_title: "{{ inventory_hostname }} Finished Rebooting"
+#     slack_text: ""
+#     slack_priority: "Low"
+#   ansible.builtin.include_tasks: send-slack-message.yml
+#   when: update_servers_reboot_required.stat.exists and update_servers_allow_automatic_reboot
+
+########################################################################
+
+
+################ If Automatic Reboot is Not Allowed ####################
+
+- name: Need To Reboot
+  vars:
+    slack_color: "#fff305"
+    slack_title: "{{ inventory_hostname }} Needs To Reboot"
+    slack_text: ""
+    slack_priority: "Medium"
+  ansible.builtin.include_tasks: send-slack-message.yml
+  when: update_servers_reboot_required.stat.exists
+  # when: update_servers_reboot_required.stat.exists and not update_servers_allow_automatic_reboot

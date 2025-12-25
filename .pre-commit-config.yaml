@@ -1,0 +1,9 @@
+repos:
+  - repo: https://github.com/ansible/ansible-lint
+    rev: v25.12.2 # put latest release tag from https://github.com/ansible/ansible-lint/releases/
+    hooks:
+      - id: ansible-lint
+        args: ["-c", "ansible-lint.yml"]
+        # Uncomment if you need the full Ansible community bundle instead of ansible-core:
+        # additional_dependencies:
+        #   - ansible

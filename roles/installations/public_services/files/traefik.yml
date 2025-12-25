@@ -1,0 +1,25 @@
+log:
+  level: INFO
+entryPoints:
+  http:
+    address: ":80"
+    http:
+      redirections:
+        entryPoint:
+          to: https
+          scheme: https
+  https:
+    address: ":443"
+
+providers:
+  docker:
+    endpoint: "unix:///var/run/docker.sock"
+    exposedByDefault: false
+  file:
+    filename: /config.yml
+certificatesResolvers:
+  cloudflareResolver:
+    acme:
+      storage: acme.json
+      email: wzeke123@gmail.com
+      tlsChallenge: true

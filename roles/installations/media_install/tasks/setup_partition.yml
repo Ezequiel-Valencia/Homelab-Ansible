@@ -2,7 +2,7 @@
 - name: Ensure NFS mount is in fstab and mounted
   become: true
   ansible.posix.mount:
-    path: "{{ where_to_mount_storage_device }}"
+    path: "{{ media_install_mount }}"
     src: 10.0.0.146:/volume1/media
     fstype: nfs
     boot: true

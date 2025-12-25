@@ -1,0 +1,64 @@
+---
+
+- name: Make Docker Volume Directory
+  become: true
+  ansible.builtin.file:
+    mode: u=rwx,g=rwx,o=
+    path: "{{ defualt_relative_docker_data_path }}"
+    state: directory
+
+- name: Make Nextcloud user
+  become: true
+  ansible.builtin.user:
+    name: nextcloud
+    create_home: false
+
+- name: Make Traefik directory
+  become: true
+  ansible.builtin.file:
+    mode: u=rwx,g=rwx,o=
+    path: "{{ defualt_relative_docker_data_path }}/traefik"
+    state: directory
+    owner: "{{ public_services_traefik_local_user }}"
+
+- name: Make Nextcloud directory
+  become: true
+  ansible.builtin.file:
+    mode: u=rwx,g=rwx,o=
+    path: "{{ defualt_relative_docker_data_path }}/nextcloud"
+    state: directory
+    owner: "nextcloud"
+
+- name: Make Uptime directory
+  become: true
+  ansible.builtin.file:
+    mode: u=rwx,g=rwx,o=
+    path: "{{ defualt_relative_docker_data_path }}/uptime"
+    state: directory
+
+- name: Copy traefik config files
+  become: true
+  ansible.builtin.copy:
+    mode: u=rw,g=r,o=
+    src: "{{ item }}"
+    dest: "{{ defualt_relative_docker_data_path }}/traefik/{{ item }}"
+    owner: "{{ public_services_traefik_local_user }}"
+  loop: '{{ public_services_traefik_files }}'
+
+- name: Make ACME json file
+  become: true
+  ansible.builtin.file:
+    mode: u=rw,g=,o=
+    path: "{{ defualt_relative_docker_data_path }}/traefik/acme.json"
+    state: file
+    owner: "{{ public_services_traefik_local_user }}"
+
+
+- name: Create Traefik Resource
+  vars:
+    docker_template_files:
+      - src: online.compose.j2
+        dest_name: nextcloud.compose
+    compose_file: nextcloud.compose
+    compose_project_name: nextcloud
+  ansible.builtin.include_tasks: ../tasks/docker-compose-up.yml

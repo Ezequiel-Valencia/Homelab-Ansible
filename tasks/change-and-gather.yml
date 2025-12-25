@@ -1,0 +1,5 @@
+- name: Get facts after SSH set
+  ansible.builtin.include_tasks: gather-facts-ssh.yml
+
+- name: Change Python Env
+  ansible.builtin.include_tasks: change-python-env.yml

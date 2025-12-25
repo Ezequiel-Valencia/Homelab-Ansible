@@ -4,7 +4,7 @@ services:
     image: traefik:3.6.1
     container_name: traefik
     restart: unless-stopped
-    user: {{ traefik_local_user }}
+    user: {{ infra_install_traefik_local_user }}
     security_opt:
       - no-new-privileges:true
     networks:
@@ -63,7 +63,7 @@ services:
     image: authelia/authelia
     container_name: authelia
     volumes:
-      - {{ authelia_volume_folder }}:/config
+      - {{ infra_install_authelia_volume_folder }}:/config
     networks:
       proxy:
         aliases:

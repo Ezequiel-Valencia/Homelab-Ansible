@@ -1,7 +1,6 @@
 http:
- #region routers 
+ # region routers
   routers:
-
     # Admin
     ### Proxmox
     alienwareprox:
@@ -31,7 +30,7 @@ http:
         - https-redirectscheme
       tls: {}
       service: zpcprox
-    
+
     ### Other
     pihole:
       entryPoints:
@@ -51,10 +50,8 @@ http:
         - https-redirectscheme
       tls: {}
       service: truenas
-    
 
     # Tools
-    
     dashy:
       entryPoints:
         - "https"
@@ -66,8 +63,8 @@ http:
       tls: {}
       service: dashy
 
-#endregion
-#region services
+# endregion
+# region services
   services:
 
     # Admin
@@ -96,7 +93,7 @@ http:
         servers:
           - url: "https://10.0.0.13"
         passHostHeader: true
-    
+
     # Tools
     dashy:
       loadBalancer:
@@ -104,7 +101,7 @@ http:
           - url: "http://10.0.0.8:8080"
         passHostHeader: true
 
-#endregion
+# endregion
   middlewares:
     addprefix-pihole:
       addPrefix:
@@ -137,12 +134,12 @@ http:
     default-whitelist:
       ipAllowList:
         sourceRange:
-        - "10.0.0.0/24"
+          - "10.0.0.0/24"
         # - "192.168.0.0/16"
         # - "172.16.0.0/12"
 
     secured:
       chain:
         middlewares:
-        - default-whitelist
-        - default-headers
+          - default-whitelist
+          - default-headers

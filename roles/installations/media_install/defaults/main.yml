@@ -1,42 +1,42 @@
 ---
 
-qbit_config_path: "{{ defualt_relative_docker_data_path }}/Config/qbittorent"
-jackett_config_path: "{{ defualt_relative_docker_data_path }}/Config/jackett"
+media_install_qbit_config_path: "{{ defualt_relative_docker_data_path }}/Config/qbittorent"
+media_install_jackett_config_path: "{{ defualt_relative_docker_data_path }}/Config/jackett"
 
 # Needed since applications communicate giving paths within their own systems since
 # they believe they are communicating in the same machine
-internal_downloads: "/media/downloads"
+# media_install_internal_downloads: "/media/downloads"
 
 
-container_name: gluetun
+media_install_container_name: gluetun
 
-unified_network: "service:{{ container_name }}"
-where_to_mount_storage_device: /mnt/k8data/media
+media_install_unified_network: "service:{{ container_name }}"
+media_install_mount: /mnt/k8data/media
 
 
-parition_number: 1
-new_partition: /dev/sdb{{ parition_number }} # !!! DANGEROUS CONSTANT !!! # dont want name conflictions
-file_system_type: ext4
+# parition_number: 1
+# new_partition: /dev/sdb{{ parition_number }} # !!! DANGEROUS CONSTANT !!! # dont want name conflictions
+# file_system_type: ext4
 
-media_path_tv: "{{ where_to_mount_storage_device }}/tv"
-media_path_movies: "{{ where_to_mount_storage_device }}/movies"
-media_path_books: "{{ where_to_mount_storage_device }}/books"
-media_path_music: "{{ where_to_mount_storage_device }}/music"
-media_path_downloads: "{{ where_to_mount_storage_device }}/downloads"
+# media_path_tv: "{{ media_install_mount }}/tv"
+# media_path_movies: "{{ media_install_mount }}/movies"
+# media_path_books: "{{ media_install_mount }}/books"
+# media_path_music: "{{ media_install_mount }}/music"
+media_install_path_downloads: "{{ media_install_mount }}/downloads"
 
-users:
+media_install_users:
   - name: servarr
     PUID: 1015
 
   - name: tors
     PUID: 1006
-  
+
   - name: jellyfin
     PUID: 1016
 
 
 # Either it matches exactly the VPN region or exits with status 1
-health_check_vpn:
+media_install_health_check_vpn:
   test: 'curl -s --fail https://ipinfo.io/region | grep -qxo "New York" || exit 1'
   interval: 240s
   retries: 2
@@ -44,9 +44,9 @@ health_check_vpn:
   timeout: 10s
 
 
-traefik_files:
+media_install_traefik_files:
   - traefik.yml
   - config.yml
 
 
-traefik_local_user: root
+media_install_traefik_local_user: root
