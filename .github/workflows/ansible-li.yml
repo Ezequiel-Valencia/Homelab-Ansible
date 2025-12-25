@@ -25,4 +25,5 @@ jobs:
 
       - name: Run ansible-lint
         run: |
+          source .venv/bin/activate
           ansible-lint -c ansible-lint.yml
