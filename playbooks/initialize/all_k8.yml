@@ -1,0 +1,6 @@
+---
+- name: Control Nodes
+  ansible.builtin.import_playbook: k8/control_nodes.yml
+
+- name: Regular Nodes
+  ansible.builtin.import_playbook: k8/reg_nodes.yml

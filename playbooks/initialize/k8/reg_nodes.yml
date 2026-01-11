@@ -1,19 +1,4 @@
 ---
-- name: Init Control VM for K8
-  hosts: master
-  gather_facts: false
-  vars:
-    other_port: true
-    alt_ssh_port: 5320
-    is_qemu_guest: true
-
-  pre_tasks:
-    - name: Get Facts and Switch Python Env
-      ansible.builtin.include_tasks: ../../tasks/change-and-gather.yml
-
-  roles:
-    - debian-system-startup
-
 - name: Init VM Nodes for K8
   hosts: node
   gather_facts: false
@@ -46,11 +31,6 @@
   pre_tasks:
     - name: Get Facts and Switch Python Env
       ansible.builtin.include_tasks: ../../tasks/change-and-gather.yml
-
-    - name: Include Media Secrets
-      ansible.builtin.include_vars: ../../inventory/secrets/media.secrets.yml
-    - name: Include Traefik Secrets
-      ansible.builtin.include_vars: ../../inventory/secrets/traefik.secrets.yml
 
   roles:
     - media_install

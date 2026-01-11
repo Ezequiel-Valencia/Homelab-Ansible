@@ -41,6 +41,14 @@ http:
         - https-redirectscheme
       tls: {}
       service: pihole
+    ldap:
+      entryPoints:
+        - "https"
+      rule: "Host(`ldap-ui.homelab.ezequielvalencia.com`)"
+      middlewares:
+        - https-redirectscheme
+      tls: {}
+      service: ldap
     truenas:
       entryPoints:
         - "https"
@@ -93,6 +101,11 @@ http:
         servers:
           - url: "https://10.0.0.13"
         passHostHeader: true
+    ldap:
+      loadBalancer:
+        servers:
+          - url: "http://ldap:17170"
+        passHostHeader: true
 
     # Tools
     dashy:
@@ -143,3 +156,26 @@ http:
         middlewares:
           - default-whitelist
           - default-headers
+
+
+tcp:
+  routers:
+    ldap:
+      entryPoints:
+        - ldap
+      rule: "HostSNI(`*`)"
+      middlewares:
+        - default-whitelist
+      service: ldap
+      tls: {}
+  services:
+    # Tools
+    ldap:
+      loadBalancer:
+        servers:
+          - address: "ldap:3890"
+  middlewares:
+    default-whitelist:
+      ipAllowList:
+        sourceRange:
+          - "10.0.0.0/8"

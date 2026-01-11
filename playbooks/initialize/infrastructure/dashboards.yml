@@ -1,0 +1,12 @@
+---
+- name: Install Dashy
+  hosts: Dashy
+  gather_facts: false
+  vars:
+    other_port: true
+    alt_ssh_port: 5320
+  pre_tasks:
+    - name: Get Facts and Switch Python Env
+      ansible.builtin.include_tasks: ../../tasks/change-and-gather.yml
+  roles:
+    - dashy_install

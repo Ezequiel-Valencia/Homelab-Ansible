@@ -1,9 +1,9 @@
 ---
 - name: Infrastructure
-  ansible.builtin.import_playbook: initialize/infrastructure.yml
+  ansible.builtin.import_playbook: initialize/all_infrastructure.yml
 
 - name: K8 Nodes
-  ansible.builtin.import_playbook: initialize/init_k8_nodes.yml
+  ansible.builtin.import_playbook: initialize/all_k8.yml
 
 - name: Public Services
   ansible.builtin.import_playbook: initialize/public_services.yml

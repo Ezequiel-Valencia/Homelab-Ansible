@@ -59,6 +59,26 @@ services:
           - "{{ defualt_relative_docker_data_path }}/pihole:/etc/pihole"
           - "{{ defualt_relative_docker_data_path }}/pihole-dnsmasq.d:/etc/dnsmasq.d"
   
+
+  # https://hub.docker.com/r/lldap/lldap
+  ldap:
+    image: lldap/lldap:stable
+    restart: always
+    container_name: ldap
+    pull_policy: always
+    security_opt:
+      - no-new-privileges:true
+    networks:
+      - proxy
+    environment:
+      - LLDAP_JWT_SECRET={{ ldap_jwt_secret }}
+      - LLDAP_KEY_SEED={{ ldap_key_seed }}
+      - LLDAP_LDAP_BASE_DN=dc=homelab,dc=cool
+      - LLDAP_LDAP_USER_PASS={{ ldap_admin_pass }}
+    volumes:
+      - "{{ defualt_relative_docker_data_path }}/ldap:/data"
+
+
   authelia:
     image: authelia/authelia
     container_name: authelia
