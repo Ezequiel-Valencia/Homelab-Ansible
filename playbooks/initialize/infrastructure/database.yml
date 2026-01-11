@@ -10,10 +10,6 @@
   pre_tasks:
     - name: Get Facts and Switch Python Env
       ansible.builtin.include_tasks: ../../tasks/change-and-gather.yml
-    - name: Include Infrastructure Secrets
-      ansible.builtin.include_vars: ../../inventory/secrets/traefik.secrets.yml
-    - name: Include DB Secrets
-      ansible.builtin.include_vars: ../../inventory/secrets/db.secrets.yml
 
   roles:
     - db_install

@@ -32,10 +32,5 @@
     - name: Get Facts and Switch Python Env
       ansible.builtin.include_tasks: ../../tasks/change-and-gather.yml
 
-    - name: Include Media Secrets
-      ansible.builtin.include_vars: ../../inventory/secrets/media.secrets.yml
-    - name: Include Traefik Secrets
-      ansible.builtin.include_vars: ../../inventory/secrets/traefik.secrets.yml
-
   roles:
     - media_install
