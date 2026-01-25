@@ -8,9 +8,8 @@
 
 - name: Create DB Resource
   vars:
-    docker_template_files:
-      - src: db.compose.yml
-        dest_name: db.compose.yml
-    compose_file: db.compose.yml
+    docker_template_files: []
+    source_compose_file: db.compose.yml
+    remote_compose_file: db.compose.yml
     compose_project_name: db
-  ansible.builtin.include_tasks: ../../tasks/docker-compose-up.yml
+  ansible.builtin.include_tasks: ../tasks/docker-compose-up.yml
