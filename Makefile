@@ -39,3 +39,8 @@ set_policies:
 	@echo "🚀 Set Node Policies"
 	@ansible-playbook -K ./playbooks/debian_policy.yml
 
+## Set Policies
+.PHONY: proxmox
+proxmox:
+	@echo "🚀 Configure Type 1 Hypervisor OS"
+	@ansible-playbook -K ./playbooks/initialize/proxmox.yml
