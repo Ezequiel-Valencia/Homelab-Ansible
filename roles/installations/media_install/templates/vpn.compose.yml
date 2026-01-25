@@ -2,7 +2,7 @@ services:
     gluetun:
         image: qmcgaw/gluetun:latest
         restart: unless-stopped
-        container_name: "{{ media_install_container_name }}"
+        container_name: gluetun
         hostname: gluetun
         networks:
             gluetun_vpn:

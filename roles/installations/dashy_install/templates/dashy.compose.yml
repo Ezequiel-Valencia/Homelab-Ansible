@@ -1,7 +1,7 @@
 
 services:
   dashy:
-    image: lissy93/dashy:3.1.0
+    image: lissy93/dashy:latest
     restart: always
     container_name: dashy
     dns: 10.0.0.6

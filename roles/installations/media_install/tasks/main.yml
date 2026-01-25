@@ -24,9 +24,8 @@
 
 - name: Create VPN Resource
   vars:
-    docker_template_files:
-      - src: vpn.compose.yml
-        dest_name: vpn.compose.yml
-    compose_file: vpn.compose.yml
+    docker_template_files: []
+    source_compose_file: vpn.compose.yml
+    remote_compose_file: vpn.compose.yml
     compose_project_name: vpn
-  ansible.builtin.include_tasks: ../../tasks/docker-compose-up.yml
+  ansible.builtin.include_tasks: ../tasks/docker-compose-up.yml

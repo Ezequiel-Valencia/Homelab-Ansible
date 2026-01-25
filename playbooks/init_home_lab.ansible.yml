@@ -1,4 +1,7 @@
 ---
+- name: Apply Debian VM Policy
+  ansible.builtin.import_playbook: debian_policy.yml
+
 - name: Infrastructure
   ansible.builtin.import_playbook: initialize/all_infrastructure.yml
 

@@ -56,9 +56,8 @@
 
 - name: Create Traefik Resource
   vars:
-    docker_template_files:
-      - src: online.compose.j2
-        dest_name: nextcloud.compose
-    compose_file: nextcloud.compose
+    docker_template_files: []
+    source_compose_file: online.compose.j2
+    remote_compose_file: nextcloud.compose
     compose_project_name: nextcloud
   ansible.builtin.include_tasks: ../tasks/docker-compose-up.yml

@@ -1,6 +1,6 @@
 ---
-- name: Init Media Servers
-  hosts: public_services
+- name: Init Public Services
+  hosts: public
   gather_facts: false
   vars:
     other_port: true
@@ -9,11 +9,5 @@
   pre_tasks:
     - name: Get Facts and Switch Python Env
       ansible.builtin.include_tasks: ../../tasks/change-and-gather.yml
-
-  roles:
-    - debian-system-startup
-
-- name: Init Public Services
-  hosts: public
   roles:
     - public_services

@@ -8,9 +8,7 @@ media_install_jackett_config_path: "{{ defualt_relative_docker_data_path }}/Conf
 # media_install_internal_downloads: "/media/downloads"
 
 
-media_install_container_name: gluetun
-
-media_install_unified_network: "service:{{ container_name }}"
+media_install_unified_network: "service:gluetun"
 media_install_mount: /mnt/k8data/media
 
 

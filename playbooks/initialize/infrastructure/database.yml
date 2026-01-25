@@ -9,7 +9,7 @@
 
   pre_tasks:
     - name: Get Facts and Switch Python Env
-      ansible.builtin.include_tasks: ../../tasks/change-and-gather.yml
+      ansible.builtin.include_tasks: ../../../tasks/change-and-gather.yml
 
   roles:
     - db_install
