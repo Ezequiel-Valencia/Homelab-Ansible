@@ -9,13 +9,21 @@ check: ## Run code quality tools.
 # Ansible Commands
 ## Infrastructure
 .PHONY: infra
-infra: ## Run code quality tools.
+infra:
 	@echo "🚀 Making all infrastructure related resources"
 	@ansible-playbook -K ./playbooks/initialize/all_infrastructure.yml
 	@echo "🚀 Finished making all infrastructure related resources"
 
 .PHONY: misc_infra
-misc_infra: ## Run code quality tools.
+misc_infra:
 	@echo "🚀 Making all misc infrastructure"
 	@ansible-playbook -K ./playbooks/initialize/infrastructure/misc.yml
 	@echo "🚀 Finished making all misc infrastructure related resources"
+
+
+## K8
+.PHONY: k8
+k8:
+	@echo "🚀 Configuring k8 nodes"
+	@ansible-playbook -K ./playbooks/initialize/all_k8.yml
+
