@@ -44,3 +44,11 @@ set_policies:
 proxmox:
 	@echo "🚀 Configure Type 1 Hypervisor OS"
 	@ansible-playbook -K ./playbooks/initialize/proxmox.yml
+
+.PHONY: homelab
+homelab:
+	@echo "🚀 Create Entire Homelab"
+	@echo "Proxmox initialize"
+	@ansible-playbook -K ./playbooks/initialize/proxmox.yml
+	@echo "VM initialize"
+	@ansible-playbook -K ./playbooks/init_home_lab.ansible.yml
