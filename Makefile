@@ -21,6 +21,12 @@ misc_infra:
 	@echo "🚀 Finished making all misc infrastructure related resources"
 
 
+## Public Services
+.PHONY: public_services
+public_services:
+	@echo "🚀 Set Public Services"
+	@ansible-playbook -K ./playbooks/initialize/public_services.yml
+
 ## K8
 .PHONY: k8
 k8:
