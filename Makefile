@@ -27,3 +27,9 @@ k8:
 	@echo "🚀 Configuring k8 nodes"
 	@ansible-playbook -K ./playbooks/initialize/all_k8.yml
 
+## Set Policies
+.PHONY: set_policies
+set_policies:
+	@echo "🚀 Set Node Policies"
+	@ansible-playbook -K ./playbooks/debian_policy.yml
+
