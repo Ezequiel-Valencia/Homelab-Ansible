@@ -1,4 +1,4 @@
-- name: Template Docker Compose and Env Files
+- name: Template Env Files
   become: true
   ansible.builtin.template:
     mode: u=rw,g=r,o=
@@ -10,13 +10,30 @@
   loop_control:
     loop_var: docks
 
+- name: Template Docker Compose File
+  become: true
+  ansible.builtin.template:
+    mode: u=rw,g=r,o=
+    group: admin
+    owner: ansible
+    src: "{{ source_compose_file }}"
+    dest: "{{ defualt_relative_docker_data_path }}/{{ remote_compose_file }}"
+  changed_when: false # Will always template since template gets deleted
+
 - name: Create Resources
   become: true
   community.docker.docker_compose_v2:
     project_name: '{{ compose_project_name }}'
     project_src: "{{ defualt_relative_docker_data_path }}/"
     files:
-      - '{{ compose_file }}'
+      - '{{ remote_compose_file }}'
+
+- name: Remove Templated Compose
+  become: true
+  ansible.builtin.file:
+    path: "{{ defualt_relative_docker_data_path }}/{{ remote_compose_file }}"
+    state: absent
+  changed_when: false
 
 - name: Remove All Templated Files
   become: true

@@ -39,9 +39,8 @@
 
 - name: Create Traefik Resource
   vars:
-    docker_template_files:
-      - src: traefik.compose.yml
-        dest_name: traefik.compose
-    compose_file: traefik.compose
+    docker_template_files: []
+    source_compose_file: traefik.compose.yml
+    remote_compose_file: traefik.compose
     compose_project_name: traefik
   ansible.builtin.include_tasks: ../tasks/docker-compose-up.yml
