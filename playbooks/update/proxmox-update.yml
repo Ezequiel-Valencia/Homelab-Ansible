@@ -5,6 +5,7 @@
   vars:
     other_port: false
     allow_automatic_reboot_value: false
+  vars_files: []
 
   pre_tasks:
     - name: Get Facts and Switch Python Env

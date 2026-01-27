@@ -5,6 +5,7 @@
   vars:
     other_port: true
     alt_ssh_port: 5320
+  vars_files: []
 
   pre_tasks:
     - name: Get Facts and Switch Python Env
