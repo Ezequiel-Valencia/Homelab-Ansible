@@ -1,3 +1,4 @@
+SHELL = /bin/bash
 .PHONY: check
 check: ## Run code quality tools.
 	@echo "🚀 Checking lock file consistency with 'pyproject.toml'"
@@ -45,10 +46,50 @@ proxmox:
 	@echo "🚀 Configure Type 1 Hypervisor OS"
 	@ansible-playbook -K ./playbooks/initialize/proxmox.yml
 
+# Terraform Commands
+
+## Network
+### Cloudflare
+.PHONY: cloudflare_zone_management
+cloudflare_zone_management:
+	@echo "🚀 Create Cloudflare Zone Management"
+	@pushd "System Provision/Terraform/cloudflare/zone-management" && terraform apply || popd
+
+.PHONY: cloudflare_zero_trust
+cloudflare_zero_trust:
+	@echo "🚀 Create Cloudflare Zero Trust"
+	@pushd "System Provision/Terraform/cloudflare/zero-trust" && terraform apply || popd
+
+### Router
+.PHONY: router
+router:
+	@echo "🚀 Set Router config"
+	@pushd "System Provision/Terraform/router" && terraform apply || popd
+
+## AWS
+### Storage
+.PHONY: aws_storage
+aws_storage:
+	@echo "🚀 Make AWS Backup Storage"
+	@pushd "System Provision/Terraform/aws/backup-storage" && terraform apply || popd
+
+## VMs
+.PHONY: vms
+vms:
+	@echo "🚀 Make VMs in Proxmox"
+	@pushd "System Provision/Terraform/proxmox" && terraform apply || popd
+
+
 .PHONY: homelab
 homelab:
 	@echo "🚀 Create Entire Homelab"
-	@echo "Proxmox initialize"
+	@echo "#### Auxiliary Entities ####"
+	@make cloudflare_zero_trust
+	@make router
+	@make aws_storage
+	@echo "#### OS Entities ####"
+	@echo "Proxmox OS initialize"
 	@ansible-playbook -K ./playbooks/initialize/proxmox.yml
-	@echo "VM initialize"
+	@make vms
+	@echo "VM OS initialize"
 	@ansible-playbook -K ./playbooks/init_home_lab.ansible.yml
