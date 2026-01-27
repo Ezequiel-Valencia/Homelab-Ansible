@@ -83,7 +83,13 @@ vms:
 .PHONY: homelab
 homelab:
 	@echo "🚀 Create Entire Homelab"
-	@echo "Proxmox initialize"
+	@echo "#### Auxiliary Entities ####"
+	@make cloudflare_zero_trust
+	@make router
+	@make aws_storage
+	@echo "#### OS Entities ####"
+	@echo "Proxmox OS initialize"
 	@ansible-playbook -K ./playbooks/initialize/proxmox.yml
-	@echo "VM initialize"
+	@make vms
+	@echo "VM OS initialize"
 	@ansible-playbook -K ./playbooks/init_home_lab.ansible.yml
