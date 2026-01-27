@@ -9,8 +9,7 @@ SOURCE_DIRS = [
     "/volume1/k8data/storage/ai",
     "/volume1/k8data/storage/media-config",
     "/volume1/k8data/storage/mobilizon",
-    "/volume1/k8data/default-storage/bots-gitea-storage-claim-pvc-a77faf9a-a455-42c1-b86f-b5dd40d2df35",
-    "/volume1/k8data/default-storage/bots-karakeep-storage-claim-pvc-559d7cd8-182b-4190-a616-78cd8bfb1501",
+    "/volume1/k8data/storage/bots",
     "/volume1/k8data/default-storage/monitoring-alertmanager-homelab-alertmanager-db-alertmanager-homelab-alertmanager-0-pvc-88c4fe46-635b-405a-b94c-8a07d3d0614e"
 ]
 
