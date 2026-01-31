@@ -6,6 +6,8 @@
     extensions:
       - "yml"
 
+- name: Setup DNS
+  ansible.builtin.include_tasks: set_dns.yml
 
 ########################
 ## Dependency Install ##

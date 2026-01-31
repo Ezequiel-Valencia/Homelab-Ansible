@@ -1,0 +1,35 @@
+#  # https://serverfault.com/questions/1145358/how-can-i-configure-my-dns-settings-on-debian-12
+
+- name: Install ResolveD
+  become: true
+  ansible.builtin.apt:
+    pkg: systemd-resolved
+    state: present
+
+- name: Set Public Groups DNS
+  become: true
+  ansible.builtin.blockinfile:
+    create: false
+    backup: false
+    path: /etc/systemd/resolved.conf
+    block: |
+      DNS=9.9.9.9
+      FallbackDNS=1.1.1.1
+  when: "'public_services' in group_names"
+
+- name: Set Local Groups DNS
+  become: true
+  ansible.builtin.blockinfile:
+    create: false
+    backup: false
+    path: /etc/systemd/resolved.conf
+    block: |
+      DNS=10.0.0.6
+      FallbackDNS=9.9.9.9 1.1.1.1
+  when: "'public_services' not in group_names"
+
+- name: Restart Systemd Resolved
+  become: true
+  ansible.builtin.service:
+    name: systemd-resolved
+    state: restarted
