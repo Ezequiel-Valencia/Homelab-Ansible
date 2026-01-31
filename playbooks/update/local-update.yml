@@ -1,6 +1,6 @@
 ---
 - name: Update Local Servers
-  hosts: debian_server
+  hosts: debian_vms
   gather_facts: false
   vars:
     other_port: true
