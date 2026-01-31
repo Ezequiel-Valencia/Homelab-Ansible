@@ -21,6 +21,11 @@ misc_infra:
 	@ansible-playbook -K ./playbooks/initialize/infrastructure/misc.yml
 	@echo "🚀 Finished making all misc infrastructure related resources"
 
+.PHONY: database
+database:
+	@echo "🚀 Making all database"
+	@ansible-playbook -K ./playbooks/initialize/infrastructure/database.yml
+
 
 ## Public Services
 .PHONY: public_services

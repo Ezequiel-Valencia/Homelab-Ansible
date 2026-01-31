@@ -72,7 +72,8 @@ tcp:
       middlewares:
         - default-whitelist
       service: postgres
-      tls: {}
+      tls:
+        passthrough: true
 
     postgres-tcp:
       entryPoints:
