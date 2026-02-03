@@ -6,8 +6,10 @@
     extensions:
       - "yml"
 
+# Can't have systemd resolved on DNS server because it hogs port 53
 - name: Setup DNS
   ansible.builtin.include_tasks: set_dns.yml
+  when: "'Pihole' not in inventory_hostname"
 
 ########################
 ## Dependency Install ##
