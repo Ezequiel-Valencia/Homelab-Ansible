@@ -1,20 +1,23 @@
 #  # https://serverfault.com/questions/1145358/how-can-i-configure-my-dns-settings-on-debian-12
 
-- name: Install ResolveD
+# Problems with it appending 'search DOMAINS' to resolv.conf. Because it then causes all
+# queries that don't have more than 5 dots "mycluster.", to have ".DOMAIN" appended to it.
+# Which is almost all K8 queries
+- name: Remove ResolveD
   become: true
   ansible.builtin.apt:
     pkg: systemd-resolved
-    state: present
+    state: absent
 
 - name: Set Public Groups DNS
   become: true
   ansible.builtin.blockinfile:
     create: false
     backup: false
-    path: /etc/systemd/resolved.conf
+    path: /etc/resolv.conf
     block: |
-      DNS=9.9.9.9
-      FallbackDNS=1.1.1.1
+      nameserver 9.9.9.9
+      nameserver 1.1.1.1
   when: "'public_services' in group_names"
 
 - name: Set Local Groups DNS
@@ -22,14 +25,8 @@
   ansible.builtin.blockinfile:
     create: false
     backup: false
-    path: /etc/systemd/resolved.conf
+    path: /etc/resolv.conf
     block: |
-      DNS=10.0.0.6
-      FallbackDNS=9.9.9.9 1.1.1.1
+      nameserver 10.0.0.6
+      nameserver 9.9.9.9
   when: "'public_services' not in group_names"
-
-- name: Restart Systemd Resolved
-  become: true
-  ansible.builtin.service:
-    name: systemd-resolved
-    state: restarted
