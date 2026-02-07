@@ -92,6 +92,15 @@ tcp:
       service: qdrant
       tls: {}
 
+    memcache:
+      entryPoints:
+        - memcache
+      rule: "HostSNI(`memcache.database.homelab.ezequielvalencia.com`)"
+      middlewares:
+        - default-whitelist
+      service: qdrant
+      tls: {}
+
   services:
     # Tools
     postgres:
@@ -103,6 +112,11 @@ tcp:
       loadBalancer:
         servers:
           - address: "qdrant:6334"
+
+    memcache:
+      loadBalancer:
+        servers:
+          - address: "memcache:11211"
 
   middlewares:
     default-whitelist:

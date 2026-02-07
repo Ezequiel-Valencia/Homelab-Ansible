@@ -14,6 +14,8 @@ entryPoints:
   https:
     address: ":443"
 
+  memcache:
+    address: ":11211"
   pg:
     address: ":5432"
   pgu:

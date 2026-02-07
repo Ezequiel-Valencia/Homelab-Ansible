@@ -40,6 +40,14 @@ services:
             start_period: 30s
             timeout: 10s
 
+    memcache:
+        image: memcached:trixie
+        restart: unless-stopped
+        container_name: memcache
+        hostname: memcache
+        networks:
+            database_network:
+
     qdrant:
         image: qdrant/qdrant:v1.15.2
         restart: unless-stopped
@@ -62,11 +70,12 @@ services:
         networks:
             database_network:
         ports:
-            - 80:80
-            - 443:443
-            - 5432:5432
-            - 54333:54333
-            - 6334:6334
+            - 0.0.0.0:80:80
+            - 0.0.0.0:443:443
+            - 0.0.0.0:5432:5432
+            - 0.0.0.0:54333:54333
+            - 0.0.0.0:6334:6334
+            - 0.0.0.0:11211:11211
         environment:
             - CF_DNS_API_TOKEN={{ cloudflare_token }}
             - CF_ZONE_API_TOKEN={{ cloudflare_token }}
