@@ -81,8 +81,9 @@ def should_upload_happen(s3_client, backup: BackupSpec) -> tuple[bool, str]:
         last_modified = response['LastModified']
         
         if last_modified < two_weeks_ago:
-            print(f"Old file found (Modified: {last_modified}). Deleting...")
-            s3_client.delete_object(Bucket=BUCKET_NAME, Key=backup.aws_key)
+            print(f"Old file found (Modified: {last_modified}). Moving to old...")
+            copy_source = {'Bucket': BUCKET_NAME, 'Key': backup.aws_key}
+            s3_client.copy_object(Bucket=BUCKET_NAME, Key=f"{backup.aws_key}.old", CopySource=copy_source)
             return True, "Last upload is over two weeks old."
         else:
             return False, "Current archive is less than 2 weeks old. Skipping upload."
