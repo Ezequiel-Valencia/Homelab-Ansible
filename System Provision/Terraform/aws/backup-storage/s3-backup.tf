@@ -27,6 +27,22 @@ resource "aws_s3_bucket" "create-cold-storage-bucket" {
   bucket = var.bucket_name
 }
 
+
+resource "aws_s3_bucket_lifecycle_configuration" "set-hl-bucket-lifecycle" {
+  bucket = aws_s3_bucket.create-cold-storage-bucket.id
+
+  # Pricing System: https://aws.amazon.com/s3/pricing/
+  rule {
+    id     = "ia-after-30-days"
+    status = "Enabled"
+
+    transition {
+      days          = 30
+      storage_class = "STANDARD_IA"
+    }
+  }
+}
+
 # Set Ownership Controls (Allow ACLs) 
 resource "aws_s3_bucket_ownership_controls" "ownership" {
   bucket = aws_s3_bucket.create-cold-storage-bucket.id
