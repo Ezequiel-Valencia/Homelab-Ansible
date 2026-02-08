@@ -10,6 +10,7 @@ dependencies = [
     "pyyaml>=6.0.1,<7",
     "ansible-core>=2.18.0,<3",
     "ansible-lint>=25",
+    "py7zr>=1.1.0",
 ]
 
 
