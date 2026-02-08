@@ -78,6 +78,11 @@ aws_storage:
 	@echo "🚀 Make AWS Backup Storage"
 	@pushd "System Provision/Terraform/aws/backup-storage" && terraform apply || popd
 
+.PHONY: aws_cloudfront
+aws_cloudfront:
+	@echo "🚀 Make AWS Backup Storage"
+	@pushd "System Provision/Terraform/aws/cloudfront" && terraform apply || popd
+
 ## VMs
 .PHONY: vms
 vms:
