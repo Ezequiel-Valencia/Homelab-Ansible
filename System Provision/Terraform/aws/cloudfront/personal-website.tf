@@ -3,7 +3,7 @@
 # https://registry.terraform.io/providers/hashicorp/aws/latest/docs
 
 resource "aws_cloudfront_response_headers_policy" "cors_policy" {
-  name = "ezequiel cors"
+  name = "ezequiel-website-cors"
 
   cors_config {
     access_control_allow_origins {
