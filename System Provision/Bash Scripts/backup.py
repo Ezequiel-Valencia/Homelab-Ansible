@@ -9,8 +9,7 @@ SOURCE_DIRS = [
     "/volume1/k8data/storage/ai",
     "/volume1/k8data/storage/media-config",
     "/volume1/k8data/storage/mobilizon",
-    "/volume1/k8data/storage/bots",
-    "/volume1/k8data/default-storage/monitoring-alertmanager-homelab-alertmanager-db-alertmanager-homelab-alertmanager-0-pvc-88c4fe46-635b-405a-b94c-8a07d3d0614e"
+    "/volume1/k8data/storage/bots"
 ]
 
 # Destination directory for rsync and zips
