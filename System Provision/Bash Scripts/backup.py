@@ -52,14 +52,14 @@ def cleanup_old_backups(backup_path: str, max_age_days=14) -> None:
 def main():
     for src in SOURCE_DIRS:
         folder_name: str = os.path.basename(os.path.normpath(src))
-        rsync_cache_path: str = f"{rsync_folder_cache}/{folder_name}"
+        apps_cache: str = f"{rsync_folder_cache}/{folder_name}"
         zip_path = f"{all_zips_folder}/{folder_name}"
 
-        print(f"Syncing {src} -> {rsync_cache_path}")
-        run_rsync(src=src, dest=rsync_cache_path)
+        print(f"Syncing {src} -> {rsync_folder_cache}")
+        run_rsync(src=src, dest=rsync_folder_cache)
 
-        print(f"Zipping {rsync_cache_path}")
-        zip_file = zip_directory(src_dir=rsync_cache_path, output_dir=zip_path)
+        print(f"Zipping {apps_cache}")
+        zip_file = zip_directory(src_dir=apps_cache, output_dir=zip_path)
         print(f"Created: {zip_file}\n")
 
         print("Checking for old backups...")
