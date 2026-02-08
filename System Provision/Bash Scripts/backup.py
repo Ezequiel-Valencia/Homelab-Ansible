@@ -3,13 +3,24 @@ import os
 import time
 from datetime import datetime
 import py7zr
+from dataclasses import dataclass
+
+@dataclass(frozen=True)
+class BackupSpec:
+    dir_path: str
+    remote_backup: bool
+    aws_key: str
+
+#########################################
+#           Modify This Section         #
+#########################################
 
 # List of source directories to sync
-SOURCE_DIRS = [
-    "/volume1/k8data/storage/bots",
-    "/volume1/k8data/storage/ai",
-    "/volume1/k8data/storage/media-config",
-    "/volume1/k8data/storage/mobilizon"
+BACKUPS = [
+    BackupSpec(dir_path="/volume1/k8data/storage/bots", remote_backup=True, aws_key="bots.7z"),
+    BackupSpec(dir_path="/volume1/k8data/storage/ai", remote_backup=False, aws_key=""),
+    BackupSpec(dir_path="/volume1/k8data/storage/media-config", remote_backup=True, aws_key="media.7z"),
+    BackupSpec(dir_path="/volume1/k8data/storage/mobilizon", remote_backup=False, aws_key="")
 ]
 
 ENCRYPT_PASSWORD=""
@@ -19,6 +30,8 @@ DEST_DIR = "/volume1/@home/ezequiel/backups"
 rsync_folder_cache = f"{DEST_DIR}/rsync"
 all_zips_folder = f"{DEST_DIR}/zips"
 
+
+#!-------------------------------------------!#
 
 def run_rsync(src: str, dest: str) -> None:
     """Run rsync to sync a directory to the destination."""
@@ -55,7 +68,8 @@ def cleanup_old_backups(backup_path: str, max_age_days=14) -> None:
 
 
 def main():
-    for src in SOURCE_DIRS:
+    for backup in BACKUPS:
+        src = backup.dir_path
         folder_name: str = os.path.basename(os.path.normpath(src))
         apps_cache: str = f"{rsync_folder_cache}/{folder_name}"
         zip_path = f"{all_zips_folder}/{folder_name}"
