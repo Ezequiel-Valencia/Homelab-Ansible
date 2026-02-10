@@ -99,6 +99,13 @@ resource "cloudflare_zero_trust_tunnel_cloudflared_config" "homelab_tunnel_confi
       }
     },
     {
+        hostname = "leantime.tunnel.homelab.ezequielvalencia.com"
+        service  = "http://leantime.bots.svc.cluster.local:80"
+        origin_request = {
+        no_happy_eyeballs = true 
+      }
+    },
+    {
         service = "http_status:404" # Applied to entire tunnel if previous hits don't match
     }
     ]
