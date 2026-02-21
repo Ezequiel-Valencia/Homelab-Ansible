@@ -1,0 +1,73 @@
+---
+- name: Configure GRUB for IOMMU and Passthrough
+  become: true
+  ansible.builtin.lineinfile:
+    path: /etc/default/grub
+    regexp: '^GRUB_CMDLINE_LINUX_DEFAULT='
+    line: 'GRUB_CMDLINE_LINUX_DEFAULT="quiet {{ _grub_iommu }}{{ _grub_pt }}{{ _grub_acs }}{{ _grub_fb }}"'
+    backup: true
+  vars:
+    _grub_iommu: "{{ 'intel_iommu=on' if pve_cpu_vendor == 'intel' else 'amd_iommu=on' }}"
+    _grub_pt: "{{ ' iommu=pt' if pve_iommu_pt else '' }}"
+    _grub_acs: "{{ ' pcie_acs_override=downstream,multifunction' if pve_acs_override else '' }}"
+    _grub_fb: "{{ ' nofb nomodeset video=vesafb:off,efifb:off' if pve_disable_framebuffer else '' }}"
+  notify:
+    - Update grub
+    - Update initramfs
+
+- name: Add VFIO modules to /etc/modules
+  become: true
+  ansible.builtin.lineinfile:
+    path: /etc/modules
+    line: "{{ item }}"
+    state: present
+  loop: "{{ pve_vfio_modules }}"
+  notify: Update initramfs
+
+- name: Blacklist host GPU drivers
+  become: true
+  ansible.builtin.lineinfile:
+    path: /etc/modprobe.d/blacklist.conf
+    line: "blacklist {{ item }}"
+    create: true
+    mode: '0644'
+  loop: "{{ pve_blacklist_drivers }}"
+  notify: Update initramfs
+
+- name: Bind specific PCI IDs to vfio-pci
+  become: true
+  ansible.builtin.copy:
+    dest: /etc/modprobe.d/vfio.conf
+    content: |
+      options vfio-pci ids={{ pve_vfio_pci_ids }} disable_vga=1
+    mode: '0644'
+  when: pve_vfio_pci_ids | length > 0
+  notify: Update initramfs
+
+- name: Remove vfio-pci binding if no IDs provided
+  become: true
+  ansible.builtin.file:
+    path: /etc/modprobe.d/vfio.conf
+    state: absent
+  when: pve_vfio_pci_ids | length == 0
+  notify: Update initramfs
+
+- name: Configure unsafe interrupts
+  become: true
+  ansible.builtin.copy:
+    dest: /etc/modprobe.d/iommu_unsafe_interrupts.conf
+    content: |
+      options vfio_iommu_type1 allow_unsafe_interrupts=1
+    mode: '0644'
+  when: pve_allow_unsafe_interrupts
+  notify: Update initramfs
+
+- name: Configure KVM to ignore MSRs
+  become: true
+  ansible.builtin.copy:
+    dest: /etc/modprobe.d/kvm.conf
+    content: |
+      options kvm ignore_msrs=1 report_ignored_msrs=0
+    mode: '0644'
+  when: pve_kvm_ignore_msrs
+  notify: Update initramfs
