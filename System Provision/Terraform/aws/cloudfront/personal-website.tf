@@ -4,6 +4,7 @@
 
 resource "aws_cloudfront_response_headers_policy" "cors_policy" {
   name = "ezequiel-website-cors"
+  comment = "CORS policy for cross-origin access"
 
   cors_config {
     access_control_allow_origins {

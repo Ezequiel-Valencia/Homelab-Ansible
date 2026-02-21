@@ -97,6 +97,7 @@ homelab:
 	@make cloudflare_zero_trust
 	@make router
 	@make aws_storage
+	@make aws_cloudfront
 	@echo "#### OS Entities ####"
 	@echo "Proxmox OS initialize"
 	@ansible-playbook -K ./playbooks/initialize/proxmox.yml
