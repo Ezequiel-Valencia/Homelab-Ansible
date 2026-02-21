@@ -21,10 +21,18 @@ locals {
             
             2). Copy ssh keys
         EOT
+    
+    # 2 nodes, 16cpu - 8 = 8cpu left, 8cpu left - 3cpu = 5cpu left
+    k8_node_cores = 4
+
+    # 2 nodes, 32GB total - 20GB, 12GB left - 6GB for other nodes = 6GB left
+    k8_node_memory = 10 * 1024
+
+    compute_node_name = "zpc2"
 }
 
 resource "proxmox_virtual_environment_vm" "dashy" {
-    node_name = "zpc"
+    node_name = local.compute_node_name
     vm_id = 301
     name = "Dashy"
 
@@ -73,7 +81,7 @@ resource "proxmox_virtual_environment_vm" "dashy" {
 }
 
 resource "proxmox_virtual_environment_vm" "pihole" {
-    node_name = "zpc"
+    node_name = local.compute_node_name
     vm_id = 300
     name = "Pihole"
 
@@ -122,7 +130,7 @@ resource "proxmox_virtual_environment_vm" "pihole" {
 }
 
 resource "proxmox_virtual_environment_vm" "monitor" {
-    node_name = "zpc"
+    node_name = local.compute_node_name
     vm_id = 302
     name = "Monitor"
 
@@ -133,21 +141,21 @@ resource "proxmox_virtual_environment_vm" "monitor" {
     tags                    = ["kubernetes"]
 
     cpu {
-        cores      = 3
+        cores      = local.k8_node_cores
         type       = "x86-64-v2-AES"
     }
 
     disk {
         backup            = true
         interface         = "scsi0"
-        datastore_id      = "hdd"
+        datastore_id      = "local-lvm"
         iothread          = true
         path_in_datastore = "vm-302-disk-0"
         size              = 32
     }
 
     memory {
-        dedicated      = 10240
+        dedicated      = local.k8_node_memory
     }
 
     network_device {
@@ -161,7 +169,7 @@ resource "proxmox_virtual_environment_vm" "monitor" {
 }
 
 resource "proxmox_virtual_environment_vm" "longhorn" {
-    node_name = "zpc"
+    node_name = local.compute_node_name
     vm_id = 500
     name = "ZPC-Longhorn"
 
@@ -172,21 +180,29 @@ resource "proxmox_virtual_environment_vm" "longhorn" {
     tags                    = ["kubernetes"]
 
     cpu {
-        cores      = 2
+        cores      = local.k8_node_cores
         type       = "x86-64-v2-AES"
     }
 
     disk {
         backup            = true
         interface         = "scsi0"
-        datastore_id      = "hdd"
+        datastore_id      = "local-lvm"
         iothread          = true
         path_in_datastore = "vm-500-disk-0"
         size              = 42
     }
 
+    hostpci {
+        device   = "hostpci0"
+        id       = "0000:01:00"
+        pcie     = false
+        rombar   = true
+        xvga     = false
+    }
+
     memory {
-        dedicated      = 4096
+        dedicated      = local.k8_node_memory
     }
 
     network_device {
