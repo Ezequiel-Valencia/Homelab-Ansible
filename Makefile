@@ -39,6 +39,11 @@ k8:
 	@echo "🚀 Configuring k8 nodes"
 	@ansible-playbook -K ./playbooks/initialize/all_k8.yml
 
+.PHONY: k8_wn
+k8_wn:
+	@echo "🚀 Configuring k8 worker nodes"
+	@ansible-playbook -K ./playbooks/initialize/k8/reg_nodes.yml
+
 ## Set Policies
 .PHONY: set_policies
 set_policies:
