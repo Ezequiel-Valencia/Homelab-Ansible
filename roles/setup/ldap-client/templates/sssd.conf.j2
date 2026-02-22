@@ -1,0 +1,13 @@
+[sssd]
+services = nss, pam
+config_file_version = 2
+domains = homelab
+
+[domain/homelab]
+id_provider = ldap
+auth_provider = ldap
+ldap_uri = {{ ldap_uri }}
+ldap_search_base = {{ ldap_search_base }}
+ldap_id_use_start_tls = {{ ldap_id_use_start_tls }}
+ldap_tls_cacert = {{ ldap_tls_cacert }}
+cache_credentials = True

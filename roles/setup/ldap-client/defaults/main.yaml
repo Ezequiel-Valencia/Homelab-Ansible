@@ -1,0 +1,3 @@
+---
+ldap_tls_cacert: "/etc/ssl/certs/ldap_cert.pem"
+ldap_id_use_start_tls: "true"

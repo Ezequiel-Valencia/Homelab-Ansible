@@ -1,0 +1,60 @@
+---
+- name: Install SSSD and LDAP client packages (Debian/Ubuntu)
+  become: true
+  ansible.builtin.apt:
+    name:
+      - sssd
+      - sssd-tools
+      # - libnss-sss
+      # - libpam-sss
+      # - adcli
+    state: present
+    update_cache: true
+  when: ansible_os_family == "Debian"
+
+- name: Install SSSD and LDAP client packages (RHEL/CentOS)
+  become: true
+  ansible.builtin.dnf:
+    name:
+      - sssd
+      - sssd-tools
+      # - oddjob-mkhomedir
+    state: present
+  when: ansible_os_family == "RedHat"
+
+- name: Deploy SSSD configuration
+  become: true
+  ansible.builtin.template:
+    src: sssd.conf.j2
+    dest: /etc/sssd/sssd.conf
+    owner: root
+    group: root
+    mode: '0600'
+  notify: Restart SSSD
+
+- name: Copy Certificate
+  become: true
+  ansible.builtin.copy:
+    src: ldap_cert.pem
+    dest: '{{ ldap_tls_cacert }}'
+    owner: root
+    group: root
+    mode: '0644'
+  notify: Restart SSSD
+
+# - name: Enable automatic home directory creation (Debian/Ubuntu)
+#   ansible.builtin.command: pam-auth-update --enable mkhomedir
+#   when: ansible_os_family == "Debian"
+#   changed_when: false
+
+# - name: Enable automatic home directory creation (RHEL/CentOS)
+#   ansible.builtin.command: authselect select sssd with-mkhomedir --force
+#   when: ansible_os_family == "RedHat"
+#   changed_when: false
+
+- name: Ensure SSSD is enabled and started
+  become: true
+  ansible.builtin.systemd:
+    name: sssd
+    state: started
+    enabled: true
