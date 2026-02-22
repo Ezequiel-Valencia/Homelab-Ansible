@@ -22,6 +22,7 @@
     state: present
   when: ansible_os_family == "RedHat"
 
+# https://github.com/lldap/lldap/tree/main/example_configs/pam
 - name: Deploy SSSD configuration
   become: true
   ansible.builtin.template:
@@ -40,6 +41,15 @@
     owner: root
     group: root
     mode: '0644'
+  notify: Restart SSSD
+
+- name: LDAP Config Uses Cert
+  become: true
+  ansible.builtin.lineinfile:
+    path: /etc/ldap/ldap.conf
+    backup: true
+    regexp: '^TLS_CACERT'
+    line: TLS_CACERT      {{ ldap_tls_cacert }}
   notify: Restart SSSD
 
 # - name: Enable automatic home directory creation (Debian/Ubuntu)
