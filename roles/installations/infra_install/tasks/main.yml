@@ -3,5 +3,8 @@
 - name: Authelia Setup
   ansible.builtin.include_tasks: authelia.yml
 
+- name: LDAP Setup
+  ansible.builtin.include_tasks: ldap.yml
+
 - name: Traefik Setup and Compose Up
   ansible.builtin.include_tasks: traefik-task.yml

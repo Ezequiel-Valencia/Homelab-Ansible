@@ -1,0 +1,9 @@
+- name: Copy ldap cert files
+  become: true
+  ansible.builtin.copy:
+    mode: u=r,g=,o=
+    src: "{{ item }}"
+    dest: "{{ defualt_relative_docker_data_path }}/ldap/{{ item }}"
+  loop:
+    - ldap_cert.pem
+    - ldap_privatekey.pem

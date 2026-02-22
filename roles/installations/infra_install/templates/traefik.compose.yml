@@ -66,6 +66,8 @@ services:
     restart: always
     container_name: ldap
     pull_policy: always
+    ports: 
+      - "636:6360"
     security_opt:
       - no-new-privileges:true
     networks:
@@ -75,6 +77,9 @@ services:
       - LLDAP_KEY_SEED={{ ldap_key_seed }}
       - LLDAP_LDAP_BASE_DN=dc=homelab,dc=cool
       - LLDAP_LDAP_USER_PASS={{ ldap_admin_pass }}
+      - LLDAP_LDAPS_OPTIONS__ENABLED=true
+      - LLDAP_LDAPS_OPTIONS__CERT_FILE=/data/ldap_cert.pem
+      - LLDAP_LDAPS_OPTIONS__KEY_FILE=/data/ldap_privatekey.pem
     volumes:
       - "{{ defualt_relative_docker_data_path }}/ldap:/data"
 
