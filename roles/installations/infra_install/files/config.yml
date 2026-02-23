@@ -12,15 +12,6 @@ http:
         - https-redirectscheme
       tls: {}
       service: alienwareprox
-    pcprox:
-      entryPoints:
-        - "https"
-      rule: "Host(`pcprox.homelab.ezequielvalencia.com`)"
-      middlewares:
-        - default-headers
-        - https-redirectscheme
-      tls: {}
-      service: pcprox
     zpcprox:
       entryPoints:
         - "https"
@@ -81,15 +72,10 @@ http:
         servers:
           - url: "https://10.0.0.4:8006"
         passHostHeader: true
-    pcprox:
-      loadBalancer:
-        servers:
-          - url: "https://10.0.0.5:8006"
-        passHostHeader: true
     zpcprox:
       loadBalancer:
         servers:
-          - url: "https://10.0.0.14:8006"
+          - url: "https://10.0.0.5:8006"
         passHostHeader: true
     pihole:
       loadBalancer:
@@ -156,26 +142,3 @@ http:
         middlewares:
           - default-whitelist
           - default-headers
-
-
-tcp:
-  routers:
-    ldap:
-      entryPoints:
-        - ldap
-      rule: "HostSNI(`*`)"
-      middlewares:
-        - default-whitelist
-      service: ldap
-      tls: {}
-  services:
-    # Tools
-    ldap:
-      loadBalancer:
-        servers:
-          - address: "ldap:3890"
-  middlewares:
-    default-whitelist:
-      ipAllowList:
-        sourceRange:
-          - "10.0.0.0/8"

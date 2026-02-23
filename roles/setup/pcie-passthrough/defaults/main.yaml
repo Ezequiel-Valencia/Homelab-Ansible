@@ -1,0 +1,40 @@
+---
+# CPU Architecture: 'intel' or 'amd'
+# pve_cpu_vendor: "intel"
+
+# Enable IOMMU Passthrough
+pve_iommu_pt: true
+
+# Enable ACS override (Only use if your IOMMU grouping is poor)
+pve_acs_override: false
+
+# Disable host framebuffer (Recommended for GPU passthrough to stop the host from using it)
+pve_disable_framebuffer: true
+
+# List of VFIO kernel modules required for passthrough
+pve_vfio_modules:
+  - vfio
+  - vfio_iommu_type1
+  - vfio_pci
+  - vfio_virqfd
+
+# List of drivers to blacklist so the Proxmox host doesn't claim the GPUs
+pve_blacklist_drivers:
+  - radeon
+  - nouveau
+  - nvidia
+  - nvidiafb
+  - amdgpu
+  # - snd_hda_intel
+  # - snd_hda_codec_hdmi
+  # - i915
+
+# Specify PCI device IDs to bind directly to vfio-pci (e.g., "10de:1b81,10de:10f0")
+# Leave as an empty string to skip this step.
+pve_vfio_pci_ids: ""
+
+# Allow unsafe interrupts (Fixes issues on systems without interrupt remapping)
+pve_allow_unsafe_interrupts: false
+
+# Ignore KVM MSRs (Prevents Windows VMs from crashing when running diagnostic tools)
+pve_kvm_ignore_msrs: true
