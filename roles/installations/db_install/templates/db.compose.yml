@@ -40,13 +40,29 @@ services:
             start_period: 30s
             timeout: 10s
 
-    memcache:
-        image: memcached:trixie
+    # memcache:
+    #     image: memcached:trixie
+    #     restart: unless-stopped
+    #     container_name: memcache
+    #     hostname: memcache
+    #     networks:
+    #         database_network:
+
+    mysql:
+        image: mysql:8.4
         restart: unless-stopped
-        container_name: memcache
-        hostname: memcache
+        container_name: mysql
         networks:
             database_network:
+        ports:
+            - "0.0.0.0:3306:3306"
+        environment:
+            - MYSQL_DATABASE=leantime
+            - MYSQL_USER=leantime
+            - MYSQL_PASSWORD={{ mysql_password }}
+            - MYSQL_ROOT_PASSWORD={{ mysql_root_password }}
+        volumes:
+            - "{{ default_relative_docker_data_path }}/mysql:/var/lib/mysql"
 
     qdrant:
         image: qdrant/qdrant:v1.15.2
@@ -70,12 +86,13 @@ services:
         networks:
             database_network:
         ports:
-            - 0.0.0.0:80:80
-            - 0.0.0.0:443:443
-            - 0.0.0.0:5432:5432
-            - 0.0.0.0:54333:54333
-            - 0.0.0.0:6334:6334
-            - 0.0.0.0:11211:11211
+            - 0.0.0.0:80:80 # Web
+            - 0.0.0.0:443:443 # Web
+            - 0.0.0.0:5432:5432 # Postgres
+            - 0.0.0.0:54333:54333 # Postgres
+            - 0.0.0.0:6334:6334 # Qdrant
+            # - 0.0.0.0:3306:3306 # Mysql
+            # - 0.0.0.0:11211:11211 # Memcache
         environment:
             - CF_DNS_API_TOKEN={{ cloudflare_token }}
             - CF_ZONE_API_TOKEN={{ cloudflare_token }}
