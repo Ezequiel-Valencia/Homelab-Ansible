@@ -2,7 +2,7 @@
 
 time_zone: "America/New_York"
 
-defualt_relative_docker_data_path: '/docker_data'
+default_relative_docker_data_path: '/docker_data'
 
 owner_user: zeke
 

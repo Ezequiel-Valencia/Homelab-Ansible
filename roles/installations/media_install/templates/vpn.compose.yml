@@ -95,9 +95,9 @@ services:
         volumes:
             - /etc/localtime:/etc/localtime:ro
             - /var/run/docker.sock:/var/run/docker.sock:ro
-            - {{ defualt_relative_docker_data_path }}/traefik/traefik.yml:/traefik.yml:ro
-            - {{ defualt_relative_docker_data_path }}/traefik/acme.json:/acme.json
-            - {{ defualt_relative_docker_data_path }}/traefik/config.yml:/config.yml:ro
+            - {{ default_relative_docker_data_path }}/traefik/traefik.yml:/traefik.yml:ro
+            - {{ default_relative_docker_data_path }}/traefik/acme.json:/acme.json
+            - {{ default_relative_docker_data_path }}/traefik/config.yml:/config.yml:ro
         labels:
             - "traefik.enable=true"
             - "traefik.http.routers.traefik.entrypoints=http"

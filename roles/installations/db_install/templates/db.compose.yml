@@ -13,7 +13,7 @@ services:
         # ports:
         #     - "127.0.0.1:9999:80"
         volumes:
-            - "{{ defualt_relative_docker_data_path }}/pgadmin:/var/lib/pgadmin"
+            - "{{ default_relative_docker_data_path }}/pgadmin:/var/lib/pgadmin"
             -   type: volume
                 source: backup
                 target: /var/lib/pgadmin/storage/ezq.valencia_gmail.com/backup
@@ -31,8 +31,8 @@ services:
         # ports:
         #     - "127.0.0.1:5432:5432"
         volumes:
-            - "{{ defualt_relative_docker_data_path }}/postgres:/var/lib/postgresql/data"
-            - "{{ defualt_relative_docker_data_path }}/postgres_table_space:/var/lib/postgres_table_space"
+            - "{{ default_relative_docker_data_path }}/postgres:/var/lib/postgresql/data"
+            - "{{ default_relative_docker_data_path }}/postgres_table_space:/var/lib/postgres_table_space"
         healthcheck:
             test: ["CMD-SHELL", "pg_isready -U myuser -d mydb -h localhost"]
             interval: 60s
@@ -58,7 +58,7 @@ services:
         #     - "127.0.0.1:6333:6333" # HTTP
         #     - "127.0.0.1:6334:6334" # GRPC
         volumes:
-            - "{{ defualt_relative_docker_data_path }}/qdrant:/qdrant/storage"
+            - "{{ default_relative_docker_data_path }}/qdrant:/qdrant/storage"
 
     traefik:
         image: traefik:3.6.1
@@ -82,9 +82,9 @@ services:
         volumes:
             - /etc/localtime:/etc/localtime:ro
             - /var/run/docker.sock:/var/run/docker.sock:ro
-            - {{ defualt_relative_docker_data_path }}/traefik/traefik.yml:/traefik.yml:ro
-            - {{ defualt_relative_docker_data_path }}/traefik/acme.json:/acme.json
-            - {{ defualt_relative_docker_data_path }}/traefik/config.yml:/config.yml:ro
+            - {{ default_relative_docker_data_path }}/traefik/traefik.yml:/traefik.yml:ro
+            - {{ default_relative_docker_data_path }}/traefik/acme.json:/acme.json
+            - {{ default_relative_docker_data_path }}/traefik/config.yml:/config.yml:ro
         labels:
             - "traefik.enable=true"
             - "traefik.http.routers.traefik-secure.rule=Host(`db-router-dashboard.homelab.ezequielvalencia.com`)"

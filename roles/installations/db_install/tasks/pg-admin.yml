@@ -16,7 +16,7 @@
   become: true
   ansible.builtin.file:
     mode: u=rwx,g=rwx,o=
-    path: "{{ defualt_relative_docker_data_path }}/pgadmin"
+    path: "{{ default_relative_docker_data_path }}/pgadmin"
     owner: pgadmin
     group: pgadmin
     state: directory
