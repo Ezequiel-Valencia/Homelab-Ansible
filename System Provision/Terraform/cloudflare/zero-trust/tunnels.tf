@@ -30,14 +30,14 @@ resource "cloudflare_zero_trust_tunnel_cloudflared_config" "homelab_tunnel_confi
     },
     {
       hostname = "karakeep.tunnel.homelab.ezequielvalencia.com"
-      service = "http://karakeep.bots.svc.cluster.local:80"
+      service = "http://karakeep.tools.svc.cluster.local:80"
       origin_request = {
         no_happy_eyeballs = true
       }
     },
     {
         hostname = "ittools.tunnel.homelab.ezequielvalencia.com"
-        service = "http://ittool.bots.svc.cluster.local"
+        service = "http://ittool.tools.svc.cluster.local"
         origin_request = {
         no_happy_eyeballs = true 
       }
@@ -86,21 +86,21 @@ resource "cloudflare_zero_trust_tunnel_cloudflared_config" "homelab_tunnel_confi
     },
     {
         hostname = "gitea.tunnel.homelab.ezequielvalencia.com"
-        service  = "http://gitea.bots.svc.cluster.local"
+        service  = "http://gitea.tools.svc.cluster.local"
         origin_request = {
         no_happy_eyeballs = true 
       }
     },
     {
         hostname = "openproject.tunnel.homelab.ezequielvalencia.com"
-        service  = "http://openproject.bots.svc.cluster.local:80"
+        service  = "http://openproject.tools.svc.cluster.local:80"
         origin_request = {
         no_happy_eyeballs = true 
       }
     },
     {
         hostname = "leantime.tunnel.homelab.ezequielvalencia.com"
-        service  = "http://leantime.bots.svc.cluster.local:80"
+        service  = "http://leantime.tools.svc.cluster.local:80"
         origin_request = {
         no_happy_eyeballs = true 
       }
