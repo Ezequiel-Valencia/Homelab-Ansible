@@ -48,6 +48,15 @@ services:
     #     networks:
     #         database_network:
 
+
+    # redis:
+    #     image: redis:trixie
+    #     restart: unless-stopped
+    #     container_name: redis
+    #     hostname: redis
+    #     networks:
+    #         database_network:
+
     mysql:
         image: mysql:8.4
         restart: unless-stopped
