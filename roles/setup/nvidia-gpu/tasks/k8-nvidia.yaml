@@ -1,0 +1,43 @@
+- name: Install Curl and GNUPG For GPG Key
+  become: true
+  ansible.builtin.apt:
+    name:
+      - curl
+      - gnupg2
+    state: present
+
+- name: Download and dearmor NVidia GPG key from URL # noqa: command-instead-of-module risky-shell-pipe
+  become: true
+  ansible.builtin.shell: |
+    curl -fsSL https://nvidia.github.io/libnvidia-container/gpgkey | gpg --dearmor -o {{ nvidia_gpg_key_dest }}
+  args:
+    creates: "{{ nvidia_gpg_key_dest }}"   # idempotent — skipped if file already exists
+
+# https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html#with-apt-ubuntu-debian
+- name: NVidia Container Tool Kit Added to APT Repository
+  become: true
+  ansible.builtin.apt_repository:
+    repo: deb [signed-by={{ nvidia_gpg_key_dest }}] https://nvidia.github.io/libnvidia-container/stable/deb/$(ARCH) /
+    state: present
+    filename: nvidia-container-toolkit
+    update_cache: true
+
+# -----------------------------------------------------------------------
+# Install NVidia driver and Utilities
+# -----------------------------------------------------------------------
+
+- name: Install NVidia Container Toolkit
+  become: true
+  ansible.builtin.apt:
+    name:
+      - nvidia-container-toolkit
+      - nvidia-container-toolkit-base
+      - libnvidia-container-tools
+    state: present
+  notify:
+    - Set ContainerD GPU Runtime
+    - Restart ContainerD
+
+# Fix docker hanging problem (Containerd is not starting due to a config with "cri")
+# https://serverfault.com/questions/1085068/containerd-failed-to-start-after-nvidia-config
+# https://github.com/flatcar/Flatcar/issues/283

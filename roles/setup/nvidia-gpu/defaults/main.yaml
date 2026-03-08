@@ -1,0 +1,9 @@
+# Change to 'nvidia-driver' for the latest version, or pin a specific one
+# e.g. 'nvidia-driver=525.147.05-1' — check available versions with apt-cache
+nvidia_driver_package: nvidia-driver
+# Set to true to reboot after driver installation (recommended)
+nvidia_reboot_after_install: false
+# Kernel headers package — adjust if using a non-standard kernel
+kernel_headers_package: linux-headers-amd64
+
+nvidia_gpg_key_dest: /usr/share/keyrings/nvidia-container-toolkit-keyring.gpg

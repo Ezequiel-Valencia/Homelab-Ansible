@@ -1,0 +1,55 @@
+---
+- name: Assert that the OS is Debian
+  ansible.builtin.assert:
+    that:
+      - ansible_distribution == "Debian"
+    fail_msg: "This role only supports Debian systems."
+    success_msg: "OS check passed: {{ ansible_distribution }} {{ ansible_distribution_version }}"
+
+- name: Import Package Related Tasks
+  ansible.builtin.import_tasks: packages.yaml
+
+- name: Import Container K8 Setup
+  ansible.builtin.import_tasks: k8-nvidia.yaml
+  when: "'node' in group_names"
+
+# -----------------------------------------------------------------------
+# Blacklist the open-source Nouveau driver to prevent conflicts, it should be done automatically by the NVidia libraries
+# -----------------------------------------------------------------------
+
+# - name: Blacklist the Nouveau driver
+#   ansible.builtin.copy:
+#     dest: /etc/modprobe.d/blacklist-nouveau.conf
+#     content: |
+#       blacklist nouveau
+#     owner: root
+#     group: root
+#     mode: "0644"
+#   notify: Regenerate initramfs
+
+# -----------------------------------------------------------------------
+# Reboot (if enabled) so the new kernel module is loaded
+# -----------------------------------------------------------------------
+
+- name: Reboot the host to load the NVidia kernel module
+  become: true
+  ansible.builtin.reboot:
+    msg: "Rebooting to load NVidia drivers"
+    reboot_timeout: 300
+  when:
+    - nvidia_reboot_after_install | bool
+    - nvidia_install_result.changed
+
+# -----------------------------------------------------------------------
+# Verify the driver loaded correctly
+# -----------------------------------------------------------------------
+
+- name: Verify NVidia driver is loaded (nvidia-smi)
+  ansible.builtin.command: nvidia-smi
+  register: nvidia_smi_output
+  changed_when: false
+  failed_when: nvidia_smi_output.rc != 0
+
+- name: Print nvidia-smi output
+  ansible.builtin.debug:
+    var: nvidia_smi_output.stdout_lines

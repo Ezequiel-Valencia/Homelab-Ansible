@@ -8,7 +8,7 @@ services:
     ports:
       - 8080:8080
     volumes:
-    - "{{ defualt_relative_docker_data_path }}/dashy:/app/user-data"
+    - "{{ default_relative_docker_data_path }}/dashy:/app/user-data"
 
 
 

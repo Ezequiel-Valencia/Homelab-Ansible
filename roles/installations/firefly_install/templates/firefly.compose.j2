@@ -5,7 +5,7 @@ services:
         restart: always
         container_name: firefly
         volumes:
-        - "{{ defualt_relative_docker_data_path }}/fire_fly/upload:/var/www/html/storage/upload"
+        - "{{ default_relative_docker_data_path }}/fire_fly/upload:/var/www/html/storage/upload"
         environment:
         - "APP_KEY={{ firefly_app_key }}"
         - "DB_HOST=fireflyiiidb"
@@ -33,7 +33,7 @@ services:
         networks:
             - firefly_iii
         volumes:
-            - "{{ defualt_relative_docker_data_path }}/fire_fly/db:/var/lib/mysql"
+            - "{{ default_relative_docker_data_path }}/fire_fly/db:/var/lib/mysql"
     cron:
         #
         # To make this work, set STATIC_CRON_TOKEN in your .env file or as an environment variable and replace REPLACEME below

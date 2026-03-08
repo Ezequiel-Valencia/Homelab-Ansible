@@ -6,6 +6,7 @@ import py7zr
 from dataclasses import dataclass
 import boto3
 import json
+from slack_sdk.webhook import WebhookClient
 
 @dataclass(frozen=True)
 class BackupSpec:
@@ -19,6 +20,7 @@ class BackupSpec:
 
 # List of source directories to sync
 BACKUPS = [
+    BackupSpec(dir_path="/volume1/k8data/storage/tools", remote_backup=True, aws_key="tools.7z"),
     BackupSpec(dir_path="/volume1/k8data/storage/bots", remote_backup=True, aws_key="bots.7z"),
     BackupSpec(dir_path="/volume1/k8data/storage/ai", remote_backup=False, aws_key=""),
     BackupSpec(dir_path="/volume1/k8data/storage/media-config", remote_backup=True, aws_key="media.7z"),
@@ -129,11 +131,41 @@ def main():
 
         print("\n=======================================\n")
 
+
+def _produce_slack_message(color, title, text, priority):
+    return {
+            "color": color,
+            "author_name": "Nas Backup",
+            "author_icon": "",
+            "title": title,
+            "title_link": "",
+            "text": text,
+            "fields": [
+                {
+                    "title": "Priority",
+                    "value": priority,
+                    "short": "false"
+                }
+            ],
+            "footer": "Nas Backup",
+        }
+
+
 if __name__ == "__main__":
     with open(ENV_FILE_PATH, "r") as env:
         sec = json.load(env)
         BUCKET_NAME = sec["bucket_name"]
+        SLACK_WEBHOOK = sec["slack_webhook"]
         AWS_ACCESS_KEY = sec["aws_access_key"]
         AWS_SECRET_KEY = sec["aws_secret_key"]
         ENCRYPT_PASSWORD = sec["encrypt_password"]
-    main()
+        slack_webhook = WebhookClient(SLACK_WEBHOOK)
+    try:
+        main()
+        slack_webhook.send(attachments=[
+            _produce_slack_message("#3F704D", "NAS Backup Completed", "", "Low")
+        ])
+    except Exception as e:
+        slack_webhook.send(attachments=[
+            _produce_slack_message("#ab1a13", "NAS Application Backup Error", f"{e}", "High")
+        ])

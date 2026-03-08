@@ -1,0 +1,46 @@
+# -----------------------------------------------------------------------
+# Install prerequisite packages
+# -----------------------------------------------------------------------
+
+- name: Install kernel headers and build tools
+  become: true
+  ansible.builtin.apt:
+    name:
+      - "{{ kernel_headers_package }}"
+      - build-essential
+      - dkms
+      - gcc
+      - make
+    state: present
+
+# -----------------------------------------------------------------------
+# Configure APT sources for non-free and contrib components
+# -----------------------------------------------------------------------
+
+# - name: Enable non-free and contrib repositories (Debian 12+ / bookworm)
+#   become: true
+#   ansible.builtin.apt_repository:
+#     repo: "deb {{ item.url }} {{ item.command }} main contrib non-free non-free-firmware"
+#     state: present
+#     filename: debian-non-free
+#     update_cache: true
+#   when: ansible_distribution_major_version | int == 12
+#   loop:
+#     - command: "{{ ansible_distribution_release }}"
+#       url: http://deb.debian.org/debian
+#       type: reg
+#     - command: "{{ ansible_distribution_release }}-updates"
+#       url: http://deb.debian.org/debian
+#       type: updates
+#     - command: "{{ ansible_distribution_release }}-security"
+#       url: http://security.debian.org/debian-security/
+#       type: security
+
+- name: Install NVidia driver package and Utilities
+  become: true
+  ansible.builtin.apt:
+    name:
+      - "{{ nvidia_driver_package }}"
+      - nvidia-smi
+    state: present
+  register: nvidia_install_result

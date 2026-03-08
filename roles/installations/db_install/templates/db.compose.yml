@@ -13,7 +13,7 @@ services:
         # ports:
         #     - "127.0.0.1:9999:80"
         volumes:
-            - "{{ defualt_relative_docker_data_path }}/pgadmin:/var/lib/pgadmin"
+            - "{{ default_relative_docker_data_path }}/pgadmin:/var/lib/pgadmin"
             -   type: volume
                 source: backup
                 target: /var/lib/pgadmin/storage/ezq.valencia_gmail.com/backup
@@ -31,8 +31,8 @@ services:
         # ports:
         #     - "127.0.0.1:5432:5432"
         volumes:
-            - "{{ defualt_relative_docker_data_path }}/postgres:/var/lib/postgresql/data"
-            - "{{ defualt_relative_docker_data_path }}/postgres_table_space:/var/lib/postgres_table_space"
+            - "{{ default_relative_docker_data_path }}/postgres:/var/lib/postgresql/data"
+            - "{{ default_relative_docker_data_path }}/postgres_table_space:/var/lib/postgres_table_space"
         healthcheck:
             test: ["CMD-SHELL", "pg_isready -U myuser -d mydb -h localhost"]
             interval: 60s
@@ -40,13 +40,38 @@ services:
             start_period: 30s
             timeout: 10s
 
-    memcache:
-        image: memcached:trixie
+    # memcache:
+    #     image: memcached:trixie
+    #     restart: unless-stopped
+    #     container_name: memcache
+    #     hostname: memcache
+    #     networks:
+    #         database_network:
+
+
+    # redis:
+    #     image: redis:trixie
+    #     restart: unless-stopped
+    #     container_name: redis
+    #     hostname: redis
+    #     networks:
+    #         database_network:
+
+    mysql:
+        image: mysql:8.4
         restart: unless-stopped
-        container_name: memcache
-        hostname: memcache
+        container_name: mysql
         networks:
             database_network:
+        ports:
+            - "0.0.0.0:3306:3306"
+        environment:
+            - MYSQL_DATABASE=leantime
+            - MYSQL_USER=leantime
+            - MYSQL_PASSWORD={{ mysql_password }}
+            - MYSQL_ROOT_PASSWORD={{ mysql_root_password }}
+        volumes:
+            - "{{ default_relative_docker_data_path }}/mysql:/var/lib/mysql"
 
     qdrant:
         image: qdrant/qdrant:v1.15.2
@@ -58,7 +83,7 @@ services:
         #     - "127.0.0.1:6333:6333" # HTTP
         #     - "127.0.0.1:6334:6334" # GRPC
         volumes:
-            - "{{ defualt_relative_docker_data_path }}/qdrant:/qdrant/storage"
+            - "{{ default_relative_docker_data_path }}/qdrant:/qdrant/storage"
 
     traefik:
         image: traefik:3.6.1
@@ -70,21 +95,22 @@ services:
         networks:
             database_network:
         ports:
-            - 0.0.0.0:80:80
-            - 0.0.0.0:443:443
-            - 0.0.0.0:5432:5432
-            - 0.0.0.0:54333:54333
-            - 0.0.0.0:6334:6334
-            - 0.0.0.0:11211:11211
+            - 0.0.0.0:80:80 # Web
+            - 0.0.0.0:443:443 # Web
+            - 0.0.0.0:5432:5432 # Postgres
+            - 0.0.0.0:54333:54333 # Postgres
+            - 0.0.0.0:6334:6334 # Qdrant
+            # - 0.0.0.0:3306:3306 # Mysql
+            # - 0.0.0.0:11211:11211 # Memcache
         environment:
             - CF_DNS_API_TOKEN={{ cloudflare_token }}
             - CF_ZONE_API_TOKEN={{ cloudflare_token }}
         volumes:
             - /etc/localtime:/etc/localtime:ro
             - /var/run/docker.sock:/var/run/docker.sock:ro
-            - {{ defualt_relative_docker_data_path }}/traefik/traefik.yml:/traefik.yml:ro
-            - {{ defualt_relative_docker_data_path }}/traefik/acme.json:/acme.json
-            - {{ defualt_relative_docker_data_path }}/traefik/config.yml:/config.yml:ro
+            - {{ default_relative_docker_data_path }}/traefik/traefik.yml:/traefik.yml:ro
+            - {{ default_relative_docker_data_path }}/traefik/acme.json:/acme.json
+            - {{ default_relative_docker_data_path }}/traefik/config.yml:/config.yml:ro
         labels:
             - "traefik.enable=true"
             - "traefik.http.routers.traefik-secure.rule=Host(`db-router-dashboard.homelab.ezequielvalencia.com`)"

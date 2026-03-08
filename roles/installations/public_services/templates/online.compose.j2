@@ -15,9 +15,9 @@ services:
         volumes:
             - /etc/localtime:/etc/localtime:ro
             - /var/run/docker.sock:/var/run/docker.sock:ro
-            - {{ defualt_relative_docker_data_path }}/traefik/traefik.yml:/traefik.yml:ro
-            - {{ defualt_relative_docker_data_path }}/traefik/acme.json:/acme.json
-            - {{ defualt_relative_docker_data_path }}/traefik/config.yml:/config.yml:ro
+            - {{ default_relative_docker_data_path }}/traefik/traefik.yml:/traefik.yml:ro
+            - {{ default_relative_docker_data_path }}/traefik/acme.json:/acme.json
+            - {{ default_relative_docker_data_path }}/traefik/config.yml:/config.yml:ro
 
     nextcloud:
         image: nextcloud
@@ -25,7 +25,7 @@ services:
         container_name: nextcloud
         user: 1002:1003 # Nextcloud ID's
         volumes:
-            - "{{ defualt_relative_docker_data_path }}/nextcloud:/var/www/html"
+            - "{{ default_relative_docker_data_path }}/nextcloud:/var/www/html"
         environment:
             - SQLITE_DATABASE=nextcloud
             - OVERWRITEPROTOCOL=https
@@ -42,7 +42,7 @@ services:
         restart: always
         container_name: uptime
         volumes:
-            - "{{ defualt_relative_docker_data_path }}/uptime:/app/data"
+            - "{{ default_relative_docker_data_path }}/uptime:/app/data"
         networks:
             nextcloud:
                 aliases:
