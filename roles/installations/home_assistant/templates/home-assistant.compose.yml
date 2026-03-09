@@ -1,0 +1,123 @@
+# =============================================================================
+# Home Assistant + ReoLink Camera Stack
+# =============================================================================
+#
+# REOLINK SETUP (on the camera itself, before running this stack):
+#   - Open Reolink app → Settings → Network → Advanced
+#   - Enable: RTSP (port 554), ONVIF (port 8000), HTTP (port 80)
+#   - Note your camera's local IP address
+#   - The Reolink integration is built into Home Assistant natively —
+#     no extra containers needed. HA will auto-discover it if on the same subnet.
+#
+# REQUIRED PORTS (must be open on your router/firewall for the camera):
+#   HTTP   : 80
+#   HTTPS  : 443
+#   RTSP   : 554   ← main video stream
+#   RTMP   : 1935
+#   ONVIF  : 8000  ← used for push notifications (motion events, etc.)
+#   TCP    : 9000  ← used by Home Assistant for real-time event updates
+#
+# ADDING THE REOLINK INTEGRATION IN HOME ASSISTANT (after HA starts):
+#   Settings → Devices & Services → Add Integration → search "Reolink"
+#   Enter: Host = <REOLINK_CAMERA_IP>, Username = admin, Password = <your-password>
+#   HA will auto-create entities for: live streams, motion sensors, PTZ, sirens, etc.
+#
+# =============================================================================
+
+services:
+  # ── Home Assistant ──────────────────────────────────────────────────────────
+  # https://www.home-assistant.io/installation/linux
+  # The core smart home platform. Uses host networking so it can discover
+  # devices via mDNS/UPnP and communicate directly with your ReoLink camera.
+  home-assistant:
+    container_name: home-assistant
+    image: ghcr.io/home-assistant/home-assistant:stable
+    restart: unless-stopped
+    networks: 
+        - home-assistant
+
+    # Host networking is strongly recommended for Home Assistant.
+    # It allows device auto-discovery (mDNS, SSDP, UPnP) and lets HA reach
+    # the Reolink camera's RTSP/ONVIF ports without NAT complications.
+    # network_mode: host
+
+    # Required for Bluetooth and some USB integrations.
+    # privileged: true
+
+    environment:
+      - TZ=America/New_York
+
+    volumes:
+      - {{ default_relative_docker_data_path }}/home-assistant/config:/config
+      - /etc/localtime:/etc/localtime:ro
+      # D-Bus access (needed for Bluetooth)
+      # - /run/dbus:/run/dbus:ro
+
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8123"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+
+    depends_on:
+      mosquitto:
+        condition: service_started
+
+  # ── Eclipse Mosquitto (MQTT Broker) ────────────────────────────────────────
+  # Enables MQTT-based automations and integrations.
+  # ReoLink cameras can publish motion/alarm events to MQTT topics, and many
+  # other HA integrations rely on MQTT as well.
+  mosquitto:
+    container_name: mosquitto
+    image: dhi.io/eclipse-mosquitto:2
+    restart: unless-stopped
+
+    ports:
+      - "1883:1883"   # MQTT (unencrypted, LAN only)
+      - "8883:8883"   # MQTT over TLS (optional, requires certs)
+      - "9001:9001"   # MQTT over WebSockets
+
+    volumes:
+      - {{ default_relative_docker_data_path }}/mosquitto/config:/mosquitto/config
+      - {{ default_relative_docker_data_path }}/mosquitto/data:/mosquitto/data
+      - {{ default_relative_docker_data_path }}/mosquitto/log:/mosquitto/log
+
+  traefik:
+    image: traefik:3.6.1
+    container_name: traefik
+    restart: unless-stopped
+    security_opt:
+        - no-new-privileges:true
+    networks:
+        - home-assistant
+    ports:
+        - 80:80
+        - 443:443
+    environment:
+        # - CF_API_EMAIL={{ cloudflare_email }}
+        # - CF_API_KEY={{ cloudflare_token }}
+        - CF_DNS_API_TOKEN={{ cloudflare_token }}
+        # - CF_ZONE_API_TOKEN={{ cloudflare_token }}
+    volumes:
+        - /etc/localtime:/etc/localtime:ro
+        - /var/run/docker.sock:/var/run/docker.sock:ro
+        - {{ default_relative_docker_data_path }}/traefik/traefik.yml:/traefik.yml:ro
+        - {{ default_relative_docker_data_path }}/traefik/acme.json:/acme.json
+        - {{ default_relative_docker_data_path }}/traefik/config.yml:/config.yml:ro
+    labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.traefik.entrypoints=http"
+        - "traefik.http.middlewares.traefik-https-redirect.redirectscheme.scheme=https"
+        - "traefik.http.middlewares.sslheader.headers.customrequestheaders.X-Forwarded-Proto=https"
+        - "traefik.http.routers.traefik.middlewares=traefik-https-redirect"
+        - "traefik.http.routers.traefik-secure.entrypoints=https"
+        - "traefik.http.routers.traefik-secure.tls=true"
+        - "traefik.http.routers.traefik-secure.tls.certresolver=cloudflareResolver"
+        - "traefik.http.routers.traefik-secure.tls.domains[0].main=homelab.ezequielvalencia.com"
+        - "traefik.http.routers.traefik-secure.tls.domains[0].sans=*.homelab.ezequielvalencia.com"
+        - "traefik.http.routers.traefik-secure.service=api@internal"
+
+
+networks:
+    home-assistant:

@@ -32,6 +32,8 @@
         "lscr",
         "mediaarr",
         "mediavpn",
+        "mosquitto",
+        "mqtt",
         "nextcloud",
         "openproject",
         "pcprox",

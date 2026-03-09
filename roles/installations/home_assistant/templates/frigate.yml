@@ -1,0 +1,79 @@
+mqtt:
+  enabled: true
+  host: 127.0.0.1      # same host because HA uses host networking
+  port: 1883
+
+go2rtc:
+  streams:
+    reolink_main:
+      - rtsp://admin:{{ FRIGATE_REOLINK_PASSWORD }}@192.168.1.100:554//h264Preview_01_main
+    reolink_sub:
+      - rtsp://admin:{{ FRIGATE_REOLINK_PASSWORD }}@192.168.1.100:554//h264Preview_01_sub
+
+cameras:
+  reolink_front:
+    ffmpeg:
+      inputs:
+        - path: rtsp://127.0.0.1:8554/reolink_main
+          roles: [record]
+        - path: rtsp://127.0.0.1:8554/reolink_sub
+          roles: [detect]
+    detect:
+      enabled: true
+      width: 896
+      height: 512
+      fps: 5
+    objects:
+      track: [person, car, dog, cat]
+    record:
+      enabled: true
+      retain:
+        days: 7
+    snapshots:
+      enabled: true
+      retain:
+        default: 7
+
+  # ── Frigate NVR (optional — for AI object detection with ReoLink) ───────────
+  # Frigate is a powerful NVR that pulls your ReoLink RTSP stream and runs
+  # real-time object detection (people, cars, animals) using a local ML model.
+  # It integrates natively with Home Assistant via the Frigate HA integration.
+  #
+  # RTSP URL format for most ReoLink cameras:
+  #   Main stream (HD): rtsp://admin:PASSWORD@CAMERA_IP:554//h264Preview_01_main
+  #   Sub stream (SD):  rtsp://admin:PASSWORD@CAMERA_IP:554//h264Preview_01_sub
+  #
+  # To enable Coral TPU (USB) for faster inference, uncomment the device below.
+  # To enable GPU inference, add the appropriate runtime/devices for your GPU.
+  #
+  # Comment out this entire service if you only want the native Reolink integration
+  # in HA (which is simpler and still gives you live streams + motion sensors).
+#   frigate:
+#     container_name: frigate
+#     image: ghcr.io/blakeblackshear/frigate:stable
+#     restart: unless-stopped
+#     privileged: true   # required for hardware access (GPU/TPU/USB)
+
+#     shm_size: "256mb"  # increase if you have many cameras or high resolution
+
+#     ports:
+#       - "5000:5000"   # Frigate web UI
+#       - "8554:8554"   # RTSP re-streams (go2rtc)
+#       - "8555:8555/tcp"  # WebRTC
+#       - "8555:8555/udp"
+
+#     environment:
+#       - FRIGATE_REOLINK_PASSWORD=${REOLINK_PASSWORD:-changeme}
+
+#     volumes:
+#       - ${FRIGATE_CONFIG_PATH:-./frigate}/config:/config
+#       - ${FRIGATE_CONFIG_PATH:-./frigate}/storage:/media/frigate
+#       - /etc/localtime:/etc/localtime:ro
+
+#     devices:
+#       # Uncomment for Google Coral USB TPU (AI acceleration):
+#       # - /dev/bus/usb:/dev/bus/usb
+#       # Uncomment for hardware video decoding (Intel iGPU):
+#       # - /dev/dri/renderD128:/dev/dri/renderD128
+#       []  # placeholder — remove this line if you uncomment devices above
+

@@ -1,0 +1,29 @@
+- name: Make Traefik user
+  become: true
+  ansible.builtin.user:
+    name: '{{ media_install_traefik_local_user }}'
+
+- name: Make Traefik directory
+  become: true
+  ansible.builtin.file:
+    mode: u=rwx,g=rwx,o=
+    path: "{{ default_relative_docker_data_path }}/traefik"
+    state: directory
+    owner: "{{ media_install_traefik_local_user }}"
+
+- name: Copy traefik config files
+  become: true
+  ansible.builtin.copy:
+    mode: u=rw,g=r,o=
+    src: "{{ item }}"
+    dest: "{{ default_relative_docker_data_path }}/traefik/{{ item }}"
+    owner: "{{ media_install_traefik_local_user }}"
+  loop: '{{ media_install_traefik_files }}'
+
+- name: Make ACME json file
+  become: true
+  ansible.builtin.file:
+    mode: u=rw,g=,o=
+    path: "{{ default_relative_docker_data_path }}/traefik/acme.json"
+    state: file
+    owner: "{{ media_install_traefik_local_user }}"

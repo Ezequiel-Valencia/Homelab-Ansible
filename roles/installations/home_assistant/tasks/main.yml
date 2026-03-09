@@ -1,0 +1,11 @@
+---
+- name: Traefik Setup
+  ansible.builtin.include_tasks: traefik-setup.yml
+
+- name: Setup Home Assistant Compose
+  vars:
+    docker_template_files: []
+    source_compose_file: home-assistant.compose.yml
+    remote_compose_file: home-assistant.compose.yml
+    compose_project_name: home-assistant
+  ansible.builtin.include_tasks: ../tasks/docker-compose-up.yml
