@@ -5,5 +5,8 @@
 - name: Misc
   ansible.builtin.import_playbook: infrastructure/misc.yml
 
+- name: Home Assistant
+  ansible.builtin.import_playbook: infrastructure/home_assistant.yml
+
 - name: Dashboards
   ansible.builtin.import_playbook: infrastructure/dashboards.yml
