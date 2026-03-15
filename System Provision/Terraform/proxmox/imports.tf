@@ -21,6 +21,11 @@ import {
 }
 
 import {
+  id = "zpc2/305"
+  to = proxmox_virtual_environment_vm.home-assistant
+}
+
+import {
   id = "zpc/500"
   to = proxmox_virtual_environment_vm.longhorn
 }
