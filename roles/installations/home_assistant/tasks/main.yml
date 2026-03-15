@@ -2,6 +2,14 @@
 - name: Traefik Setup
   ansible.builtin.include_tasks: traefik-setup.yml
 
+- name: Copy HA Configuration File
+  become: true
+  ansible.builtin.copy:
+    mode: u=rw,g=r,o=r
+    src: ha_configuration.yaml
+    dest: "{{ default_relative_docker_data_path }}/home-assistant/configuration.yaml"
+    backup: true
+
 - name: Setup Home Assistant Compose
   vars:
     docker_template_files: []

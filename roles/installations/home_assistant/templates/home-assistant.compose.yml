@@ -34,7 +34,8 @@ services:
     image: ghcr.io/home-assistant/home-assistant:stable
     restart: unless-stopped
     networks: 
-        - home-assistant
+      home-assistant:
+        ipv4_address: 172.19.1.4
 
     # Host networking is strongly recommended for Home Assistant.
     # It allows device auto-discovery (mDNS, SSDP, UPnP) and lets HA reach
@@ -48,7 +49,7 @@ services:
       - TZ=America/New_York
 
     volumes:
-      - {{ default_relative_docker_data_path }}/home-assistant/config:/config
+      - {{ default_relative_docker_data_path }}/home-assistant:/config
       - /etc/localtime:/etc/localtime:ro
       # D-Bus access (needed for Bluetooth)
       # - /run/dbus:/run/dbus:ro
@@ -70,8 +71,11 @@ services:
   # other HA integrations rely on MQTT as well.
   mosquitto:
     container_name: mosquitto
-    image: dhi.io/eclipse-mosquitto:2
+    image: eclipse-mosquitto:2
     restart: unless-stopped
+    networks:
+      home-assistant:
+        ipv4_address: 172.19.1.3
 
     ports:
       - "1883:1883"   # MQTT (unencrypted, LAN only)
@@ -90,7 +94,8 @@ services:
     security_opt:
         - no-new-privileges:true
     networks:
-        - home-assistant
+      home-assistant:
+        ipv4_address: 172.19.1.2
     ports:
         - 80:80
         - 443:443
@@ -121,3 +126,9 @@ services:
 
 networks:
     home-assistant:
+      driver: bridge
+      ipam:
+        driver: default
+        config:
+          - subnet: 172.19.1.0/24
+            gateway: 172.19.1.1
