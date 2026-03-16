@@ -106,6 +106,17 @@ resource "cloudflare_zero_trust_tunnel_cloudflared_config" "homelab_tunnel_confi
       }
     },
     {
+        hostname = "home-assistant.tunnel.homelab.ezequielvalencia.com"
+        service  = "https://home-assistant.homelab.ezequielvalencia.com"
+        origin_request = {
+          no_happy_eyeballs = true
+          # Allows for 10.0.0.17 traefik reverse proxy to understand it's requesting
+          # home assistant, and that the TLS works
+          http_host_header = "home-assistant.homelab.ezequielvalencia.com"
+          origin_server_name = "home-assistant.homelab.ezequielvalencia.com"
+      }
+    },
+    {
         service = "http_status:404" # Applied to entire tunnel if previous hits don't match
     }
     ]
