@@ -22,10 +22,10 @@ locals {
             2). Copy ssh keys
         EOT
     
-    # 2 nodes, 16cpu - 8 = 8cpu left, 8cpu left - 3cpu = 5cpu left
+    # 2 nodes, 16cpu - 8 = 8cpu left, 8cpu left - 5cpu = 3cpu left
     k8_node_cores = 4
 
-    # 2 nodes, 32GB total - 20GB, 12GB left - 6GB for other nodes = 6GB left
+    # 2 nodes, 32GB total - 20GB, 12GB left - 10GB for other nodes = 2GB left
     k8_node_memory = 10 * 1024
 
     compute_node_name = "zpc2"
@@ -128,6 +128,62 @@ resource "proxmox_virtual_environment_vm" "pihole" {
         type = "l26"
     }
 }
+
+
+resource "proxmox_virtual_environment_vm" "home-assistant" {
+    node_name = local.compute_node_name
+    vm_id = 305
+    name = "Home-Assistant"
+
+    scsi_hardware           = "virtio-scsi-single"
+
+    protection              = true
+    tags                    = ["infra"]
+    
+    cpu {
+        cores      = 2
+        type       = "x86-64-v2-AES"
+    }
+
+    disk {
+        backup            = true
+        interface         = "scsi0"
+        iothread          = true
+        path_in_datastore = "vm-305-disk-0"
+        size              = 32
+    }
+
+    initialization {
+        datastore_id = "local-lvm"
+        interface    = "sata0"
+
+        user_account {
+            keys = [var.pc_public_ssh_key]
+            username = "zeke"
+        }
+
+        ip_config {
+            ipv4 {
+                address = "10.0.0.17/24"
+                gateway = "10.0.0.1"
+            }
+        }
+    }
+
+    memory {
+        dedicated      = 4096
+    }
+
+    network_device {
+        firewall     = true
+        mac_address  = "BC:24:11:07:CF:2B"
+    }
+
+    operating_system {
+        type = "l26"
+    }
+}
+
 
 resource "proxmox_virtual_environment_vm" "monitor" {
     node_name = local.compute_node_name

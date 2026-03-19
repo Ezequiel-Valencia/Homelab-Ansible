@@ -26,6 +26,11 @@ database:
 	@echo "🚀 Making all database"
 	@ansible-playbook -K ./playbooks/initialize/infrastructure/database.yml
 
+.PHONY: home_assistant
+home_assistant:
+	@echo "🚀 Making home assistant"
+	@ansible-playbook -K ./playbooks/initialize/infrastructure/home_assistant.yml
+
 
 ## Public Services
 .PHONY: public_services

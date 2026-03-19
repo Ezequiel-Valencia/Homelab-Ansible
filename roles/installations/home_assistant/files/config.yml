@@ -1,0 +1,83 @@
+http:
+ # region routers
+  routers:
+    home_assistant:
+      entryPoints:
+        - "https"
+      rule: "Host(`home-assistant.homelab.ezequielvalencia.com`)"
+      middlewares:
+        - secured
+      tls: {}
+      service: home_assistant
+
+    mosquitto:
+      entryPoints:
+        - "https"
+      rule: "Host(`mosquitto.homelab.ezequielvalencia.com`)"
+      middlewares:
+        - secured
+      tls: {}
+      service: mosquitto
+
+    frigate:
+      entryPoints:
+        - "https"
+      rule: "Host(`frigate.homelab.ezequielvalencia.com`)"
+      middlewares:
+        - secured
+      tls: {}
+      service: frigate
+
+  services:
+    # Tools
+    home_assistant:
+      loadBalancer:
+        servers:
+          - url: "http://home-assistant:8123"
+        passHostHeader: true
+    mosquitto:
+      loadBalancer:
+        servers:
+          - url: "mqtt://mosquitto:1883"
+        passHostHeader: true
+    frigate:
+      loadBalancer:
+        servers:
+          - url: "http://frigate:5000"
+        passHostHeader: true
+
+# endregion
+  middlewares:
+    https-redirectscheme:
+      redirectScheme:
+        scheme: https
+        permanent: true
+
+    default-headers:
+      headers:
+        frameDeny: true
+        browserXssFilter: true
+        contentTypeNosniff: true
+        forceSTSHeader: true
+        stsIncludeSubdomains: true
+        stsPreload: true
+        stsSeconds: 15552000
+        customFrameOptionsValue: SAMEORIGIN
+        customRequestHeaders:
+          X-Forwarded-Proto: https
+
+    default-whitelist:
+      ipAllowList:
+        sourceRange:
+          - "10.0.0.0/24"
+          - "10.0.1.0/24"
+          - "10.0.2.0/24"
+        # - "192.168.0.0/16"
+        # - "172.16.0.0/12"
+
+    secured:
+      chain:
+        middlewares:
+          - default-whitelist
+          - default-headers
+          - https-redirectscheme
