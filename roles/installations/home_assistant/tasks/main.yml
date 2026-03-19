@@ -10,6 +10,13 @@
     dest: "{{ default_relative_docker_data_path }}/home-assistant/configuration.yaml"
     backup: true
 
+# - name: Copy Frigate Configuration File
+#   become: true
+#   ansible.builtin.copy:
+#     mode: u=rw,g=r,o=r
+#     src: frigate.yml
+#     dest: "{{ default_relative_docker_data_path }}/frigate/config/config.yml"
+
 - name: Setup Home Assistant Compose
   vars:
     docker_template_files: []

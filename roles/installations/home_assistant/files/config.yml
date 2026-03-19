@@ -19,6 +19,15 @@ http:
       tls: {}
       service: mosquitto
 
+    frigate:
+      entryPoints:
+        - "https"
+      rule: "Host(`frigate.homelab.ezequielvalencia.com`)"
+      middlewares:
+        - secured
+      tls: {}
+      service: frigate
+
   services:
     # Tools
     home_assistant:
@@ -30,6 +39,11 @@ http:
       loadBalancer:
         servers:
           - url: "mqtt://mosquitto:1883"
+        passHostHeader: true
+    frigate:
+      loadBalancer:
+        servers:
+          - url: "http://frigate:5000"
         passHostHeader: true
 
 # endregion
