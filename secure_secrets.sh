@@ -2,6 +2,7 @@
 
 
 encrypt(){
+  echo "Encrypting Files"
   find . -name "secrets.tf" | while read -r file; do
     status=$(sops filestatus "$file" 2>/dev/null)
     if echo "$status" | grep -q '"encrypted":true'; then
@@ -15,6 +16,7 @@ encrypt(){
 
 
 decrypt(){
+  echo "Decrypting Files"
   export SOPS_AGE_KEY=$(age --decrypt ~/.ssh/sops.priv)
   find . -name "secrets.tf.encrypted" | while read -r file; do
     status=$(sops filestatus "$file" 2>/dev/null)
@@ -29,6 +31,7 @@ decrypt(){
 }
 
 remove_all_decrypted(){
+  echo "Cleaning Up Secrets"
   find . -name "secrets.tf" | while read -r file; do
     echo "Removing secret: $file"
     rm "$file"

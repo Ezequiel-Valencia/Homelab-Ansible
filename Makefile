@@ -78,8 +78,10 @@ cloudflare_zero_trust:
 ### Router
 .PHONY: router
 router:
-	@echo "🚀 Set Router config"
-	@pushd "System Provision/Terraform/router" && terraform apply || popd
+	@trap "make clean_up_secrets" EXIT; \
+	echo "🚀 Set Router config"; \
+	make decrypt; \
+	pushd "System Provision/Terraform/router" && terraform apply || popd
 
 ## AWS
 ### Storage
@@ -96,8 +98,10 @@ aws_cloudfront:
 ## VMs
 .PHONY: vms
 vms:
-	@echo "🚀 Make VMs in Proxmox"
-	@pushd "System Provision/Terraform/proxmox" && terraform apply || popd
+	@trap "make clean_up_secrets" EXIT; \
+	echo "🚀 Make VMs in Proxmox"; \
+	make decrypt; \
+	pushd "System Provision/Terraform/proxmox" && terraform apply || popd
 
 
 .PHONY: homelab
