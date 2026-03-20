@@ -114,3 +114,17 @@ homelab:
 	@make vms
 	@echo "VM OS initialize"
 	@ansible-playbook -K ./playbooks/init_home_lab.ansible.yml
+
+
+# Encrypt Secrets
+.PHONY: encrypt
+encrypt:
+	@./secure_secrets.sh encrypt
+
+.PHONY: decrypt
+decrypt:
+	@./secure_secrets.sh decrypt
+
+.PHONY: clean_up_secrets
+clean_up_secrets:
+	@./secure_secrets.sh clean_up

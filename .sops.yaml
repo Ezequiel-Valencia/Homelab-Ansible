@@ -1,0 +1,5 @@
+creation_rules:
+  - path_regex: secrets.tf
+    age: age1qlva7wznwfnl63fj3zahzu4tfqd53p0z8mr984r0edzw70xtmdnss5d5dm # Public Key
+    input_type: binary
+    output_type: binary
