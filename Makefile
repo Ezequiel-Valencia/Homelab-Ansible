@@ -78,8 +78,10 @@ cloudflare_zero_trust:
 ### Router
 .PHONY: router
 router:
-	@echo "🚀 Set Router config"
-	@pushd "System Provision/Terraform/router" && terraform apply || popd
+	@trap "make clean_up_secrets" EXIT; \
+	echo "🚀 Set Router config"; \
+	make decrypt; \
+	pushd "System Provision/Terraform/router" && terraform apply || popd
 
 ## AWS
 ### Storage
@@ -96,8 +98,10 @@ aws_cloudfront:
 ## VMs
 .PHONY: vms
 vms:
-	@echo "🚀 Make VMs in Proxmox"
-	@pushd "System Provision/Terraform/proxmox" && terraform apply || popd
+	@trap "make clean_up_secrets" EXIT; \
+	echo "🚀 Make VMs in Proxmox"; \
+	make decrypt; \
+	pushd "System Provision/Terraform/proxmox" && terraform apply || popd
 
 
 .PHONY: homelab
@@ -114,3 +118,17 @@ homelab:
 	@make vms
 	@echo "VM OS initialize"
 	@ansible-playbook -K ./playbooks/init_home_lab.ansible.yml
+
+
+# Encrypt Secrets
+.PHONY: encrypt
+encrypt:
+	@./secure_secrets.sh encrypt
+
+.PHONY: decrypt
+decrypt:
+	@./secure_secrets.sh decrypt
+
+.PHONY: clean_up_secrets
+clean_up_secrets:
+	@./secure_secrets.sh clean_up
