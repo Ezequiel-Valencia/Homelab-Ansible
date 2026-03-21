@@ -45,8 +45,8 @@ if [[ "$file_mod_date" == "$today" && "$lock_mod_date" != "$today" ]]; then
   jq -r '.cloudflareResolver.Certificates[0].certificate' ${ACME_FILE} | base64 -d > "${LOCATION_OF_CERTS_DIR}/server.crt"
   jq -r '.cloudflareResolver.Certificates[0].key' ${ACME_FILE} | base64 -d > "${LOCATION_OF_CERTS_DIR}/server.key"
 
-  chmod u=rw,g=,o=r "${LOCATION_OF_CERTS_DIR}server.key"
-  chmod u=rw,g=,o=r "${LOCATION_OF_CERTS_DIR}server.crt"
+  chmod u=rw,g=,o= "${LOCATION_OF_CERTS_DIR}server.key"
+  chmod u=rw,g=,o= "${LOCATION_OF_CERTS_DIR}server.crt"
 
   echo "$today" > "$LOCK_FILE"
   echo "Finished: Decomposing acme.json into easy cert files."
