@@ -12,7 +12,25 @@ resource "unifi_firewall_group" "all_vms_ips" {
            "10.0.0.6",
            "10.0.0.7",
            "10.0.0.8",
-           "10.0.0.9",]
+           "10.0.0.9",
+           "10.0.0.17"]
+}
+
+resource "unifi_firewall_group" "everything_but_proxmox" {
+  name = "Everything But Proxmox"
+  type = "address-group"
+  members = [ "10.0.0.11",
+           "10.0.0.110",
+           "10.0.0.12",
+           "10.0.0.13",
+           "10.0.0.15",
+           "10.0.0.6",
+           "10.0.0.7",
+           "10.0.0.8",
+           "10.0.0.9",
+           "10.0.0.17",
+           "10.0.0.80",
+           "10.0.0.222"]
 }
 
 resource "unifi_firewall_group" "vpn_laptop_ip" {
