@@ -48,14 +48,17 @@ services:
     #     networks:
     #         database_network:
 
-
-    # redis:
-    #     image: redis:trixie
+    # valkey:
+    #     image: valkey/valkey:latest
     #     restart: unless-stopped
-    #     container_name: redis
-    #     hostname: redis
+    #     container_name: valkey
+    #     hostname: valkey
+    #     ports:
+    #         - 0.0.0.0:6379:6379
     #     networks:
     #         database_network:
+    #     volumes:
+    #         - {{ default_relative_docker_data_path }}/valkey:/data
 
     mysql:
         image: mysql:8.4
@@ -100,6 +103,7 @@ services:
             - 0.0.0.0:5432:5432 # Postgres
             - 0.0.0.0:54333:54333 # Postgres
             - 0.0.0.0:6334:6334 # Qdrant
+            # - 0.0.0.0:6379:6379 # Redis/Valkey
             # - 0.0.0.0:3306:3306 # Mysql
             # - 0.0.0.0:11211:11211 # Memcache
         environment:
