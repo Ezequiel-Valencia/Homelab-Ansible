@@ -60,6 +60,16 @@ services:
     #     volumes:
     #         - {{ default_relative_docker_data_path }}/valkey:/data
 
+    # cassandra:
+    #     image: cassandra:5.0.7
+    #     container_name: cassandra
+    #     environment:
+    #         - CASSANDRA_CLUSTER_NAME=homelab-cluster
+    #     ports:
+    #         - 0.0.0.0:9042:9042
+    #     volumes:
+    #         - {{ default_relative_docker_data_path }}/casandra:/var/lib/cassandra
+
     mysql:
         image: mysql:8.4
         restart: unless-stopped
