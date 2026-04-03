@@ -23,7 +23,7 @@ services:
             # - "7439:6881/tcp"
             # - "7439:6881/udp"
         healthcheck:
-            test: {{ media_install_health_check_vpn.test }}
+            test: wget -q -O - https://ipinfo.io/region | grep -qxo "New York" || exit 1
             interval: {{ media_install_health_check_vpn.interval }}
             retries: {{ media_install_health_check_vpn.retries }}
             start_period: {{ media_install_health_check_vpn.start_period }}
