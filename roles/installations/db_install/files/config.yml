@@ -102,6 +102,14 @@ tcp:
       service: qdrant
       tls: {}
 
+    valkey:
+      entryPoints:
+        - valkey
+      rule: "HostSNI(`valkey.database.homelab.ezequielvalencia.com`)"
+      middlewares:
+        - default-whitelist
+      service: valkey
+
   services:
     # Tools
     postgres:
@@ -118,6 +126,11 @@ tcp:
       loadBalancer:
         servers:
           - address: "memcache:11211"
+
+    valkey:
+      loadBalancer:
+        servers:
+          - address: "valkey:6379"
 
   middlewares:
     default-whitelist:

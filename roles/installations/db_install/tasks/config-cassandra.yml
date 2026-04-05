@@ -1,0 +1,34 @@
+############################################################
+# TODO: Best way to update cassandra config without rewriting entire default
+#       is to create a new custom docker image, where mid image I change the
+#       values in /etc/cassandra/cassandra.yaml
+#############################################################
+
+- name: Check if Cassandra Config Exists
+  become: true
+  ansible.builtin.file:
+    path: "{{ default_relative_docker_data_path }}/cassandra/etc/cassandra.yaml"
+    state: file
+  register: db_install_cassandra_config_present
+
+
+- name: Update Cassandra Config
+  become: true
+  ansible.builtin.replace:
+    backup: true
+    regexp: "{{ entry.search_name }}"
+    replace: "{{ entity.replacement }}"
+    path: "{{ default_relative_docker_data_path }}/cassandra/etc/cassandra.yaml"
+
+  loop_control:
+    loop_var: entry
+  loop:
+    - search_name: AllowAllAuthenticator
+      replacement: PasswordAuthenticator
+
+    - search_name: AllowAllAuthorizer
+      replacement: CassandraAuthorizer
+
+# CREATE KEYSPACE IF NOT EXISTS jaeger_v1_dc1
+#       WITH replication = {'class': 'SimpleStrategy', 'replication_factor': '1'}
+#       AND durable_writes = true;
