@@ -1,0 +1,4 @@
+# Managed by Ansible — do not edit manually
+{% for record in infra_install_pihole_local_cname_records | default([]) %}
+cname={{ record.source }},{{ record.target }}
+{% endfor %}
