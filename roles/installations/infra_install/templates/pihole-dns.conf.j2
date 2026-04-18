@@ -1,0 +1,11 @@
+# Managed by Ansible — do not edit manually
+
+# A Records
+{% for record in infra_install_pihole_local_dns_records | default([]) %}
+address=/{{ record.hostname }}/{{ record.ip }}
+{% endfor %}
+
+# CNAME Records
+{% for record in infra_install_pihole_local_cname_records | default([]) %}
+cname={{ record.source }},{{ record.target }}
+{% endfor %}

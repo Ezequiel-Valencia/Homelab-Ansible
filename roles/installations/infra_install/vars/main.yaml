@@ -1,0 +1,65 @@
+infra_install_pihole_local_dns_records:
+  # Physical hosts
+  - { ip: 10.0.0.4, hostname: laptop.homelab }
+  - { ip: 10.0.0.6, hostname: traefik.homelab }
+  - { ip: 10.0.0.6, hostname: ldap.homelab }
+  - { ip: 10.0.0.6, hostname: pihole.homelab }
+  - { ip: 10.0.0.7, hostname: media.homelab }
+  - { ip: 10.0.0.9, hostname: gaming.homelab }
+  - { ip: 10.0.0.15, hostname: longhorn.homelab}
+  - { ip: 10.0.0.13, hostname: truenas.homelab }
+  # infra (10.0.0.6)
+  - { ip: 10.0.0.6, hostname: auth.homelab.ezequielvalencia.com }
+  - { ip: 10.0.0.6, hostname: dashy.homelab.ezequielvalencia.com }
+  - { ip: 10.0.0.6, hostname: ldap-ui.homelab.ezequielvalencia.com }
+  - { ip: 10.0.0.6, hostname: pihole.homelab.ezequielvalencia.com }
+  - { ip: 10.0.0.6, hostname: traefik-dashboard.homelab.ezequielvalencia.com }
+  - { ip: 10.0.0.6, hostname: truenas.homelab.ezequielvalencia.com }
+  # Proxies (10.0.0.6)
+  - { ip: 10.0.0.6, hostname: alienwareprox.homelab.ezequielvalencia.com }
+  - { ip: 10.0.0.6, hostname: laptopprox.homelab.ezequielvalencia.com }
+  - { ip: 10.0.0.6, hostname: pcprox.homelab.ezequielvalencia.com }
+  - { ip: 10.0.0.6, hostname: zpc2.homelab.ezequielvalencia.com }
+  - { ip: 10.0.0.6, hostname: zpcprox.homelab.ezequielvalencia.com }
+  # Media (10.0.0.7)
+  - { ip: 10.0.0.7, hostname: jackett.homelab.ezequielvalencia.com }
+  - { ip: 10.0.0.7, hostname: qbit.homelab.ezequielvalencia.com }
+  # DB's (10.0.0.9)
+  - { ip: 10.0.0.9, hostname: db-router-dashboard.homelab.ezequielvalencia.com }
+  - { ip: 10.0.0.9, hostname: pgadmin.database.homelab.ezequielvalencia.com }
+  - { ip: 10.0.0.9, hostname: postgres.database.homelab.ezequielvalencia.com }
+  - { ip: 10.0.0.9, hostname: qdrant-ui.database.homelab.ezequielvalencia.com }
+  - { ip: 10.0.0.9, hostname: qdrant.database.homelab.ezequielvalencia.com }
+  - { ip: 10.0.0.9, hostname: cassandra.database.homelab.ezequielvalencia.com }
+  - { ip: 10.0.0.9, hostname: memcache.database.ezequielvalencia.com }
+  - { ip: 10.0.0.9, hostname: mysql.database.homelab.ezequielvalencia.com }
+  - { ip: 10.0.0.9, hostname: valkey.database.homelab.ezequielvalencia.com }
+  # Home automation (10.0.0.17)
+  - { ip: 10.0.0.17, hostname: frigate.homelab.ezequielvalencia.com }
+  - { ip: 10.0.0.17, hostname: home-assistant.homelab.ezequielvalencia.com }
+  # NAS (10.0.0.146)
+  - { ip: 10.0.0.146, hostname: nas.homelab.ezequielvalencia.com }
+  # Main app server (10.0.0.80)
+  - { ip: 10.0.0.80, hostname: bazarr.homelab.ezequielvalencia.com }
+  - { ip: 10.0.0.80, hostname: gitea.homelab.ezequielvalencia.com }
+  - { ip: 10.0.0.80, hostname: grafana.homelab.ezequielvalencia.com }
+  - { ip: 10.0.0.80, hostname: ittool.homelab.ezequielvalencia.com }
+  - { ip: 10.0.0.80, hostname: jellyfin.homelab.ezequielvalencia.com }
+  - { ip: 10.0.0.80, hostname: joplin.homelab.ezequielvalencia.com }
+  - { ip: 10.0.0.80, hostname: karakeep.homelab.ezequielvalencia.com }
+  - { ip: 10.0.0.80, hostname: leantime.homelab.ezequielvalencia.com }
+  - { ip: 10.0.0.80, hostname: lidarr.homelab.ezequielvalencia.com }
+  - { ip: 10.0.0.80, hostname: library.homelab.ezequielvalencia.com }
+  - { ip: 10.0.0.80, hostname: n8n.homelab.ezequielvalencia.com }
+  - { ip: 10.0.0.80, hostname: openproject.homelab.ezequielvalencia.com }
+  - { ip: 10.0.0.80, hostname: openweb-ui.homelab.ezequielvalencia.com }
+  - { ip: 10.0.0.80, hostname: radarr.homelab.ezequielvalencia.com }
+  - { ip: 10.0.0.80, hostname: readarr.homelab.ezequielvalencia.com }
+  - { ip: 10.0.0.80, hostname: semaphore.homelab.ezequielvalencia.com }
+  - { ip: 10.0.0.80, hostname: sonarr.homelab.ezequielvalencia.com }
+  - { ip: 10.0.0.80, hostname: tadarr.homelab.ezequielvalencia.com }
+  - { ip: 10.0.0.80, hostname: twenty-crm.homelab.ezequielvalencia.com }
+
+infra_install_pihole_local_cname_records: []
+#  - source: alias.homelab.ezequielvalencia.com
+#    target: service.homelab.ezequielvalencia.com
