@@ -6,5 +6,8 @@
 - name: LDAP Setup
   ansible.builtin.include_tasks: ldap.yml
 
+- name: PiHole DNS Setup
+  ansible.builtin.include_tasks: pihole.yml
+
 - name: Traefik Setup and Compose Up
   ansible.builtin.include_tasks: traefik-task.yml
