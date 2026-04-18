@@ -12,12 +12,16 @@
   ansible.builtin.file:
     path: "{{ default_relative_docker_data_path }}/pihole-dnsmasq.d"
     state: directory
-    mode: u=rwx,g=rwx,o=
+    owner: zeke
+    group: zeke
+    mode: u=rwx,g=rx,o=rx
 
 - name: Template PiHole DNS records
   become: true
   ansible.builtin.template:
     src: pihole-dns.conf.j2
     dest: "{{ default_relative_docker_data_path }}/pihole-dnsmasq.d/01-ansible-dns.conf"
-    mode: u=rw,g=r,o=
+    mode: u=rw,g=r,o=r
+    owner: zeke
+    group: zeke
   notify: Restart PiHole
