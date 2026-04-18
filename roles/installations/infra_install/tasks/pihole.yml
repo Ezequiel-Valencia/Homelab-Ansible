@@ -14,18 +14,10 @@
     state: directory
     mode: u=rwx,g=rwx,o=
 
-- name: Template PiHole custom DNS A records
+- name: Template PiHole DNS records
   become: true
   ansible.builtin.template:
-    src: pihole-custom.list.j2
-    dest: "{{ default_relative_docker_data_path }}/pihole/custom.list"
-    mode: u=rw,g=r,o=
-  notify: Restart PiHole
-
-- name: Template PiHole CNAME records
-  become: true
-  ansible.builtin.template:
-    src: pihole-cname.conf.j2
-    dest: "{{ default_relative_docker_data_path }}/pihole-dnsmasq.d/02-ansible-cnames.conf"
+    src: pihole-dns.conf.j2
+    dest: "{{ default_relative_docker_data_path }}/pihole-dnsmasq.d/01-ansible-dns.conf"
     mode: u=rw,g=r,o=
   notify: Restart PiHole

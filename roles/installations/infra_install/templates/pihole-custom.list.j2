@@ -1,4 +1,0 @@
-# Managed by Ansible — do not edit manually
-{% for record in infra_install_pihole_local_dns_records | default([]) %}
-{{ record.ip }} {{ record.hostname }}
-{% endfor %}
