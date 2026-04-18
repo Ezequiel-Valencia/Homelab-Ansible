@@ -246,4 +246,23 @@ resource "cloudflare_zero_trust_access_application" "home-assistant" {
   tags = ["homelab"]
 }
 
+resource "cloudflare_zero_trust_access_application" "joplin" {
+  depends_on = [ cloudflare_zero_trust_access_policy.only_us_ips ]
+  domain = "joplin.tunnel.homelab.ezequielvalencia.com"
+  type = "self_hosted"
+  account_id = var.account_id
+
+  enable_binding_cookie = true # Mitigation against CSRF, https://developers.cloudflare.com/cloudflare-one/identity/authorization-cookie/
+  http_only_cookie_attribute = true
+  name = "Joplin"
+  policies = [ {
+    id = cloudflare_zero_trust_access_policy.bypass_cloudflare_login.id
+  },
+  ]
+
+  skip_interstitial = true
+  tags = ["homelab"]
+}
+
+
 
