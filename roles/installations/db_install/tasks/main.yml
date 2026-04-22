@@ -3,8 +3,16 @@
 - name: Traefik Setup
   ansible.builtin.include_tasks: traefik-setup.yml
 
-- name: Traefik Setup
+- name: PG-Admin Setup
   ansible.builtin.include_tasks: pg-admin.yml
+
+- name: Install DB Clients
+  become: true
+  ansible.builtin.apt:
+    pkg:
+      - postgresql-client
+      - mariadb-client
+    state: present
 
 - name: Create DB Resource
   vars:
