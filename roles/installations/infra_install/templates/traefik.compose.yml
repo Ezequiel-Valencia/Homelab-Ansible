@@ -55,6 +55,7 @@ services:
           - WEBTHEME=default-dark
           - PIHOLE_DNS_=9.9.9.9;1.1.1.1
           - DNSSEC="true"
+          - FTLCONF_misc_etc_dnsmasq_d=true
       volumes:
           - "{{ default_relative_docker_data_path }}/pihole:/etc/pihole"
           - "{{ default_relative_docker_data_path }}/pihole-dnsmasq.d:/etc/dnsmasq.d"
