@@ -1,0 +1,20 @@
+- name: Create Directories
+  become: true
+  ansible.builtin.file:
+    mode: u=rwx,g=rwx,o=rx
+    path: "{{ dir }}"
+    state: directory
+  loop:
+    - "{{ default_relative_docker_data_path }}/authentik/database"
+    - "{{ default_relative_docker_data_path }}/authentik/data"
+    - "{{ default_relative_docker_data_path }}/authentik/custom-templates"
+  loop_control:
+    loop_var: dir
+
+- name: Create Authentik Resource
+  vars:
+    docker_template_files: []
+    source_compose_file: authentik.compose.yml
+    remote_compose_file: authentik.compose
+    compose_project_name: authentik
+  ansible.builtin.include_tasks: ../tasks/docker-compose-up.yml

@@ -11,3 +11,6 @@
 
 - name: Traefik Setup and Compose Up
   ansible.builtin.include_tasks: traefik-task.yml
+
+- name: Authentik Setup and Compose Up
+  ansible.builtin.include_tasks: authentik.yml

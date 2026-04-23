@@ -49,6 +49,15 @@ http:
         - https-redirectscheme
       tls: {}
       service: truenas
+    authentik:
+      entryPoints:
+        - "https"
+      rule: "Host(`authentik.homelab.ezequielvalencia.com`)"
+      middlewares:
+        - default-headers
+        - https-redirectscheme
+      tls: {}
+      service: authentik
 
     # Tools
     dashy:
@@ -91,6 +100,11 @@ http:
       loadBalancer:
         servers:
           - url: "http://ldap:17170"
+        passHostHeader: true
+    authentik:
+      loadBalancer:
+        servers:
+          - url: "http://authentik:9000"
         passHostHeader: true
 
     # Tools

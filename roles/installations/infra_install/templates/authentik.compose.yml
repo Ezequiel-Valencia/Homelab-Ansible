@@ -1,0 +1,67 @@
+services:
+  postgresql:
+    image: postgres:17-trixie
+    restart: unless-stopped
+    container_name: authentik_postgres
+    environment:
+      POSTGRES_DB: authentik
+      POSTGRES_USER: authentik
+      POSTGRES_PASSWORD: {{ PG_PASS }}
+    volumes:
+      - {{ default_relative_docker_data_path }}/authentik/database:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}"]
+      start_period: 20s
+      interval: 30s
+      timeout: 5s
+      retries: 5
+    networks:
+      - internal
+
+  authentik:
+    image: ghcr.io/goauthentik/server:2026.2.2
+    command: server
+    restart: unless-stopped
+    container_name: authentik
+    shm_size: 512mb
+    environment:
+      AUTHENTIK_SECRET_KEY: {{ AUTHENTIK_SECRET_KEY }}
+      AUTHENTIK_POSTGRESQL__HOST: authentik_postgres
+      AUTHENTIK_POSTGRESQL__NAME: authentik
+      AUTHENTIK_POSTGRESQL__USER: authentik
+      AUTHENTIK_POSTGRESQL__PASSWORD: {{ PG_PASS }}
+    volumes:
+      - {{ default_relative_docker_data_path }}/authentik/data:/data
+      - {{ default_relative_docker_data_path }}/authentik/custom-templates:/templates
+    depends_on:
+      postgresql:
+        condition: service_healthy
+    networks:
+      - internal
+      - traefik_proxy
+
+  worker:
+    image: ghcr.io/goauthentik/server:2026.2.2
+    command: worker
+    container_name: authentik_worker
+    restart: unless-stopped
+    shm_size: 512mb
+    environment:
+      AUTHENTIK_SECRET_KEY: {{ AUTHENTIK_SECRET_KEY }}
+      AUTHENTIK_POSTGRESQL__HOST: authentik_postgres
+      AUTHENTIK_POSTGRESQL__NAME: authentik
+      AUTHENTIK_POSTGRESQL__USER: authentik
+      AUTHENTIK_POSTGRESQL__PASSWORD: {{ PG_PASS }}
+    volumes:
+      - {{ default_relative_docker_data_path }}/authentik/data:/data
+      - {{ default_relative_docker_data_path }}/authentik/custom-templates:/templates
+    depends_on:
+      postgresql:
+        condition: service_healthy
+    networks:
+      - internal
+
+networks:
+  internal:
+  traefik_proxy:
+    external: true

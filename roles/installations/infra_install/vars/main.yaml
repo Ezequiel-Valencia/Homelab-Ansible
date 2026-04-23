@@ -15,6 +15,7 @@ infra_install_pihole_local_dns_records:
   - { ip: 10.0.0.6, hostname: pihole.homelab.ezequielvalencia.com }
   - { ip: 10.0.0.6, hostname: traefik-dashboard.homelab.ezequielvalencia.com }
   - { ip: 10.0.0.6, hostname: truenas.homelab.ezequielvalencia.com }
+  - { ip: 10.0.0.6, hostname: authentik.homelab.ezequielvalencia.com }
   # Proxies (10.0.0.6)
   - { ip: 10.0.0.6, hostname: alienwareprox.homelab.ezequielvalencia.com }
   - { ip: 10.0.0.6, hostname: laptopprox.homelab.ezequielvalencia.com }

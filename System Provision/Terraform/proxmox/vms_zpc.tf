@@ -102,7 +102,7 @@ resource "proxmox_virtual_environment_vm" "pihole" {
         interface         = "scsi0"
         iothread          = true
         path_in_datastore = "vm-300-disk-0"
-        size              = 10
+        size              = 22
     }
 
     initialization {
