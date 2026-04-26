@@ -9,7 +9,7 @@
     longhorn_node: true
 
     ldap_uri: "ldaps://ldap.homelab"
-    ldap_search_base: "dc=homelab,dc=cool"
+    ldap_search_base: "dc=ldap,dc=homelab,dc=cool"
     setup_packages:
       - vim
       - nfs-common
