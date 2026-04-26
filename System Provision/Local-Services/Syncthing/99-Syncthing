@@ -1,0 +1,31 @@
+#!/bin/bash
+# NetworkManager dispatcher script for Syncthing
+# Starts Syncthing when connected to a trusted SSID or when WireGuard interface WG-Laptop is active.
+# This script should be put in /etc/NetworkManager/dispatcher.d/
+
+TRUSTED_SSID="riley347-hl"
+WG_INTERFACE="WG-Laptop"
+
+is_wireguard_active() {
+    ip link show "$WG_INTERFACE" up > /dev/null 2>&1
+}
+
+is_trusted_ssid() {
+    [ "$CONNECTION_ID" = "$TRUSTED_SSID" ]
+}
+
+# The network manager that calls this script will provide arguments, and the second one is what
+# started the script. So if it's "up" or "vpn-up" check if it's one of the allowed arguments.
+case "$2" in
+    up|vpn-up)
+        if is_trusted_ssid || is_wireguard_active; then
+            systemctl start syncthing
+        fi
+        ;;
+    down|vpn-down)
+        # Only stop Syncthing if NEITHER the trusted SSID nor WireGuard is still active
+        if ! is_trusted_ssid && ! is_wireguard_active; then
+            systemctl stop syncthing
+        fi
+        ;;
+esac
