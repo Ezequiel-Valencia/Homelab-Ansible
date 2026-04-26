@@ -32,6 +32,7 @@ services:
       AUTHENTIK_POSTGRESQL__PASSWORD: {{ PG_PASS }}
     volumes:
       - {{ default_relative_docker_data_path }}/authentik/data:/data
+      - {{ default_relative_docker_data_path }}/certs:/certs
       - {{ default_relative_docker_data_path }}/authentik/custom-templates:/templates
     depends_on:
       postgresql:
@@ -55,11 +56,26 @@ services:
     volumes:
       - {{ default_relative_docker_data_path }}/authentik/data:/data
       - {{ default_relative_docker_data_path }}/authentik/custom-templates:/templates
+      - {{ default_relative_docker_data_path }}/certs:/certs
     depends_on:
       postgresql:
         condition: service_healthy
     networks:
       - internal
+  
+  authentik_ldap:
+    image: ghcr.io/goauthentik/ldap:2026.2.2
+    container_name: authentik_ldap
+    networks:
+      - internal
+    ports:
+        # - 0.0.0.0:389:3389
+        - 0.0.0.0:636:6636
+    environment:
+        AUTHENTIK_HOST: http://authentik:9000
+        AUTHENTIK_INSECURE: "true"
+        # Known after outpost is created in main server
+        AUTHENTIK_TOKEN: {{ AUTHENTIK_LDAP_TOKEN }}
 
 networks:
   internal:

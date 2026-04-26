@@ -15,19 +15,23 @@ ldap_uri = {{ ldap_uri }}
 ##########
 # Groups #
 ##########
-ldap_group_search_base = ou=groups,{{ ldap_search_base }}?subtree?(gidNumber=*)
-ldap_group_object_class = groupOfUniqueNames
-ldap_group_name = cn
-ldap_group_gid_number = gidNumber
-ldap_group_member = uniqueMember
+# ldap_group_search_base = ou=groups,{{ ldap_search_base }}?subtree?(gidNumber=*)
+# ldap_group_object_class = groupOfUniqueNames
+# ldap_group_name = cn
+# ldap_group_gid_number = gidNumber
+# ldap_group_member = uniqueMember
 
 #########
 # Users #
 #########
-ldap_user_search_base = ou=people,{{ ldap_search_base }}?subtree?(uidNumber=*)
+# Part of 'linux-user' group
+ldap_user_search_base = ou=users,{{ ldap_search_base }}?sub?(memberOf=cn=linux-user,ou=groups,{{ ldap_search_base }})
+ldap_access_order = filter
+ldap_access_filter = (memberOf=cn=linux-user,ou=groups,{{ ldap_search_base }})
 ldap_user_object_class = posixAccount
-ldap_user_name = uid
+ldap_user_name = cn
 ldap_user_gecos = cn
+ldap_group_name = cn
 ldap_user_uid_number = uidNumber
 ldap_user_gid_number = gidNumber
 ldap_user_shell = unixShell
@@ -42,5 +46,5 @@ cache_credentials = True
 # debug_level = 6
 
 # Bind User #
-ldap_default_bind_dn = uid=binding_user,ou=people,{{ ldap_search_base }}
+ldap_default_bind_dn = cn=ldapservice,ou=users,{{ ldap_search_base }}
 ldap_default_authtok = {{ ldap_bind_user_password }}
