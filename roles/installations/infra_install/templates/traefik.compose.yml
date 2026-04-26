@@ -62,27 +62,25 @@ services:
   
 
   # https://hub.docker.com/r/lldap/lldap
-  ldap:
-    image: lldap/lldap:stable
-    restart: always
-    container_name: ldap
-    pull_policy: always
-    ports: 
-      - "636:6360"
-    security_opt:
-      - no-new-privileges:true
-    networks:
-      - proxy
-    environment:
-      - LLDAP_JWT_SECRET={{ ldap_jwt_secret }}
-      - LLDAP_KEY_SEED={{ ldap_key_seed }}
-      - LLDAP_LDAP_BASE_DN=dc=homelab,dc=cool
-      - LLDAP_LDAP_USER_PASS={{ ldap_admin_pass }}
-      - LLDAP_LDAPS_OPTIONS__ENABLED=true
-      - LLDAP_LDAPS_OPTIONS__CERT_FILE=/data/ldap_cert.pem
-      - LLDAP_LDAPS_OPTIONS__KEY_FILE=/data/ldap_privatekey.pem
-    volumes:
-      - "{{ default_relative_docker_data_path }}/ldap:/data"
+  # ldap:
+  #   image: lldap/lldap:stable
+  #   restart: always
+  #   container_name: ldap
+  #   pull_policy: always
+  #   security_opt:
+  #     - no-new-privileges:true
+  #   networks:
+  #     - proxy
+  #   environment:
+  #     - LLDAP_JWT_SECRET={{ ldap_jwt_secret }}
+  #     - LLDAP_KEY_SEED={{ ldap_key_seed }}
+  #     - LLDAP_LDAP_BASE_DN=dc=homelab,dc=cool
+  #     - LLDAP_LDAP_USER_PASS={{ ldap_admin_pass }}
+  #     - LLDAP_LDAPS_OPTIONS__ENABLED=true
+  #     - LLDAP_LDAPS_OPTIONS__CERT_FILE=/data/ldap_cert.pem
+  #     - LLDAP_LDAPS_OPTIONS__KEY_FILE=/data/ldap_privatekey.pem
+  #   volumes:
+  #     - "{{ default_relative_docker_data_path }}/ldap:/data"
 
 
   authelia:
