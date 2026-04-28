@@ -60,6 +60,7 @@ infra_install_pihole_local_dns_records:
   - { ip: 10.0.0.80, hostname: sonarr.homelab.ezequielvalencia.com }
   - { ip: 10.0.0.80, hostname: tadarr.homelab.ezequielvalencia.com }
   - { ip: 10.0.0.80, hostname: twenty-crm.homelab.ezequielvalencia.com }
+  - { ip: 10.0.0.80, hostname: mealie.homelab.ezequielvalencia.com }
 
 infra_install_pihole_local_cname_records: []
 #  - source: alias.homelab.ezequielvalencia.com
