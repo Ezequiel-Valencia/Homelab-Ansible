@@ -264,5 +264,41 @@ resource "cloudflare_zero_trust_access_application" "joplin" {
   tags = ["homelab"]
 }
 
+resource "cloudflare_zero_trust_access_application" "authentik" {
+  depends_on = [ cloudflare_zero_trust_access_policy.only_us_ips ]
+  domain = "authentik.tunnel.homelab.ezequielvalencia.com"
+  type = "self_hosted"
+  account_id = var.account_id
+
+  enable_binding_cookie = true # Mitigation against CSRF, https://developers.cloudflare.com/cloudflare-one/identity/authorization-cookie/
+  http_only_cookie_attribute = true
+  name = "Authentik"
+  policies = [ {
+    id = cloudflare_zero_trust_access_policy.bypass_cloudflare_login.id
+  },
+  ]
+
+  skip_interstitial = true
+  tags = ["homelab"]
+}
+
+resource "cloudflare_zero_trust_access_application" "mealie" {
+  depends_on = [ cloudflare_zero_trust_access_policy.only_us_ips ]
+  domain = "mealie.tunnel.homelab.ezequielvalencia.com"
+  type = "self_hosted"
+  account_id = var.account_id
+
+  enable_binding_cookie = true # Mitigation against CSRF, https://developers.cloudflare.com/cloudflare-one/identity/authorization-cookie/
+  http_only_cookie_attribute = true
+  name = "Mealie"
+  policies = [ {
+    id = cloudflare_zero_trust_access_policy.bypass_cloudflare_login.id
+  },
+  ]
+
+  skip_interstitial = true
+  tags = ["homelab"]
+}
+
 
 

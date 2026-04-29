@@ -124,6 +124,22 @@ resource "cloudflare_zero_trust_tunnel_cloudflared_config" "homelab_tunnel_confi
       }
     },
     {
+        hostname = "authentik.tunnel.homelab.ezequielvalencia.com"
+        service  = "https://authentik.homelab.ezequielvalencia.com"
+        origin_request = {
+          no_happy_eyeballs = true
+          http_host_header = "authentik.homelab.ezequielvalencia.com"
+          origin_server_name = "authentik.homelab.ezequielvalencia.com"
+      }
+    },
+    {
+        hostname = "mealie.tunnel.homelab.ezequielvalencia.com"
+        service  = "http://mealie.tools.svc.cluster.local:80"
+        origin_request = {
+        no_happy_eyeballs = true 
+      }
+    },
+    {
         service = "http_status:404" # Applied to entire tunnel if previous hits don't match
     }
     ]
