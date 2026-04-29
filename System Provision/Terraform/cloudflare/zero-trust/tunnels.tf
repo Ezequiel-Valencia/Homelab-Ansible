@@ -125,10 +125,10 @@ resource "cloudflare_zero_trust_tunnel_cloudflared_config" "homelab_tunnel_confi
     },
     {
         hostname = "authentik.tunnel.homelab.ezequielvalencia.com"
-        service  = "https://authentik.homelab.ezequielvalencia.com"
+        service  = "https://authentik.homelab.ezequielvalencia.com:9090"
         origin_request = {
           no_happy_eyeballs = true
-          http_host_header = "authentik.homelab.ezequielvalencia.com"
+          http_host_header = "authentik.tunnel.homelab.ezequielvalencia.com"
           origin_server_name = "authentik.homelab.ezequielvalencia.com"
       }
     },

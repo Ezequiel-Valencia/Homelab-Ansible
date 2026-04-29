@@ -12,6 +12,7 @@ services:
     ports:
       - 80:80
       - 443:443
+      - 0.0.0.0:9090:9090
     environment:
       - CF_DNS_API_TOKEN={{ cloudflare_token }}
       - CF_ZONE_API_TOKEN={{ cloudflare_token }}

@@ -49,9 +49,21 @@ http:
         - https-redirectscheme
       tls: {}
       service: truenas
+
+    # HTTP host header from tunnel says "tunnel", which is why this is needed
+    authentik_tunnel:
+      entryPoints:
+        - "authentik_https"
+      rule: "Host(`authentik.tunnel.homelab.ezequielvalencia.com`)"
+      middlewares:
+        - default-headers
+        - https-redirectscheme
+      tls: {}
+      service: authentik
+
     authentik:
       entryPoints:
-        - "https"
+        - "authentik_https"
       rule: "Host(`authentik.homelab.ezequielvalencia.com`)"
       middlewares:
         - default-headers

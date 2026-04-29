@@ -13,6 +13,8 @@ entryPoints:
           scheme: https
   https:
     address: ":443"
+  authentik_https:
+    address: ":9090"
 serversTransport:
   insecureSkipVerify: true
 providers:
