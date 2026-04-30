@@ -67,7 +67,6 @@ http:
       rule: "Host(`authentik.homelab.ezequielvalencia.com`)"
       middlewares:
         - default-headers
-        - https-redirectscheme
       tls: {}
       service: authentik
 
