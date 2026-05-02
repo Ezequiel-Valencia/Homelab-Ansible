@@ -69,5 +69,8 @@
         "zpcprox"
     ],
     "ansible.python.activationScript": ".venv/bin/activate",
-    "ansible.validation.lint.path": ".venv/bin/ansible-lint"
+    "ansible.validation.lint.path": ".venv/bin/ansible-lint",
+    "yaml.schemas": {
+        "https://raw.githubusercontent.com/ansible/ansible-lint/main/src/ansiblelint/schemas/ansible.json#/$defs/tasks": "file:///home/zek/Documents/Code/Devops-IT/Homelab/roles/installations/db_install/tasks/config-cassandra.yml"
+    }
 }
