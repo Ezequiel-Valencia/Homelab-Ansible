@@ -1,105 +1,159 @@
-#
-# WARNING: Make sure to use the docker-compose.yml of the current release:
-#
-# https://github.com/immich-app/immich/releases/latest/download/docker-compose.yml
-#
-# The compose file on main may not be compatible with the latest release.
-#
-
 name: immich
 
 services:
-  immich-server:
-    container_name: immich_server
-    image: ghcr.io/immich-app/immich-server:${IMMICH_VERSION:-release}
-    command: ['start.sh', 'immich']
-    security_opt:
-      - no-new-privileges:true
-    networks:
-      - immich
-    volumes:      
-      - ${UPLOAD_PATH}:/usr/src/app/upload
-      - ${EXTERNAL_PATH}:/usr/src/app/external
-      - /etc/localtime:/etc/localtime:ro
-    env_file:
-      - stack.env
-    ports:
-      - 127.0.0.1:2283:3001
-    depends_on:
-      - redis
-      - database
-    restart: always
 
-  immich-microservices:
-    container_name: immich_microservices
-    image: ghcr.io/immich-app/immich-server:${IMMICH_VERSION:-release}
-    # extends: # uncomment this section for hardware acceleration - see https://immich.app/docs/features/hardware-transcoding
-    #   file: hwaccel.transcoding.yml
-    #   service: cpu # set to one of [nvenc, quicksync, rkmpp, vaapi, vaapi-wsl] for accelerated transcoding
-    command: ['start.sh', 'microservices']
-    networks:
-      - immich
-    security_opt:
-      - no-new-privileges:true
-    volumes:
-      - ${UPLOAD_PATH}:/usr/src/app/upload
-      - ${EXTERNAL_PATH}:/usr/src/app/external
-      - /etc/localtime:/etc/localtime:ro
+  # -------------------------------------------------------
+  # Traefik — Reverse Proxy
+  # -------------------------------------------------------
+  immich-traefik:
+    image: traefik:3.6.1
+    container_name: immich-traefik
+    restart: unless-stopped
     env_file:
-      - stack.env
+      - path: ./env_file
+        required: true
+    command:
+      # API / dashboard (accessible at traefik.homelab.ezequielvalencia.com)
+      - "--api.dashboard=true"
+      - "--api.insecure=false"
+
+      # Docker provider
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--providers.docker.network=immich-traefik"
+
+      # Entrypoints — port 80 redirects to 443 automatically
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.web.http.redirections.entrypoint.to=websecure"
+      - "--entrypoints.web.http.redirections.entrypoint.scheme=https"
+      - "--entrypoints.websecure.address=:443"
+
+      # Let's Encrypt via Cloudflare DNS challenge
+      - "--certificatesresolvers.letsencrypt.acme.dnschallenge.provider=cloudflare"
+      - "--certificatesresolvers.letsencrypt.acme.dnschallenge.resolvers=1.1.1.1:53,8.8.8.8:53"
+      - "--certificatesresolvers.letsencrypt.acme.storage=/letsencrypt/acme.json"
+      - "--certificatesresolvers.letsencrypt.acme.dnsChallenge.propagation.delayBeforeChecks=30s"
+      - "--certificatesresolvers.letsencrypt.acme.dnsChallenge.propagation.disableChecks=true"
+
+      - "--log.level=INFO"
+    ports:
+      - "9000:443"
+    # environment:
+      # - CF_API_EMAIL=${CF_API_EMAIL}
+      # - CF_DNS_API_TOKEN=${CF_API_KEY}
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./letsencrypt:/letsencrypt
+    networks:
+      - immich-traefik
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.traefik-dashboard.rule=Host(`traefik.homelab.ezequielvalencia.com`)"
+      - "traefik.http.routers.traefik-dashboard.entrypoints=websecure"
+      - "traefik.http.routers.traefik-dashboard.tls=true"
+      - "traefik.http.routers.traefik-dashboard.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.traefik-dashboard.service=api@internal"
+
+  # -------------------------------------------------------
+  # Immich — Server
+  # -------------------------------------------------------
+  immich-server:
+    image: ghcr.io/immich-app/immich-server:release
+    container_name: immich_server
+    restart: unless-stopped
+    env_file:
+      - path: ./env_file
+        required: true
+    environment:
+      - DB_HOSTNAME=immich-postgres
+      - DB_USERNAME=immich
+      - DB_DATBASE_NAME=immich
+      # - DB_PASSWORD=${DB_PASSWORD}
+      - REDIS_HOSTNAME=immich-redis
+    volumes:
+      - ./uploads:/usr/src/app/upload
+      - /etc/localtime:/etc/localtime:ro
     depends_on:
       - redis
       - database
-    restart: always
+    networks:
+      - immich-internal
+      - immich-traefik
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=immich-traefik"
+
+      # HTTPS router
+      - "traefik.http.routers.immich.rule=Host(`immich.homelab.ezequielvalencia.com`)"
+      - "traefik.http.routers.immich.entrypoints=websecure"
+      - "traefik.http.routers.immich.tls=true"
+      - "traefik.http.routers.immich.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.immich.middlewares=immich-buffering"
+
+      # Service port
+      - "traefik.http.services.immich.loadbalancer.server.port=2283"
+
+      # Disable body size limit for large photo/video uploads
+      - "traefik.http.middlewares.immich-buffering.buffering.maxRequestBodyBytes=0"
+      - "traefik.http.middlewares.immich-buffering.buffering.memRequestBodyBytes=0"
+    deploy:
+      resources:
+        limits:
+          cpus: "2.0"
+          memory: 2G
+        reservations:
+          cpus: "0.5"
+          memory: 512M
+
 
   immich-machine-learning:
-    container_name: immich_machine_learning
-    # For hardware acceleration, add one of -[armnn, cuda, openvino] to the image tag.
-    # Example tag: ${IMMICH_VERSION:-release}-cuda
-    image: ghcr.io/immich-app/immich-machine-learning:${IMMICH_VERSION:-release}
-    # extends: # uncomment this section for hardware acceleration - see https://immich.app/docs/features/ml-hardware-acceleration
-    #   file: hwaccel.ml.yml
-    #   service: cpu # set to one of [armnn, cuda, openvino, openvino-wsl] for accelerated inference - use the `-wsl` version for WSL2 where applicable
+    image: ghcr.io/immich-app/immich-machine-learning:release
+    container_name: immich-machine-learning
+    restart: unless-stopped
     volumes:
-      - model-cache:/cache
-    security_opt:
-      - no-new-privileges:true
+      - ./ml-cache:/cache
     networks:
-      - immich
-    env_file:
-      - stack.env
-    restart: always
+      - immich-internal
+    deploy:
+      resources:
+        limits:
+          cpus: "2.0"
+          memory: 2G
 
   redis:
-    container_name: immich_redis
-    security_opt:
-      - no-new-privileges:true
+    image: docker.io/valkey/valkey:9
+    container_name: immich-redis
+    hostname: immich-redis
+    restart: unless-stopped
     networks:
-      - immich
-    image: registry.hub.docker.com/library/redis:6.2-alpine@sha256:84882e87b54734154586e5f8abd4dce69fe7311315e2fc6d67c29614c8de2672
-    restart: always
+      - immich-internal
 
+  # -------------------------------------------------------
+  # Postgres (with pgvecto-rs for Immich vector search)
+  # -------------------------------------------------------
   database:
-    container_name: immich_postgres
-    security_opt:
-      - no-new-privileges:true
-    networks:
-      - immich
+    image: ghcr.io/immich-app/postgres:18-vectorchord0.5.3-pgvector0.8.1
+    container_name: immich-postgres
+    hostname: immich-postgres
+    restart: unless-stopped
     env_file:
-      - stack.env
-    image: registry.hub.docker.com/tensorchord/pgvecto-rs:pg14-v0.2.0@sha256:90724186f0a3517cf6914295b5ab410db9ce23190a2d9d0b9dd6463e3fa298f0
+      - path: ./env_file
+        required: true
     environment:
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
-      POSTGRES_USER: ${DB_USERNAME}
-      POSTGRES_DB: ${DB_DATABASE_NAME}
-      POSTGRES_INITDB_ARGS: '--data-checksums'
+      # POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_USER: immich
+      POSTGRES_DB: immich
     volumes:
-      - ${DB_DATA_LOCATION}:/var/lib/postgresql/data
-    restart: always
-    command: ["postgres", "-c" ,"shared_preload_libraries=vectors.so", "-c", 'search_path="$$user", public, vectors', "-c", "logging_collector=on", "-c", "max_wal_size=2GB", "-c", "shared_buffers=512MB", "-c", "wal_compression=on"]
-
-volumes:
-  model-cache:
+      - ./database:/var/lib/postgresql
+    networks:
+      - immich-internal
 
 networks:
-  immich:
+  # Traefik-facing — only services needing a public route join this
+  immich-traefik:
+    driver: bridge
+    name: immich-traefik
+  # Internal-only — Postgres and Redis are never reachable from outside
+  immich-internal:
+    internal: true
+    name: immich-internal
