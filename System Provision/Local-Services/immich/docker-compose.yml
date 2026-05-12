@@ -73,6 +73,8 @@ services:
     volumes:
       - ./uploads:/usr/src/app/upload
       - /etc/localtime:/etc/localtime:ro
+      - ../syncthing/data1/archive-photos:/external/archive-photos:ro
+      - ../syncthing/data1/phone-photos:/external/phone-photos:ro
     depends_on:
       - redis
       - database
@@ -114,6 +116,7 @@ services:
       - ./ml-cache:/cache
     networks:
       - immich-internal
+      - immich-traefik
     deploy:
       resources:
         limits:
