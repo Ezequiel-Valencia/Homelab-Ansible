@@ -150,3 +150,22 @@ resource "cloudflare_dns_record" "mealie" {
   proxied = true
   ttl     = 1
 }
+
+resource "cloudflare_dns_record" "immich" {
+  zone_id = var.zone_id
+  name    = "immich.tunnel.homelab.ezequielvalencia.com"
+  type    = "CNAME"
+  content = local.tunnel_cname
+  proxied = true
+  ttl     = 1
+}
+
+resource "cloudflare_dns_record" "navidrome" {
+  zone_id = var.zone_id
+  name    = "navidrome.tunnel.homelab.ezequielvalencia.com"
+  type    = "CNAME"
+  content = local.tunnel_cname
+  proxied = true
+  ttl     = 1
+}
+

@@ -133,6 +133,24 @@ resource "cloudflare_zero_trust_tunnel_cloudflared_config" "homelab_tunnel_confi
       }
     },
     {
+        hostname = "immich.tunnel.homelab.ezequielvalencia.com"
+        service  = "https://immich.homelab.ezequielvalencia.com:9000"
+        origin_request = {
+          no_happy_eyeballs = true
+          http_host_header = "immich.homelab.ezequielvalencia.com"
+          origin_server_name = "immich.homelab.ezequielvalencia.com"
+      }
+    },
+    {
+        hostname = "navidrome.tunnel.homelab.ezequielvalencia.com"
+        service  = "https://navidrome.homelab.ezequielvalencia.com:9000"
+        origin_request = {
+          no_happy_eyeballs = true
+          http_host_header = "navidrome.homelab.ezequielvalencia.com"
+          origin_server_name = "navidrome.homelab.ezequielvalencia.com"
+      }
+    },
+    {
         hostname = "mealie.tunnel.homelab.ezequielvalencia.com"
         service  = "http://mealie.tools.svc.cluster.local:80"
         origin_request = {
