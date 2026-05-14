@@ -24,4 +24,4 @@
     mode: u=rw,g=r,o=r
     owner: zeke
     group: zeke
-  # notify: Restart PiHole
+  notify: Restart PiHole
