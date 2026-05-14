@@ -1,0 +1,25 @@
+services:
+  navidrome:
+    image: deluan/navidrome:latest
+    container_name: navidrome
+    restart: unless-stopped
+    ports:
+      - "0.0.0.0:9001:4533"
+    environment:
+      ND_SCANSCHEDULE: 1h          # How often to scan for new music
+      ND_LOGLEVEL: info             # Log level: error, warn, info, debug
+      ND_SESSIONTIMEOUT: 24h        # Web session timeout
+      ND_BASEURL: ""                # Base URL if running behind a reverse proxy (e.g. /navidrome)
+      # ND_LASTFM_APIKEY: ""        # Last.fm API key for scrobbling / metadata
+      # ND_LASTFM_SECRET: ""        # Last.fm API secret
+      # ND_SPOTIFY_ID: ""           # Spotify client ID for artist images
+      # ND_SPOTIFY_SECRET: ""       # Spotify client secret
+    volumes:
+      - "./data:/data"              # Navidrome database and cache
+      - "../syncthing/data1/music:/music:ro"  # Your music library (read-only)
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:4533/ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s

@@ -41,6 +41,7 @@ infra_install_pihole_local_dns_records:
   # NAS (10.0.0.146)
   - { ip: 10.0.0.146, hostname: nas.homelab.ezequielvalencia.com }
   - { ip: 10.0.0.146, hostname: immich.homelab.ezequielvalencia.com }
+  - { ip: 10.0.0.146, hostname: navidrome.homelab.ezequielvalencia.com }
   # Main app server (10.0.0.80)
   - { ip: 10.0.0.80, hostname: bazarr.homelab.ezequielvalencia.com }
   - { ip: 10.0.0.80, hostname: gitea.homelab.ezequielvalencia.com }
