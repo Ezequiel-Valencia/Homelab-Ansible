@@ -20,11 +20,11 @@ class BackupSpec:
 
 # List of source directories to sync
 BACKUPS = [
-    BackupSpec(dir_path="/volume1/k8data/storage/tools", remote_backup=True, aws_key="tools.7z"),
-    BackupSpec(dir_path="/volume1/k8data/storage/bots", remote_backup=True, aws_key="bots.7z"),
-    BackupSpec(dir_path="/volume1/k8data/storage/ai", remote_backup=False, aws_key=""),
-    BackupSpec(dir_path="/volume1/k8data/storage/media-config", remote_backup=True, aws_key="media.7z"),
-    BackupSpec(dir_path="/volume1/k8data/storage/mobilizon", remote_backup=False, aws_key="")
+    BackupSpec(dir_path="/volume1/k8data-smb/storage/tools", remote_backup=True, aws_key="tools.7z"),
+    BackupSpec(dir_path="/volume1/k8data-smb/storage/bots", remote_backup=True, aws_key="bots.7z"),
+    BackupSpec(dir_path="/volume1/k8data-smb/storage/ai", remote_backup=False, aws_key=""),
+    BackupSpec(dir_path="/volume1/k8data-smb/storage/media-config", remote_backup=True, aws_key="media.7z"),
+    BackupSpec(dir_path="/volume1/k8data-smb/storage/mobilizon", remote_backup=False, aws_key="")
 ]
 
 ENV_FILE_PATH = ""
