@@ -169,3 +169,12 @@ resource "cloudflare_dns_record" "navidrome" {
   ttl     = 1
 }
 
+resource "cloudflare_dns_record" "seer" {
+  zone_id = var.zone_id
+  name    = "seer.tunnel.homelab.ezequielvalencia.com"
+  type    = "CNAME"
+  content = local.tunnel_cname
+  proxied = true
+  ttl     = 1
+}
+
