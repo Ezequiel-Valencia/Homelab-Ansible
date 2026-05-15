@@ -178,3 +178,12 @@ resource "cloudflare_dns_record" "seer" {
   ttl     = 1
 }
 
+resource "cloudflare_dns_record" "romm" {
+  zone_id = var.zone_id
+  name    = "rom.tunnel.homelab.ezequielvalencia.com"
+  type    = "CNAME"
+  content = local.tunnel_cname
+  proxied = true
+  ttl     = 1
+}
+
