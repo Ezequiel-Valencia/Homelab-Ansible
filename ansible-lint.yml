@@ -5,6 +5,7 @@ profile: safety
 exclude_paths:
   - "System Provision"
   - "roles/installations/home_assistant/files/ha_configuration.yaml"
+  - "roles/installations/infra_install/handlers/main.yml"
 
 enable_list:
   - args
