@@ -66,6 +66,7 @@ services:
   authentik_ldap:
     image: ghcr.io/goauthentik/ldap:2026.2.2
     container_name: authentik_ldap
+    restart: always
     networks:
       - internal
     ports:
