@@ -8,25 +8,17 @@ services:
     container_name: navidrome
     hostname: navidrome
     networks:
-      - ext-traefik
+      - navidrome-internal    # Internal only — not reachable from Traefik directly
     restart: unless-stopped
-    labels:
-      - "traefik.enable=true"
-      - "traefik.docker.network=ext-traefik"
-
-      # HTTPS router
-      - "traefik.http.routers.navidrome.rule=Host(`navidrome.homelab.ezequielvalencia.com`)"
-      - "traefik.http.routers.navidrome.entrypoints=websecure"
-      - "traefik.http.routers.navidrome.tls=true"
-      - "traefik.http.routers.navidrome.tls.certresolver=letsencrypt"
-
-      # Service port
-      - "traefik.http.services.navidrome.loadbalancer.server.port=4533"
     environment:
       ND_SCANSCHEDULE: 1h          # How often to scan for new music
       ND_LOGLEVEL: info             # Log level: error, warn, info, debug
       ND_SESSIONTIMEOUT: 24h        # Web session timeout
       ND_BASEURL: ""                # Base URL if running behind a reverse proxy (e.g. /navidrome)
+      # Reverse proxy authentication — trust the username header set by the Authentik outpost.
+      # Only requests from the navidrome-internal Docker network (172.x.x.x) are trusted.
+      ND_EXTAUTH_USERHEADER: "X-Authentik-Username"
+      ND_EXTAUTH_TRUSTEDSOURCES: "172.0.0.0/8"
       # ND_LASTFM_APIKEY: ""        # Last.fm API key for scrobbling / metadata
       # ND_LASTFM_SECRET: ""        # Last.fm API secret
       # ND_SPOTIFY_ID: ""           # Spotify client ID for artist images
@@ -34,14 +26,40 @@ services:
     volumes:
       - "./data:/data"              # Navidrome database and cache
       - "../syncthing/data1/music:/music:ro"  # Your music library (read-only)
-    # healthcheck:
-    #   test: ["CMD", "wget", "-q", "--spider", "http://localhost:4533/ping"]
-    #   interval: 30s
-    #   timeout: 10s
-    #   retries: 3
-    #   start_period: 15s
+
+  ##################################
+  # --- Authentik Proxy Outpost --- #
+  ##################################
+
+  authentik-proxy:
+    image: ghcr.io/goauthentik/proxy:2026.2.2
+    container_name: authentik-proxy-navidrome
+    hostname: authentik-proxy-navidrome
+    restart: unless-stopped
+    networks:
+      - ext-traefik        # Receives inbound traffic from Traefik
+      - navidrome-internal # Forwards authenticated requests to Navidrome
+    env_file:
+      - path: ./authentik.env
+        required: true
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=ext-traefik"
+
+      # HTTPS router (takes over the navidrome hostname from Traefik's perspective)
+      - "traefik.http.routers.navidrome.rule=Host(`navidrome.homelab.ezequielvalencia.com`)"
+      - "traefik.http.routers.navidrome.entrypoints=websecure"
+      - "traefik.http.routers.navidrome.tls=true"
+      - "traefik.http.routers.navidrome.tls.certresolver=letsencrypt"
+
+      # The outpost listens on 9000 (HTTP) — Traefik handles TLS termination
+      - "traefik.http.services.navidrome.loadbalancer.server.port=9000"
 
 networks:
   ext-traefik:
     external: true
     name: ext-traefik
+
+  navidrome-internal:
+    internal: true          # Docker blocks all external routing on this network
+    name: navidrome-internal
