@@ -1,0 +1,58 @@
+services:
+  # -------------------------------------------------------
+  # Traefik — Reverse Proxy
+  # -------------------------------------------------------
+  ext-traefik:
+    image: traefik:3.6.1
+    container_name: traefik
+    restart: unless-stopped
+    env_file:
+      - path: ./env_file
+        required: true
+    command:
+      # API / dashboard (accessible at traefik.homelab.ezequielvalencia.com)
+      - "--api.dashboard=true"
+      - "--api.insecure=false"
+
+      # Docker provider
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--providers.docker.network=ext-traefik"
+
+      # Entrypoints — port 80 redirects to 443 automatically
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.web.http.redirections.entrypoint.to=websecure"
+      - "--entrypoints.web.http.redirections.entrypoint.scheme=https"
+      - "--entrypoints.websecure.address=:443"
+
+      # Let's Encrypt via Cloudflare DNS challenge
+      - "--certificatesresolvers.letsencrypt.acme.dnschallenge.provider=cloudflare"
+      - "--certificatesresolvers.letsencrypt.acme.dnschallenge.resolvers=1.1.1.1:53,8.8.8.8:53"
+      - "--certificatesresolvers.letsencrypt.acme.storage=/letsencrypt/acme.json"
+      - "--certificatesresolvers.letsencrypt.acme.dnsChallenge.propagation.delayBeforeChecks=30s"
+      - "--certificatesresolvers.letsencrypt.acme.dnsChallenge.propagation.disableChecks=true"
+
+      - "--log.level=INFO"
+    ports:
+      - "9000:443"
+    # environment:
+      # - CF_API_EMAIL=${CF_API_EMAIL}
+      # - CF_DNS_API_TOKEN=${CF_API_KEY}
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./letsencrypt:/letsencrypt
+    networks:
+      - ext-traefik
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.traefik-dashboard.rule=Host(`traefik.homelab.ezequielvalencia.com`)"
+      - "traefik.http.routers.traefik-dashboard.entrypoints=websecure"
+      - "traefik.http.routers.traefik-dashboard.tls=true"
+      - "traefik.http.routers.traefik-dashboard.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.traefik-dashboard.service=api@internal"
+
+networks:
+  # Traefik-facing — only services needing a public route join this
+  ext-traefik:
+    driver: bridge
+    name: ext-traefik

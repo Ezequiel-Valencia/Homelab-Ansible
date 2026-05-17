@@ -1,10 +1,27 @@
 services:
+  #################
+  # --- Music --- #
+  #################
+
   navidrome:
     image: deluan/navidrome:latest
     container_name: navidrome
+    hostname: navidrome
+    networks:
+      - ext-traefik
     restart: unless-stopped
-    ports:
-      - "0.0.0.0:9001:4533"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=ext-traefik"
+
+      # HTTPS router
+      - "traefik.http.routers.navidrome.rule=Host(`navidrome.homelab.ezequielvalencia.com`)"
+      - "traefik.http.routers.navidrome.entrypoints=websecure"
+      - "traefik.http.routers.navidrome.tls=true"
+      - "traefik.http.routers.navidrome.tls.certresolver=letsencrypt"
+
+      # Service port
+      - "traefik.http.services.navidrome.loadbalancer.server.port=4533"
     environment:
       ND_SCANSCHEDULE: 1h          # How often to scan for new music
       ND_LOGLEVEL: info             # Log level: error, warn, info, debug
@@ -17,9 +34,14 @@ services:
     volumes:
       - "./data:/data"              # Navidrome database and cache
       - "../syncthing/data1/music:/music:ro"  # Your music library (read-only)
-    healthcheck:
-      test: ["CMD", "wget", "-q", "--spider", "http://localhost:4533/ping"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 15s
+    # healthcheck:
+    #   test: ["CMD", "wget", "-q", "--spider", "http://localhost:4533/ping"]
+    #   interval: 30s
+    #   timeout: 10s
+    #   retries: 3
+    #   start_period: 15s
+
+networks:
+  ext-traefik:
+    external: true
+    name: ext-traefik
