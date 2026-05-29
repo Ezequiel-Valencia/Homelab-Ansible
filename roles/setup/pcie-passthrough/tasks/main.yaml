@@ -10,7 +10,8 @@
     _grub_iommu: "{{ 'intel_iommu=on' if pve_cpu_vendor == 'intel' else 'amd_iommu=on' }}"
     _grub_pt: "{{ ' iommu=pt' if pve_iommu_pt else '' }}"
     _grub_acs: "{{ ' pcie_acs_override=downstream,multifunction' if pve_acs_override else '' }}"
-    _grub_fb: "{{ ' nofb nomodeset video=vesafb:off,efifb:off' if pve_disable_framebuffer else '' }}"
+    _grub_fb: "{{ ' nofb video=vesafb:off,efifb:off' if pve_disable_framebuffer else '' }}"
+    # "nomodeset" in _grub_fb is overkill
   notify:
     - Update grub
     - Update initramfs
