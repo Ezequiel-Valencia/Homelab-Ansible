@@ -65,6 +65,7 @@ infra_install_pihole_local_dns_records:
   - { ip: 10.0.0.80, hostname: mealie.homelab.ezequielvalencia.com }
   - { ip: 10.0.0.80, hostname: seer.homelab.ezequielvalencia.com }
   - { ip: 10.0.0.80, hostname: rom.homelab.ezequielvalencia.com }
+  - { ip: 10.0.0.80, hostname: yamtrack.homelab.ezequielvalencia.com }
 
 infra_install_pihole_local_cname_records: []
 #  - source: alias.homelab.ezequielvalencia.com
