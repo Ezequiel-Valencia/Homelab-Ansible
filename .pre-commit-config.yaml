@@ -4,6 +4,7 @@ repos:
     hooks:
       - id: ansible-lint
         args: ["-c", "ansible-lint.yml"]
+        language_version: python3.14
         # Uncomment if you need the full Ansible community bundle instead of ansible-core:
         # additional_dependencies:
         #   - ansible

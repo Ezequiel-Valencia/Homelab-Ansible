@@ -96,7 +96,7 @@ def zip_file(src_file: str, output_dir: str) -> str:
     return zip_path
 
 
-def cleanup_old_backups(backup_path: str, max_age_days=7) -> None:
+def cleanup_old_backups(backup_path: str, max_age_days=4) -> None:
     """Remove zip files older than max_age_days from the destination folder."""
     cutoff_time = time.time() - (max_age_days * 86400)
     for file in os.listdir(backup_path):
@@ -109,17 +109,17 @@ def cleanup_old_backups(backup_path: str, max_age_days=7) -> None:
 
 def should_upload_happen(s3_client, aws_key: str) -> tuple[bool, str]:
     try:
-        one_week_ago = datetime.now(timezone.utc) - timedelta(weeks=1)
+        one_day_ago = datetime.now(timezone.utc) - timedelta(days=1)
         response = s3_client.head_object(Bucket=BUCKET_NAME, Key=aws_key)
         last_modified = response['LastModified']
 
-        if last_modified < one_week_ago:
+        if last_modified < one_day_ago:
             print(f"Old file found (Modified: {last_modified}). Moving to old...")
             copy_source = {'Bucket': BUCKET_NAME, 'Key': aws_key}
             s3_client.copy_object(Bucket=BUCKET_NAME, Key=f"{aws_key}.old", CopySource=copy_source)
-            return True, "Last upload is over one week old."
+            return True, "Last upload is over one day old."
         else:
-            return False, "Current archive is less than 1 week old. Skipping upload."
+            return False, "Current archive is less than 1 day old. Skipping upload."
     except s3_client.exceptions.ClientError as e:
         if e.response["ResponseMetadata"]["HTTPStatusCode"] == 404:
             return True, "No existing zip file found in bucket. Proceeding..."

@@ -78,17 +78,17 @@ def cleanup_old_backups(backup_path: str, max_age_days=14) -> None:
 
 def should_upload_happen(s3_client, backup: BackupSpec) -> tuple[bool, str]:
     try:
-        two_weeks_ago = datetime.now(timezone.utc) - timedelta(weeks=2)
+        five_days_ago = datetime.now(timezone.utc) - timedelta(days=5)
         response = s3_client.head_object(Bucket=BUCKET_NAME, Key=backup.aws_key)
         last_modified = response['LastModified']
         
-        if last_modified < two_weeks_ago:
+        if last_modified < five_days_ago:
             print(f"Old file found (Modified: {last_modified}). Moving to old...")
             copy_source = {'Bucket': BUCKET_NAME, 'Key': backup.aws_key}
             s3_client.copy_object(Bucket=BUCKET_NAME, Key=f"{backup.aws_key}.old", CopySource=copy_source)
-            return True, "Last upload is over two weeks old."
+            return True, "Last upload is over 5 days old."
         else:
-            return False, "Current archive is less than 2 weeks old. Skipping upload."
+            return False, "Current archive is less than 5 days old. Skipping upload."
     except s3_client.exceptions.ClientError as e:
         if e.response["ResponseMetadata"]["HTTPStatusCode"] == 404:
             return True, "No existing zip file found in bucket. Proceeding..."
