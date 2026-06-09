@@ -42,6 +42,7 @@
       ansible.builtin.apt:
         autoclean: true
         autoremove: true
+        purge: true
 
     - name: Reducing System Logs
       ansible.builtin.command: journalctl --vacuum-size=500M
