@@ -42,6 +42,10 @@
       ansible.builtin.apt:
         autoclean: true
         autoremove: true
+
+    - name: Apt Purge
+      ansible.builtin.apt:
+        autoremove: true
         purge: true
 
     - name: Reducing System Logs
